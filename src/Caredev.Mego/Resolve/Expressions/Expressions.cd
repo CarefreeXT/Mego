@@ -1,0 +1,339 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbCrossJoinExpression" Collapsed="true">
+    <Position X="6.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbCrossJoinExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbInnerJoinExpression" Collapsed="true">
+    <Position X="10.75" Y="9.25" Width="1.5" />
+    <Members>
+      <Property Name="KeyPairs" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbInnerJoinExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="KeyPairs" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbGroupByExpression" Collapsed="true">
+    <Position X="10.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAQAAAAAAAEAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbGroupByExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbGroupJoinExpression" Collapsed="true">
+    <Position X="10.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbGroupJoinExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbDataSetExpression" Collapsed="true">
+    <Position X="4.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbDataSetExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbGroupItemExpression" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbGroupItemExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbSelectExpression" Collapsed="true">
+    <Position X="4.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbSelectExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbSetOperationExpression" Collapsed="true">
+    <Position X="6.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\DbSetOperationExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbUnitTypeExpression" Collapsed="true">
+    <Position X="6.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAAGAAAAIAAAAAEAAEAAQAAAAEAAQAAEAA=</HashCode>
+      <FileName>Resolve\Expressions\DbUnitTypeExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Item" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbGroupSetExpression" Collapsed="true">
+    <Position X="2.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbGroupSetExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbUnitItemTypeExpression" Collapsed="true">
+    <Position X="6.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\DbUnitItemTypeExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbDataItemExpression" Collapsed="true">
+    <Position X="4.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbDataItemExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbUnitItemContentExpression" Collapsed="true">
+    <Position X="6.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbUnitItemContentExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbNewExpression" Collapsed="true">
+    <Position X="8.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbNewExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbBinaryExpression" Collapsed="true">
+    <Position X="4.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAACACAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbBinaryExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Kind" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbUnaryExpression" Collapsed="true">
+    <Position X="6.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\OtherExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Kind" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbConstantExpression" Collapsed="true">
+    <Position X="2.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbConstantExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbDefaultExpression" Collapsed="true">
+    <Position X="4.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbDefaultExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbMemberExpression" Collapsed="true">
+    <Position X="6.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAQAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbMemberExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbJoinKeyPairExpression" Collapsed="true">
+    <Position X="10.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbJoinKeyPairExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbOrderExpression" Collapsed="true">
+    <Position X="2.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbOrderExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Kind" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbSetConnectExpression" Collapsed="true">
+    <Position X="8.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAACAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbSetConnectExpression.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Kind" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbFunctionBaseExpression" Collapsed="true">
+    <Position X="7.75" Y="1.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAIAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\DbFunctionBaseExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbAggregateFunctionExpression" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbAggregateFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbSetFunctionExpression" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbSetFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbScalarFunctionExpression" Collapsed="true">
+    <Position X="2.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbScalarFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbItemFunctionExpression" Collapsed="true">
+    <Position X="6.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbItemFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbRetrievalFunctionExpression" Collapsed="true">
+    <Position X="10.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbRetrievalFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbSourceFunctionExpression" Collapsed="true">
+    <Position X="10.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAgAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\DbSourceFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbMapFunctionExpression" Collapsed="true">
+    <Position X="4.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\DbMapFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbJudgeFunctionExpression" Collapsed="true">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbJudgeFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbUnitFunctionExpression" Collapsed="true">
+    <Position X="8.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAACAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbUnitFunctionExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbObjectMemberExpression" Collapsed="true">
+    <Position X="8.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAQIAAAQAAAAIAAABAAAAAAAAEAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbObjectMemberExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Expressions.DbCollectionMemberExpression" Collapsed="true">
+    <Position X="12.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAQAAAIQAAAAIIAABQAAAAAAAGAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbCollectionMemberExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Caredev.Mego.Resolve.Expressions.IDbUnitItemTypeExpression" Collapsed="true">
+    <Position X="2.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\IDbUnitItemTypeExpression.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Caredev.Mego.Resolve.Expressions.IDbUnitTypeExpression" Collapsed="true">
+    <Position X="4.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\IDbUnitTypeExpression.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Caredev.Mego.Resolve.Expressions.IDbExpression" Collapsed="true">
+    <Position X="2.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\IDbExpression.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EBinaryKind" Collapsed="true">
+    <Position X="4.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICIAAAAAAQBAAAgAwAEDAAAAAAAAAAAhCAAACQRAACA=</HashCode>
+      <FileName>Resolve\Expressions\EBinaryKind.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EOrderKind" Collapsed="true">
+    <Position X="2.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\EOrderKind.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EConnectKind" Collapsed="true">
+    <Position X="8.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAEAAAAAABAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\EConnectKind.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EExpressionType" Collapsed="true">
+    <Position X="10.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEDCAAIAQAKAAIAQAoAAAAkEBAggBICQAQhAgEAA=</HashCode>
+      <FileName>Resolve\Expressions\EExpressionType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EMapFunctionKind" Collapsed="true">
+    <Position X="12.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Resolve\Expressions\EMapFunctionKind.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Caredev.Mego.Resolve.Expressions.EUnaryKind" Collapsed="true">
+    <Position X="6.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Expressions\OtherExpression.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>

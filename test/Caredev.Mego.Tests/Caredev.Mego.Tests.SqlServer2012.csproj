@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{03640B4C-2546-44B2-A266-CFC5C3CA84DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Caredev.Mego.Tests</RootNamespace>
+    <AssemblyName>Caredev.Mego.Tests.SqlServer2012</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SQLSERVER;SQLSERVER2012;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.1.1.18\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.1.1.18\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Core\FunctionTest.cs" />
+    <Compile Include="Core\AnonymousSetTest.cs" />
+    <Compile Include="SqlServer\Commit\Inherit\DeleteTest.cs" />
+    <Compile Include="SqlServer\Commit\Inherit\InsertPropertysTest.cs" />
+    <Compile Include="SqlServer\Commit\Inherit\InsertTest.cs" />
+    <Compile Include="SqlServer\Commit\Inherit\UpdatePropertysTest.cs" />
+    <Compile Include="SqlServer\Commit\Inherit\UpdateTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\DeleteTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\InsertTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\RelationTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="SqlServer\Commit\Simple\UpdateTest.cs" />
+    <Compile Include="Core\Commit\Inherit\DeleteTest.cs" />
+    <Compile Include="Core\Commit\Inherit\InsertPropertysTest.cs" />
+    <Compile Include="Core\Commit\Inherit\UpdatePropertysTest.cs" />
+    <Compile Include="Core\Commit\Inherit\InsertTest.cs" />
+    <Compile Include="Core\Commit\Inherit\UpdateTest.cs" />
+    <Compile Include="Core\Commit\Simple\DeleteTest.cs" />
+    <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\InsertTest.cs" />
+    <Compile Include="Core\Commit\Simple\RelationTest.cs" />
+    <Compile Include="Core\Commit\Simple\CombineTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdateTest.cs" />
+    <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\Query\Inherit\CollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Inherit\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Inherit\EntityLinqTest.cs" />
+    <Compile Include="Core\Query\Inherit\ExpandMemberTest.cs" />
+    <Compile Include="Core\Query\Inherit\GroupByTest.cs" />
+    <Compile Include="Core\Query\Inherit\GroupJoinTest.cs" />
+    <Compile Include="Core\Query\Inherit\SingleEntityTest.cs" />
+    <Compile Include="Core\Query\Inherit\SqlQueryTest.cs" />
+    <Compile Include="Core\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="SqlServer\Constants.cs" />
+    <Compile Include="SqlServer\DbFeatureTest.cs" />
+    <Compile Include="SqlServer\FunctionTest.cs" />
+    <Compile Include="SqlServer\MaintenanceTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Core\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServer\Query\Inherit\CollectionMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\CompositeCollectionMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\EntityLinqTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\ExpandMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\GroupByTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\GroupJoinTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\SingleEntityTest.cs" />
+    <Compile Include="SqlServer\Query\Inherit\SqlQueryTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\GroupByTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="SqlServer\Query\Simple\SqlQueryTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Caredev.Mego\Caredev.Mego.csproj">
+      <Project>{f7cd97dc-8e1e-4dbc-b7b7-c2ff42dc6a8a}</Project>
+      <Name>Caredev.Mego</Name>
+    </ProjectReference>
+    <ProjectReference Include="Caredev.Mego.Tests.csproj">
+      <Project>{f571c1db-8520-4037-a771-a90a9b8e6da6}</Project>
+      <Name>Caredev.Mego.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets')" />
+</Project>

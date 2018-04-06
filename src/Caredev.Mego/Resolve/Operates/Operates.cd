@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Caredev.Mego.Resolve.Operates.DbCreateRelationOperate&lt;T&gt;" Collapsed="true">
+    <Position X="5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbCreateRelationOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbDeleteObjectsOperate&lt;T&gt;" Collapsed="true">
+    <Position X="8" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAABAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbDeleteObjectsOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbDeleteRelationOperate&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbDeleteRelationOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbDeleteStatementOperate&lt;T&gt;" Collapsed="true">
+    <Position X="13" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbDeleteStatementOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbInsertObjectsOperate&lt;T&gt;" Collapsed="true">
+    <Position X="12" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAABAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbInsertObjectsOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbInsertPropertysOperate&lt;T&gt;" Collapsed="true">
+    <Position X="5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbInsertPropertysOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbInsertStatementOperate&lt;T&gt;" Collapsed="true">
+    <Position X="11" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbInsertStatementOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbObjectsOperateBase" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAIABAQABAAAAAAEAAgAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbObjectsOperateBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbPropertysOperateBase" Collapsed="true">
+    <Position X="6" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbPropertysOperateBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbQueryOperateBase" Collapsed="true">
+    <Position X="10" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbQueryOperateBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbRelationItem" Collapsed="true">
+    <Position X="8.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAgAAAACAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbRelationItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbRelationOperateBase" Collapsed="true">
+    <Position X="6" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAACBAAAAAABAAAAAAIAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbRelationOperateBase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="Items" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbStatementOperateBase" Collapsed="true">
+    <Position X="11" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbStatementOperateBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbUpdateObjectsOperate&lt;T&gt;" Collapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAABAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbUpdateObjectsOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbUpdatePropertysOperate&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbUpdatePropertysOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbUpdateStatementOperate&lt;T&gt;" Collapsed="true">
+    <Position X="9" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Operates\DbUpdateStatementOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbQueryCollectionOperate" Collapsed="true">
+    <Position X="9" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAIgAAQAAAAAAAAAAQAACAAAAgA=</HashCode>
+      <FileName>Resolve\Operates\DbQueryCollectionOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Caredev.Mego.Resolve.Operates.DbQueryObjectOperate" Collapsed="true">
+    <Position X="11.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAAAAAAAgA=</HashCode>
+      <FileName>Resolve\Operates\DbQueryObjectOperate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Caredev.Mego.Resolve.Operates.EOperateType" Collapsed="true">
+    <Position X="12" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAQQAAAIAAEAAACAAggEAQAABAIAAAAA=</HashCode>
+      <FileName>Resolve\Operates\EOperateType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>

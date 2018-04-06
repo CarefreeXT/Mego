@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ExceptionAnonymousObjectPropertyIsReadOnly" xml:space="preserve">
+    <value>匿名对象属性是只读属性不能修改。</value>
+  </data>
+  <data name="ExceptionBinaryLogicalKind" xml:space="preserve">
+    <value>二元逻辑操作种类非法，只支持AndAlso和OrElse。</value>
+  </data>
+  <data name="ExceptionCollectionMemberLevelError" xml:space="preserve">
+    <value>集合属性层级错误，集合属性一般是最底层级。</value>
+  </data>
+  <data name="ExceptionConnectionStateError" xml:space="preserve">
+    <value>当前连接状态错误，期望连接为Open。</value>
+  </data>
+  <data name="ExceptionDisableInvode" xml:space="preserve">
+    <value>当前方法只能在LINQ表达式中使用，禁止直接调用。</value>
+  </data>
+  <data name="ExceptionFuncTypeArgumentNumberError" xml:space="preserve">
+    <value>Func类型参数数量非法。</value>
+  </data>
+  <data name="ExceptionInitialNewParentIsNull" xml:space="preserve">
+    <value>初始化 New 表达式时父级输出对象不能为空。</value>
+  </data>
+  <data name="ExceptionInsertContentIsSelect" xml:space="preserve">
+    <value>插入的内容必须是 SELECT 表达式。</value>
+  </data>
+  <data name="ExceptionInsertItemIsMustNew" xml:space="preserve">
+    <value>插入的单元项必须是 New 表达式。</value>
+  </data>
+  <data name="ExceptionInvalidCastServerVersion" xml:space="preserve">
+    <value>服务器版本 {0} 转换无效。</value>
+  </data>
+  <data name="ExceptionIsMustDbSetInstance" xml:space="preserve">
+    <value>当前表达式必须是有效的数据集对象。</value>
+  </data>
+  <data name="ExceptionIsMustParameterlessConstructor" xml:space="preserve">
+    <value>当前表达式类型必须是无参构造函数。</value>
+  </data>
+  <data name="ExceptionIsNotInheritSet" xml:space="preserve">
+    <value>当前数据对象类型 {0} 不是继承类型。</value>
+  </data>
+  <data name="ExceptionIsNotUnaryExpression" xml:space="preserve">
+    <value>当前表达式不是一元操作表达式。</value>
+  </data>
+  <data name="ExceptionIsNotUnitType" xml:space="preserve">
+    <value>当前表达式不是单元类型表达式。</value>
+  </data>
+  <data name="ExceptionKeyCountIsNotMatch" xml:space="preserve">
+    <value>所声明的关系主键与外键数量不匹配。</value>
+  </data>
+  <data name="ExceptionLambdaFoundNotMemberAccess" xml:space="preserve">
+    <value>Lambda 表达式中不包含有效的成员访问节点。</value>
+  </data>
+  <data name="ExceptionLambdaFoundNotPropertyInfo" xml:space="preserve">
+    <value>Lambda 表达式中找不到相应的 PropertyInfo 成员对象。</value>
+  </data>
+  <data name="ExceptionMemberPathCannotEmpty" xml:space="preserve">
+    <value>成员路径不能为空。</value>
+  </data>
+  <data name="ExceptionMemberSourceMatch" xml:space="preserve">
+    <value>当前查找的成员不能与目标成员相同。</value>
+  </data>
+  <data name="ExceptionMemberSourceParentIsNulll" xml:space="preserve">
+    <value>当前查找的成员所在的数据源父级不能为空。</value>
+  </data>
+  <data name="ExceptionNotFoundGenerator" xml:space="preserve">
+    <value>对于 {0} 数据提供者找不到适用于版本 0x{1:X4} 的 SQL 生成器对象。</value>
+  </data>
+  <data name="ExceptionNotFoundGenerator1" xml:space="preserve">
+    <value>对于 {0} 数据提供者找不到适用于版本 0x{1:X4} 的 SQL 生成器对象。</value>
+  </data>
+  <data name="ExceptionNotFoundGeneratorCollection" xml:space="preserve">
+    <value>找不到 {0} 相应的 SQL 生成器对象集。</value>
+  </data>
+  <data name="ExceptionNotFoundGeneratorCollection1" xml:space="preserve">
+    <value>找不到 {0} 相应的 SQL 生成器对象集。</value>
+  </data>
+  <data name="ExceptionNotFoundLambdaExpression" xml:space="preserve">
+    <value>当前表达式没有找到Lammbda表达式。</value>
+  </data>
+  <data name="ExceptionNotFoundLambdaExpression1" xml:space="preserve">
+    <value>当前表达式不包含Lambda表达式。</value>
+  </data>
+  <data name="ExceptionNotFoundNavigateKey" xml:space="preserve">
+    <value>找不到指定命名的的导航成员。</value>
+  </data>
+  <data name="ExceptionNotFoundProvider" xml:space="preserve">
+    <value>找不到名为 {0} 的数据访问提供程序。</value>
+  </data>
+  <data name="ExceptionObjectIsDisposed" xml:space="preserve">
+    <value>当前对象已释放。</value>
+  </data>
+  <data name="ExceptionOutputMustHasRows" xml:space="preserve">
+    <value>当前输出对象必须要包含有效数据。</value>
+  </data>
+  <data name="ExceptionOutputMustOnlyOne" xml:space="preserve">
+    <value>当前输出对象只能包含一个有效数据。</value>
+  </data>
+  <data name="ExceptionTableNameCannotEmpty" xml:space="preserve">
+    <value>映射到数据库的表名不能为空。</value>
+  </data>
+  <data name="ExceptionTypeIsNotEnum" xml:space="preserve">
+    <value>指定的类型不是有效的枚举类型。</value>
+  </data>
+  <data name="ExceptionUnitItemIsMustDataItem" xml:space="preserve">
+    <value>语句查询单元项必须是数据项。</value>
+  </data>
+  <data name="NotSupportedCircularDependenceOperate" xml:space="preserve">
+    <value>不支持循环依赖的操作。</value>
+  </data>
+  <data name="NotSupportedContextIsNotMatch" xml:space="preserve">
+    <value>不支持访问非当前数据上下文的数据集对象。</value>
+  </data>
+  <data name="NotSupportedCreateInsertMember" xml:space="preserve">
+    <value>不支持创建类型 {0} 的插入成员。</value>
+  </data>
+  <data name="NotSupportedCreateMaintenance" xml:space="preserve">
+    <value>不支持创建类型 {0} 的维护语句片段。</value>
+  </data>
+  <data name="NotSupportedCreateMember" xml:space="preserve">
+    <value>不支持创建类型 {0} 成员。</value>
+  </data>
+  <data name="NotSupportedExpressionParseInnerJoinKeyPairs" xml:space="preserve">
+    <value>不支持类型为 {0} 的表达式解析为内连接连接条件。</value>
+  </data>
+  <data name="NotSupportedExpressionParseValueType" xml:space="preserve">
+    <value>不支持循解析表达式为值类型表达式。</value>
+  </data>
+  <data name="NotSupportedGeneratedOption" xml:space="preserve">
+    <value>不支持的成员值生成选项 {0} 。</value>
+  </data>
+  <data name="NotSupportedGenerateExpression" xml:space="preserve">
+    <value>不支持生成类型 {0} 的表达式。</value>
+  </data>
+  <data name="NotSupportedIncludeUnitItem" xml:space="preserve">
+    <value>不支持解析当前单元项作为展开项。</value>
+  </data>
+  <data name="NotSupportedInitialMember" xml:space="preserve">
+    <value>不支持初始化类型 {0} 的成员。</value>
+  </data>
+  <data name="NotSupportedInitialNewValue" xml:space="preserve">
+    <value>不支持初始化 New 中类型 {0} 的成员。</value>
+  </data>
+  <data name="NotSupportedInitialRetrieval" xml:space="preserve">
+    <value>不支持初始化类型 {0} 的检索函数。</value>
+  </data>
+  <data name="NotSupportedInstanceType" xml:space="preserve">
+    <value>不支持实体化类型 {0} 。</value>
+  </data>
+  <data name="NotSupportedLoadNotRelationItem" xml:space="preserve">
+    <value>不支持加载非 DbRelationItem 类型的数据。</value>
+  </data>
+  <data name="NotSupportedNewMemberBindingType" xml:space="preserve">
+    <value>不支持在New表达式中使用 {0} 成员绑定类型。</value>
+  </data>
+  <data name="NotSupportedOnlyRetrievalForExpression" xml:space="preserve">
+    <value>不支持直接检索表达式成员。</value>
+  </data>
+  <data name="NotSupportedOutpputClrType" xml:space="preserve">
+    <value>不支持输出 {0} 类型的数据。</value>
+  </data>
+  <data name="NotSupportedParseExpression" xml:space="preserve">
+    <value>不支持解析当前表达式。</value>
+  </data>
+  <data name="NotSupportedParseExpressionToMemberAccess" xml:space="preserve">
+    <value>不支持解析当前表达式做为成员访问。</value>
+  </data>
+  <data name="NotSupportedParseExpressionToUnary" xml:space="preserve">
+    <value>不支持解析当前表达式做为一元运算。</value>
+  </data>
+  <data name="NotSupportedParseLambdaNodeType" xml:space="preserve">
+    <value>不支持解析该类型 {0} 的Lammbda表达式节点。</value>
+  </data>
+  <data name="NotSupportedParseLambdaNodeType1" xml:space="preserve">
+    <value>不支持循解析类型 {0} 的 Lambda 表达式。</value>
+  </data>
+  <data name="NotSupportedParseOperate" xml:space="preserve">
+    <value>不支持解析类型 {0} 操作。</value>
+  </data>
+  <data name="NotSupportedParseUnitItem" xml:space="preserve">
+    <value>不支持解析当前表达式做为单元项。</value>
+  </data>
+  <data name="NotSupportedParseUnitType" xml:space="preserve">
+    <value>不支持解析当前表达式作为单元类型。</value>
+  </data>
+  <data name="NotSupportedRetrievalMember" xml:space="preserve">
+    <value>不支持检索类型 {0} 的成员。</value>
+  </data>
+  <data name="NotSupportedRetrievalNewValue" xml:space="preserve">
+    <value>不支持检索 New 表达式中类型 {0} 成员。</value>
+  </data>
+  <data name="NotSupportedRetrievalVirtualList" xml:space="preserve">
+    <value>不支持检索虚拟列表中中类型 {0} 表达式。</value>
+  </data>
+  <data name="NotSupportedUnitExpressionToObjectMember" xml:space="preserve">
+    <value>不支持类型为 {0} 的单元表达式项为对象成员。</value>
+  </data>
+  <data name="NotSupportedUnitIsNotExpandUnit" xml:space="preserve">
+    <value>当前单元表达式不能展开子成员。</value>
+  </data>
+  <data name="ExceptionGenerateContentIsSelect" xml:space="preserve">
+    <value>生成内容必须是SELECT表达式。</value>
+  </data>
+  <data name="ExceptionGenerateUnitItemIsNew" xml:space="preserve">
+    <value>生成内容单元项必须是NEW表达式。</value>
+  </data>
+  <data name="ExceptionInvalidIndexObject" xml:space="preserve">
+    <value>无效索引对象。</value>
+  </data>
+  <data name="NotSupportedCreateSource" xml:space="preserve">
+    <value>不支持创建类型 {0} 的数据源语句片段。</value>
+  </data>
+  <data name="NotSupportedGetQueryBody" xml:space="preserve">
+    <value>不支持从类型 {0} 表达式中获取获取查询主体。</value>
+  </data>
+  <data name="NotSupportedGetQueryList" xml:space="preserve">
+    <value>不支持从类型 {0} 表达式中获取获取查询列表。</value>
+  </data>
+  <data name="NotSupportedJoinVirtualSource" xml:space="preserve">
+    <value>不支持连接类型 {0} 的虚拟数据源。</value>
+  </data>
+  <data name="NotSupportedWriteDbDataType" xml:space="preserve">
+    <value>不支持写入数据类型 {0} 。</value>
+  </data>
+  <data name="NotSupportedWriteFragment" xml:space="preserve">
+    <value>不支持写入类型 {0} 的语句片段。</value>
+  </data>
+  <data name="NotSupportedWriteFragmentForAggregate" xml:space="preserve">
+    <value>不支持写入类型 {0} 的聚合函数语句片段。</value>
+  </data>
+  <data name="NotSupportedWriteFragmentForBinary" xml:space="preserve">
+    <value>不支持写入类型 {0} 的二元运算语句片段。</value>
+  </data>
+  <data name="NotSupportedWriteFragmentForScalar" xml:space="preserve">
+    <value>不支持写入类型 {0} 的标量函数语句片段。</value>
+  </data>
+  <data name="ExceptionMergeFragmentIsNotEmpty" xml:space="preserve">
+    <value>合并的语句块不能为空。</value>
+  </data>
+  <data name="ExceptionFunctionNameCannotEmpty" xml:space="preserve">
+    <value>映射到数据库的函数名不能为空。</value>
+  </data>
+  <data name="ExceptionCommitConcurrency" xml:space="preserve">
+    <value>指定提交多个的数据对象已被并发更改。</value>
+  </data>
+  <data name="NotSupportedInheritSetUsingDbName" xml:space="preserve">
+    <value>不支持在继承的数据对象中使用自定义数据库名称。</value>
+  </data>
+</root>

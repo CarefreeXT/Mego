@@ -1,0 +1,5 @@
+该框架于2017年5月4日更名为MEGO
+以下为从LINQ表达式到最终对象的转化载体对象，框架取名各个阶段的首字母
+
+Metadata -> Expression -> Generate -> Object
+元数据   -> 表达式     -> 生成元素  -> 数据对象

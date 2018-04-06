@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CarefreeXT.STDO.Resolve.Translators.TranslationContext" Collapsed="true">
+    <Position X="4.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Resolve\Translators\TranslationContext.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Context" />
+      <Property Name="CurrentBlock" />
+      <Property Name="TypeTree" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CarefreeXT.STDO.Resolve.Translators.TranslationType" Collapsed="true">
+    <Position X="1.5" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Resolve\Translators\TranslationContext.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Content" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Members" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="CarefreeXT.STDO.Resolve.Translators.TranslateEngine" Collapsed="true">
+    <Position X="7.5" Y="1" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEBAAAAAAAAAAIAABAAAAACAQQAAEAAAEAAA=</HashCode>
+      <FileName>Resolve\Translators\TranslateEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CarefreeXT.STDO.DataContext" Collapsed="true">
+    <Position X="4.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CarefreeXT.STDO.Resolve.Expressions.DbQueryBlockExpression" Collapsed="true">
+    <Position X="4.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbQueryBlockExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CarefreeXT.STDO.Resolve.Expressions.DbExpression" Collapsed="true">
+    <Position X="4.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Resolve\Expressions\DbExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>
