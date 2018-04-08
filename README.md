@@ -2,7 +2,7 @@
 A high performance and powerful ORM framework supporting SQL Server, MySQL, Sqlite, SqlCE, Firebird etc..
 
 # Installation
-For more information, please view our [Getting Started](http://www.cnblogs.com/CarefreeXT/p/8732950.html) guide.
+For more information, please view our [Wiki](https://github.com/CarefreeXT/Mego/wiki).
 ```
 PM> Install-Package Caredev.Mego
 ```
