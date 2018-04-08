@@ -19,7 +19,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         {
             var dictionary = base.InitialMethodsForWriteFragment();
             dictionary.AddOrUpdate(typeof(SelectFragment), WriteFragmentForSelect);
-            
+
             dictionary.AddOrUpdate(typeof(CreateTableFragment), WriteFragmentForCreateTable);
             dictionary.AddOrUpdate(typeof(CreateColumnFragment), WriteFragmentForCreateColumn);
             dictionary.AddOrUpdate(typeof(CreateTempTableFragment), WriteFragmentForCreateTemporaryTable);
@@ -190,10 +190,11 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Enter(delegate ()
             {
                 writer.Write("UPDATE ");
-                if (update.Sources.Contains(update.Target))
+                if (update.Sources.Contains(update.Target) ||
+                    update.Sources.OfType<InheritFragment>().Any(a => a.Tables.Contains(update.Target)))
                 {
                     update.Sources.ForEach(() => writer.WriteLine(),
-                        source => WriteFragmentForSource(writer, source));
+                    source => WriteFragmentForSource(writer, source));
                 }
                 else
                 {

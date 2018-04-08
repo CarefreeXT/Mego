@@ -164,7 +164,7 @@ SET     [Name] = b.[Name] ,
         [Code] = b.[Name] ,
         [Address1] = b.[Code]
 FROM    [dbo].[Customers] AS a
-        CROSS JOIN [dbo].[Products] AS b
+        INNER JOIN [dbo].[Products] AS b ON a.[Id] = b.[Id]
 WHERE   b.[Id] > @p0;";
     }
 }

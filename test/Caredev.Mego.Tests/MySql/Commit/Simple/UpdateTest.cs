@@ -73,11 +73,9 @@ FROM `products` AS a
     ON a.`Id` = c.`Id`;"; 
 
         private const string UpdateQueryTestSql =
-@"UPDATE `customers` AS a
-CROSS JOIN `products` AS b
-SET a.`Name` = b.`Name`,
-    a.`Code` = b.`Name`,
-    a.`Address1` = b.`Code`
+@"UPDATE `Customers` AS a
+INNER JOIN `Products` AS b ON a.`Id` = b.`Id`
+SET a.`Name` = b.`Name`, a.`Code` = b.`Name`, a.`Address1` = b.`Code`
 WHERE b.`Id` > @p0;";
     }
 }

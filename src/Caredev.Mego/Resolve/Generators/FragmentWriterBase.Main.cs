@@ -254,7 +254,9 @@ namespace Caredev.Mego.Resolve.Generators
             }
             writer.WriteLine();
             writer.Write("FROM ");
-            if (update.Sources.Contains(update.Target))
+            if (update.Sources.Contains(update.Target) ||
+                update.Sources.OfType<InheritFragment>()
+                .Any(a => a.Tables.Contains(update.Target)))
             {
                 update.Sources.ForEach(() => writer.WriteLine(),
                     source => WriteFragmentForSource(writer, source));

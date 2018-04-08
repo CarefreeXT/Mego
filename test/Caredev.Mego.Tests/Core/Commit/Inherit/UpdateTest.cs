@@ -110,7 +110,8 @@
         {
             Utility.CommitTest(CreateContext(), db =>
             {
-                var operate = db.Customers.Update(from a in db.Products
+                var operate = db.Customers.Update(from b in db.Customers
+                                                  join a in db.Products on b.Id equals a.Id
                                                   where a.Id > 100
                                                   select new Customer()
                                                   {

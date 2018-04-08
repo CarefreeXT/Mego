@@ -183,13 +183,29 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateStatement(GenerateContext context, DbExpression content)
         {
+            SourceFragment GetRootSource(ISourceFragment query)
+            {
+                if (query is SelectFragment select)
+                {
+                    return GetRootSource(select.Sources.FirstOrDefault());
+                }
+                else if (query is TableFragment || query is InheritFragment)
+                {
+                    return (SourceFragment)query;
+                }
+                return null;
+            }
             var data = (GenerateDataForStatement)context.Data;
             var newitem = (DbNewExpression)data.ItemEpxression;
             var source = CreateSource(context, content) as QueryBaseFragment;
             var metadata = data.Table;
             if (metadata.InheritSets.Length == 0)
             {
-                var target = new TableFragment(context, metadata, data.TargetName);
+                TableFragment target = GetRootSource(source) as TableFragment;
+                if (target == null)
+                {
+                    target = new TableFragment(context, metadata, data.TargetName);
+                }
                 var update = new UpdateFragment(context, target)
                 {
                     Where = source.Where,
@@ -206,7 +222,11 @@ namespace Caredev.Mego.Resolve.Generators
             {
                 var allmembers = metadata.InheritSets.SelectMany(a => a.Members)
                     .Concat(metadata.Members).ToDictionary(a => a.Member, a => a);
-                var inherit = new InheritFragment(context, metadata);
+                InheritFragment inherit = GetRootSource(source) as InheritFragment;
+                if (inherit == null)
+                {
+                    inherit = new InheritFragment(context, metadata);
+                }
                 var updates = inherit.Tables.ToDictionary(a => a.Metadata, a =>
                 {
                     var target = inherit.Tables.Single(b => b.Metadata == a.Metadata);

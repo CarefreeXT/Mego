@@ -87,13 +87,17 @@ FROM `productbases` AS f
     ON f.`Id` = g.`Id`;"; 
 
         private const string UpdateQueryTestSql =
-@"UPDATE `CustomerBases` AS a CROSS JOIN `ProductBases` AS b
-INNER JOIN `Products` AS c ON b.`Id` = c.`Id`
-SET a.`Name` = b.`Name`, a.`Code` = b.`Name`
-WHERE b.`Id` > @p0;
-UPDATE `Customers` AS d CROSS JOIN `ProductBases` AS b
-INNER JOIN `Products` AS c ON b.`Id` = c.`Id`
-SET d.`Address1` = b.`Code`
-WHERE b.`Id` > @p0;";
+@"UPDATE `CustomerBases` AS a
+INNER JOIN `Customers` AS b ON a.`Id` = b.`Id`
+INNER JOIN `ProductBases` AS c
+INNER JOIN `Products` AS d ON c.`Id` = d.`Id` AND a.`Id` = c.`Id`
+SET a.`Name` = c.`Name`, a.`Code` = c.`Name`
+WHERE c.`Id` > @p0;
+UPDATE `CustomerBases` AS a
+INNER JOIN `Customers` AS b ON a.`Id` = b.`Id`
+INNER JOIN `ProductBases` AS c
+INNER JOIN `Products` AS d ON c.`Id` = d.`Id` AND a.`Id` = c.`Id`
+SET b.`Address1` = c.`Code`
+WHERE c.`Id` > @p0;";
     }
 }

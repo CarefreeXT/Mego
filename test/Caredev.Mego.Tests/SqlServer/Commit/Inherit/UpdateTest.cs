@@ -184,14 +184,16 @@ FROM    [dbo].[ProductBases] AS f
 SET     [Name] = b.[Name] ,
         [Code] = b.[Name]
 FROM    [dbo].[CustomerBases] AS a
-        CROSS JOIN [dbo].[ProductBases] AS b
-        INNER JOIN [dbo].[Products] AS c ON b.[Id] = c.[Id]
+        INNER JOIN [dbo].[Customers] AS c ON a.[Id] = c.[Id]
+        INNER JOIN [dbo].[ProductBases] AS b
+        INNER JOIN [dbo].[Products] AS d ON b.[Id] = d.[Id] ON a.[Id] = b.[Id]
 WHERE   b.[Id] > @p0;
-UPDATE  d
+UPDATE  c
 SET     [Address1] = b.[Code]
-FROM    [dbo].[Customers] AS d
-        CROSS JOIN [dbo].[ProductBases] AS b
-        INNER JOIN [dbo].[Products] AS c ON b.[Id] = c.[Id]
+FROM    [dbo].[CustomerBases] AS a
+        INNER JOIN [dbo].[Customers] AS c ON a.[Id] = c.[Id]
+        INNER JOIN [dbo].[ProductBases] AS b
+        INNER JOIN [dbo].[Products] AS d ON b.[Id] = d.[Id] ON a.[Id] = b.[Id]
 WHERE   b.[Id] > @p0;";
     }
 }
