@@ -16,8 +16,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         protected override IDictionary<Type, WriteFragmentDelegate> InitialMethodsForWriteFragment()
         {
             var dictionary = base.InitialMethodsForWriteFragment();
-
-            dictionary.AddOrUpdate(typeof(SelectFragment), WriteFragmentForSelect);
             
             dictionary.AddOrUpdate(typeof(CreateTableFragment), WriteFragmentForCreateTable);
             dictionary.AddOrUpdate(typeof(CreateColumnFragment), WriteFragmentForCreateColumn);
@@ -123,40 +121,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                     break;
             }
             writer.Write(") THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END");
-        }
-        private void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
-        {
-            var select = (SelectFragment)fragment;
-            writer.Enter(delegate ()
-            {
-                writer.Write("SELECT");
-                if (select.Distinct) writer.Write(" DISTINCT");
-                writer.WriteLine();
-                WriteFragmentForSelectMembers(writer, select.Members);
-                WriteFragmentForFrom(writer, select.Sources);
-                WriteFragmentForWhere(writer, select.Where);
-                WriteFragmentForGroupBy(writer, select.GroupBys);
-                WriteFragmentForOrderBy(writer, select.Sorts);
-                if (select.Take > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("LIMIT ");
-                    writer.Write(select.Take);
-                    if (select.Skip > 0)
-                    {
-                        writer.Write(" OFFSET ");
-                        writer.Write(select.Skip);
-                    }
-                }
-                else if (select.Skip > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("LIMIT ");
-                    writer.Write(int.MaxValue);
-                    writer.Write(" OFFSET ");
-                    writer.Write(select.Skip);
-                }
-            }, select);
         }
         private void WriteFragmentForCreateTemporaryTable(SqlWriter writer, ISqlFragment fragment)
         {

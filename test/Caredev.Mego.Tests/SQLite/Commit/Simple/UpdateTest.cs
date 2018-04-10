@@ -8,25 +8,7 @@ SET [Address1] = @p0, [Address2] = @p1, [Code] = @p2, [Name] = @p3, [Zip] = @p4
 WHERE [Id] = @p5;";
 
         private const string UpdateMultiObjectTestSql =
-@"CREATE TEMPORARY TABLE [t$1] (
-  [Address1] longtext NULL,
-  [Address2] longtext NULL,
-  [Code] longtext NULL,
-  [Name] longtext NULL,
-  [Zip] longtext NULL,
-  [Id] int NULL
-);
-INSERT INTO [t$1] ([Address1], [Address2], [Code], [Name], [Zip], [Id])
-  VALUES (@p0, @p1, @p2, @p3, @p4, @p5),
-  (@p6, @p1, @p7, @p8, @p4, @p9);
-UPDATE [customers] AS a
-INNER JOIN [t$1] AS b
-  ON a.[Id] = b.[Id]
-SET a.[Address1] = b.[Address1],
-    a.[Address2] = b.[Address2],
-    a.[Code] = b.[Code],
-    a.[Name] = b.[Name],
-    a.[Zip] = b.[Zip];";
+@"";
 
         private const string UpdateGenerateSingleObjectTestSql =
 @"UPDATE [Products]

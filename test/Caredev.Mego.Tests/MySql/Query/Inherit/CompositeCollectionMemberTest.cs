@@ -25,7 +25,7 @@ FROM (SELECT
     INNER JOIN `orders` AS d
       ON c.`Id` = d.`Id`
   ORDER BY c.`Id` ASC
-  LIMIT 5, 5) AS a
+  LIMIT 5 OFFSET 5) AS a
   LEFT JOIN (SELECT
       e.`OrderId`,
       f.`Id`,

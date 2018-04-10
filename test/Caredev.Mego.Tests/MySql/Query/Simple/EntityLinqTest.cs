@@ -13,7 +13,7 @@
   a.`UpdateDate`
 FROM `products` AS a
 ORDER BY a.`Id` ASC
-LIMIT 10, 2147483647;";
+LIMIT 2147483647 OFFSET 10;";
 
         private const string QueryListForTakeSkipTestSql =
 @"SELECT
@@ -25,7 +25,7 @@ LIMIT 10, 2147483647;";
   a.`UpdateDate`
 FROM `products` AS a
 ORDER BY a.`Id` ASC
-LIMIT 10, 10;";
+LIMIT 10 OFFSET 10;";
 
         private const string QueryListTestSql =
 @"SELECT

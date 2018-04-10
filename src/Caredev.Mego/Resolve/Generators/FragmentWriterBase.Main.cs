@@ -54,9 +54,10 @@ namespace Caredev.Mego.Resolve.Generators
                 { typeof(SetFragment),WriteFragmentForSet },
 
                 { typeof(InsertValueFragment), WriteFragmentForInsertValue },
-                { typeof(InsertFragment),WriteFragmentForInsert },
-                { typeof(UpdateFragment),WriteFragmentForUpdate },
-                { typeof(DeleteFragment),WriteFragmentForDelete },
+                { typeof(InsertFragment), WriteFragmentForInsert },
+                { typeof(UpdateFragment), WriteFragmentForUpdate },
+                { typeof(DeleteFragment), WriteFragmentForDelete },
+                { typeof(SelectFragment), WriteFragmentForSelect },
 
                 { typeof(CommitMemberFragment), WriteFragmentForCommitMember },
 
@@ -293,6 +294,60 @@ namespace Caredev.Mego.Resolve.Generators
             writer.Write(current.Target.AliasName);
             WriteFragmentForFrom(writer, current.Sources);
             WriteFragmentForWhere(writer, current.Where);
+        }
+        /* SQL92 Syntax Command: SELECT query
+         * SELECT [ ALL | DISTINCT [ ON ( expression [, ...] ) ] ]
+	     *      expression [ <![AS]> name ] [,...]
+	     *      [ INTO [ TEMPORARY | TEMP ] [ TABLE ] new_table ]
+	     *      [ FROM {table | (select query)} [ alias ] [,...] ]
+	     *      [ {{LEFT | RIGHT} [OUTER] | NATURAL |[FULL] OUTER} JOIN table alias
+		 *      {ON condition | USING(col1,col2,...)} ]
+	     *      [ WHERE {condition | EXISTS (correlated subquery)} ]
+	     *      [ GROUP BY column [,...] ]
+	     *      [ HAVING condition [,...] ]
+	     *      [ { UNION [ ALL ] | INTERSECT | EXCEPT | MINUS } select ]
+	     *      [ ORDER BY {column | int} [ ASC | DESC | USING operator ] [,...] ]
+	     *      [ FOR UPDATE [ OF class_name [,...] ] ]
+	     *      LIMIT { count | ALL } [ { OFFSET | ,} start ]
+             */
+        /// <summary>
+        /// 写入<see cref="SelectFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
+        {
+            var select = (SelectFragment)fragment;
+            writer.Enter(delegate ()
+            {
+                writer.Write("SELECT");
+                if (select.Distinct) writer.Write(" DISTINCT");
+                writer.WriteLine();
+                WriteFragmentForSelectMembers(writer, select.Members);
+                WriteFragmentForFrom(writer, select.Sources);
+                WriteFragmentForWhere(writer, select.Where);
+                WriteFragmentForGroupBy(writer, select.GroupBys);
+                WriteFragmentForOrderBy(writer, select.Sorts);
+                if (select.Take > 0)
+                {
+                    writer.WriteLine();
+                    writer.Write("LIMIT ");
+                    writer.Write(select.Take);
+                    if (select.Skip > 0)
+                    {
+                        writer.Write(" OFFSET ");
+                        writer.Write(select.Skip);
+                    }
+                }
+                else if (select.Skip > 0)
+                {
+                    writer.WriteLine();
+                    writer.Write("LIMIT ");
+                    writer.Write(int.MaxValue);
+                    writer.Write(" OFFSET ");
+                    writer.Write(select.Skip);
+                }
+            }, select);
         }
     }
     public partial class FragmentWriterBase

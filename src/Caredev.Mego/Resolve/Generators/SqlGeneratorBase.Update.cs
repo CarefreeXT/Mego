@@ -84,7 +84,7 @@ namespace Caredev.Mego.Resolve.Generators
                 var update = new UpdateFragment(context, metadata, name);
                 update.AddSource(update.Target, current);
                 GenerateForUpdateMembers(context, unit, update, current);
-                update.Target.Join(current, metadata.Keys.Concat(metadata.Concurrencys));
+                update.Target.Join(current, data.UnionConcurrencyMembers(metadata, metadata.Keys));
                 block.Add(update);
                 if (unit == data.MainUnit) mainUpdate = update;
                 if (temptable == null)
@@ -133,7 +133,7 @@ namespace Caredev.Mego.Resolve.Generators
                 var update = new UpdateFragment(context, metadata, name);
                 data.CommitObject.Parent = update;
                 GenerateForUpdateMembers(context, unit, update, data.CommitObject);
-                update.Where = update.Target.JoinCondition(data.CommitObject, metadata.Keys.Union(metadata.Concurrencys));
+                update.Where = update.Target.JoinCondition(data.CommitObject, data.UnionConcurrencyMembers(metadata, metadata.Keys));
                 block.Add(update);
                 if (unit == data.MainUnit) mainUpdate = update;
             }

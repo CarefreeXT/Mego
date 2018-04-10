@@ -12,9 +12,9 @@ WHERE   [Id] IN ( @p0, @p1, @p2 );";
 
         private const string DeleteMultiForKeysTestSql =
 @"DELETE FROM [Warehouses]
-WHERE [Id] = @p0 AND [Number] = @p1;
+WHERE [Id] = @p0 AND [Number] = @p0;
 DELETE FROM [Warehouses]
-WHERE [Id] = @p2 AND [Number] = @p3;"; 
+WHERE [Id] = @p0 AND [Number] = @p1;"; 
 
         private const string DeleteStatementForExpressionTestSql =
 @"DELETE FROM    [Warehouses]

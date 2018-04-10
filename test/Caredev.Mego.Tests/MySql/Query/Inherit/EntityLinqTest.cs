@@ -14,7 +14,7 @@ FROM `productbases` AS a
   INNER JOIN `products` AS b
     ON a.`Id` = b.`Id`
 ORDER BY a.`Id` ASC
-LIMIT 10, 2147483647;";
+LIMIT 2147483647 OFFSET 10;";
 
         private const string QueryListForTakeSkipTestSql =
 @"SELECT
@@ -28,7 +28,7 @@ FROM `productbases` AS a
   INNER JOIN `products` AS b
     ON a.`Id` = b.`Id`
 ORDER BY a.`Id` ASC
-LIMIT 10, 10;";
+LIMIT 10 OFFSET 10;";
 
         private const string QueryListTestSql =
 @"SELECT  a.`Id` ,

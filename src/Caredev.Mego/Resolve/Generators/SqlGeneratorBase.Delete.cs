@@ -57,7 +57,8 @@ namespace Caredev.Mego.Resolve.Generators
             foreach (var table in data.GetTables())
             {
                 var delete = new DeleteFragment(context, table, name);
-                delete.Where = delete.Target.JoinCondition(data.CommitObject, table.Keys.Union(table.Concurrencys));
+                delete.Where = delete.Target.JoinCondition(data.CommitObject, 
+                    data.UnionConcurrencyMembers(table, table.Keys));
                 block.Add(delete);
             }
             data.SetConcurrencyExpectCount(data.TableCount);
@@ -106,11 +107,12 @@ namespace Caredev.Mego.Resolve.Generators
             var name = data.TargetName;
             foreach (var metadata in data.GetTables())
             {
+                var filterMembers = data.UnionConcurrencyMembers(metadata, metadata.Keys);
                 var delete = new DeleteFragment(context, metadata, name);
                 var current = delete.Target;
-                var currenttemptable = new TemporaryTableFragment(context, temptable.Name, metadata.Keys.Union(metadata.Concurrencys));
+                var currenttemptable = new TemporaryTableFragment(context, temptable.Name, filterMembers);
                 delete.AddSource(currenttemptable);
-                current.Join(currenttemptable, metadata.Keys.Union(metadata.Concurrencys));
+                current.Join(currenttemptable, filterMembers);
                 block.Add(delete);
             }
             data.SetConcurrencyExpectCount(data.TableCount + 1);

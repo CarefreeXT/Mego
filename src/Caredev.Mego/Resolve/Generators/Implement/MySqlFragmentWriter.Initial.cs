@@ -18,8 +18,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         protected override IDictionary<Type, WriteFragmentDelegate> InitialMethodsForWriteFragment()
         {
             var dictionary = base.InitialMethodsForWriteFragment();
-            dictionary.AddOrUpdate(typeof(SelectFragment), WriteFragmentForSelect);
-
             dictionary.AddOrUpdate(typeof(CreateTableFragment), WriteFragmentForCreateTable);
             dictionary.AddOrUpdate(typeof(CreateColumnFragment), WriteFragmentForCreateColumn);
             dictionary.AddOrUpdate(typeof(CreateTempTableFragment), WriteFragmentForCreateTemporaryTable);
@@ -148,40 +146,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                     }
                 }
             }
-        }
-        private void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
-        {
-            var select = (SelectFragment)fragment;
-            writer.Enter(delegate ()
-            {
-                writer.Write("SELECT");
-                if (select.Distinct) writer.Write(" DISTINCT");
-                writer.WriteLine();
-                WriteFragmentForSelectMembers(writer, select.Members);
-                WriteFragmentForFrom(writer, select.Sources);
-                WriteFragmentForWhere(writer, select.Where);
-                WriteFragmentForGroupBy(writer, select.GroupBys);
-                WriteFragmentForOrderBy(writer, select.Sorts);
-                if (select.Take > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("LIMIT ");
-                    if (select.Skip > 0)
-                    {
-                        writer.Write(select.Skip);
-                        writer.Write(',');
-                    }
-                    writer.Write(select.Take);
-                }
-                else if (select.Skip > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("LIMIT ");
-                    writer.Write(select.Skip);
-                    writer.Write(',');
-                    writer.Write(int.MaxValue);
-                }
-            }, select);
         }
         /// <inheritdoc/>
         protected override void WriteFragmentForUpdate(SqlWriter writer, ISqlFragment fragment)

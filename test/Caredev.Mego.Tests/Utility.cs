@@ -44,6 +44,7 @@ namespace Caredev.Mego.Tests
             generatesql = generatesql.Trim();
 
             generatesql = Regex.Replace(generatesql, @"`t\$\d+`", "`t$1`");
+            generatesql = Regex.Replace(generatesql, @"\[t\$\d+\]", "[t$1]");
 
             System.Diagnostics.Debug.WriteLine("生成代码：");
             System.Diagnostics.Debug.WriteLine(generatesql);

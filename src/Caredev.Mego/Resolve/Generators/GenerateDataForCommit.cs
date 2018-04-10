@@ -4,7 +4,7 @@
 namespace Caredev.Mego.Resolve.Generators
 {
     using System;
-    using Caredev.Mego.Exceptions;
+    using System.Linq;
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
@@ -113,6 +113,23 @@ namespace Caredev.Mego.Resolve.Generators
                         }
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// 连接并发成员集合，如果当前操作不需要并发检查则会忽略成员。
+        /// </summary>
+        /// <param name="table">指的表元数据。</param>
+        /// <param name="columns">指定合并的列集合。</param>
+        /// <returns>合并结果。</returns>
+        public IEnumerable<ColumnMetadata> UnionConcurrencyMembers(TableMetadata table, IEnumerable<ColumnMetadata> columns)
+        {
+            if (NeedConcurrencyCheck)
+            {
+                return columns.Union(table.Concurrencys);
+            }
+            else
+            {
+                return columns;
             }
         }
         /// <summary>

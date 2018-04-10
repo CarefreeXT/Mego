@@ -24,7 +24,7 @@ FROM (SELECT
     c.`State`
   FROM `orders` AS c
   ORDER BY c.`Id` ASC
-  LIMIT 5, 5) AS a
+  LIMIT 5 OFFSET 5) AS a
   INNER JOIN `customers` AS b
     ON a.`CustomerId` = b.`Id`;";
 
@@ -56,7 +56,7 @@ FROM (SELECT
     c.`State`
   FROM `orders` AS c
   ORDER BY c.`Id` ASC
-  LIMIT 5, 5) AS a
+  LIMIT 5 OFFSET 5) AS a
   LEFT JOIN (SELECT
       d.`OrderId`,
       d.`Id`,

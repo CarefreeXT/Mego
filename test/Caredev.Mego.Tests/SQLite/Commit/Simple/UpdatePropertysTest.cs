@@ -13,25 +13,7 @@ FROM [customers] AS a
 WHERE a.[Id] = @p4;";
         
         private const string UpdateMultiObjectTestSql =
-@"CREATE TEMPORARY TABLE [t$1] (
-  [Address2] longtext NULL,
-  [Address1] longtext NULL,
-  [Name] longtext NULL,
-  [Id] int NULL
-);
-INSERT INTO [t$1] ([Address2], [Address1], [Name], [Id])
-  VALUES (@p0, @p1, @p2, @p3),
-  (@p4, @p5, @p6, @p7);
-UPDATE [customers] AS a
-INNER JOIN [t$1] AS b
-  ON a.[Id] = b.[Id]
-SET a.[Address1] = CONCAT(CONCAT(b.[Address2], @p8), b.[Address1]),
-    a.[Name] = b.[Name];
-SELECT
-  a.[Address1]
-FROM [customers] AS a
-  INNER JOIN [t$1] AS c
-    ON a.[Id] = c.[Id];"; 
+@""; 
 
         private const string UpdateGenerateSingleObjectTestSql =
 @"UPDATE [products]

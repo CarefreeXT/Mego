@@ -20,7 +20,7 @@ FROM (SELECT
         ON e.`Id` = d.`Id`
     GROUP BY d.`Category`) AS c
   ORDER BY c.`Category` ASC
-  LIMIT 2, 2) AS a
+  LIMIT 2 OFFSET 2) AS a
   INNER JOIN (SELECT
       e.`Id`,
       e.`Code`,
