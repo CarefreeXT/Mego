@@ -60,8 +60,10 @@
   <ItemGroup>
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
     <Compile Include="PostgreSQL\Constants.cs" />
     <Compile Include="PostgreSQL\DbFeatureTest.cs" />
+    <Compile Include="PostgreSQL\MaintenanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -72,6 +72,35 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             return new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping);
         }
         /// <inheritdoc/>
+        public override void WriteDbDataType(SqlWriter writer, ColumnMetadata column)
+        {
+            var identity = column.GetProperty<IdentityAttribute>();
+            if (identity != null)
+            {
+                var type = column.Member.PropertyType;
+                if (type == typeof(int) || type == typeof(int?))
+                {
+                    writer.Write("SERIAL");
+                }
+                else if (type == typeof(short) || type == typeof(short?))
+                {
+                    writer.Write("SMALLSERIAL");
+                }
+                else if (type == typeof(long) || type == typeof(long?))
+                {
+                    writer.Write("BIGSERIAL");
+                }
+                else
+                {
+                    base.WriteDbDataType(writer, column);
+                }
+            }
+            else
+            {
+                base.WriteDbDataType(writer, column);
+            }
+        }
+        /// <inheritdoc/>
         protected override void WriteDbDataTypeForString(SqlWriter writer, ColumnMetadata column)
         {
             var strattr = column.GetProperty<StringAttribute>();

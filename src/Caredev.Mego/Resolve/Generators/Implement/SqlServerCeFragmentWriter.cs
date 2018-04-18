@@ -5,7 +5,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
 {
     using System;
     using System.Collections.Generic;
-
     /// <summary>
     /// SQL Server Compact 语句片段写入器。
     /// </summary>
