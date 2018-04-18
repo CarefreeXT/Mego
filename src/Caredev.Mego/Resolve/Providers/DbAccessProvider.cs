@@ -20,7 +20,7 @@ namespace Caredev.Mego.Resolve.Providers
     /// </summary>
     public abstract class DbAccessProvider : IDbAccessProvider
     {
-        private static GetDbProviderFactoryDelegate GetFactory;
+        internal static GetDbProviderFactoryDelegate GetFactory;
         static DbAccessProvider()
         {
 #if !NETSTANDARD2_0
@@ -80,5 +80,9 @@ namespace Caredev.Mego.Resolve.Providers
         /// 生成版本号的正则表达式。
         /// </summary>
         protected virtual string VersionPattern => @"^(?<main>\d{1,2})\.(?<minor>\d{1,2})";
+        /// <summary>
+        /// <see cref="IDbAccessProvider.ExecutionMode"/>
+        /// </summary>
+        public abstract EExecutionMode ExecutionMode { get; }
     }
 }

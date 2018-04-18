@@ -16,19 +16,20 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
-            { typeof(bool) , "BIT" },
-            { typeof(int) , "INT" },
-            { typeof(short) , "TINYINT" },
-            { typeof(long) , "BIGINT" },
-            { typeof(float) , "REAL" },
-            { typeof(double) , "FLOAT" },
-            { typeof(Guid) , "UNIQUEIDENTIFIER" },
+            { typeof(bool), "BIT" },
+            { typeof(int), "INT" },
+            { typeof(short), "TINYINT" },
+            { typeof(long), "BIGINT" },
+            { typeof(float), "REAL" },
+            { typeof(double), "FLOAT" },
+            { typeof(Guid), "UNIQUEIDENTIFIER" },
+            { typeof(SByte), "TINYINT" }
         };
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeDefaultMapping = new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping)
         {
             { typeof(string) , "NVARCHAR(MAX)" },
             { typeof(byte[]) , "VARBINARY(MAX)" },
-            { typeof(decimal), "DECIMAL(18,2)" }
+            { typeof(decimal), "MONEY" }
         };
         /// <summary>
         /// 创建 SQL Server 语句片段写入器。

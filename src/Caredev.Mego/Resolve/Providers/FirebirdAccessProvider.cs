@@ -10,5 +10,7 @@ namespace Caredev.Mego.Resolve.Providers
     {
         /// <inheritdoc/>
         public override string ProviderName => "FirebirdSql.Data.FirebirdClient";
+        /// <inheritdoc/>
+        public override EExecutionMode ExecutionMode => EExecutionMode.SingleOperation;
     }
 }

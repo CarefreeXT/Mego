@@ -12,5 +12,7 @@ namespace Caredev.Mego.Resolve.Providers
         public override bool IsExclusive => true;
         /// <inheritdoc/>
         public override string ProviderName => "System.Data.SQLite";
+        /// <inheritdoc/>
+        public override EExecutionMode ExecutionMode => EExecutionMode.MergeOperations;
     }
 }

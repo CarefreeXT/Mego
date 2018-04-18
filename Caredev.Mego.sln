@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8A9B69E0-FFBD-4161-A317-F564CEDC627B}"
 EndProject
@@ -18,6 +18,22 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.MySql55", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.MySql55.csproj", "{4C949686-162D-4926-AC55-6BC1A36FE7CB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.SQLite3", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.SQLite3.csproj", "{1D03A595-E399-40E5-96C9-BA3D0D454D1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.SqlServerCe40", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.SqlServerCe40.csproj", "{6DE1839A-E49F-44CF-A687-9BA9B263A559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.Access2003", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.Access2003.csproj", "{AD624B9C-3091-414A-A896-BAAFB45E3292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.Excel2003", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.Excel2003.csproj", "{F4283BB3-98EC-4093-AADA-E809D96D1FC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.Firebird25", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.Firebird25.csproj", "{22FBF924-27F7-4522-8C53-6FBA972B6DA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.Oracle11", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.Oracle11.csproj", "{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caredev.Mego.Tests.PostgresSQL93", "test\Caredev.Mego.Tests\Caredev.Mego.Tests.PostgresSQL93.csproj", "{C0C4B799-93F8-40CC-AB09-81006971286E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test2", "test2", "{B474C8FE-687D-43AF-938B-75CA17D9F5D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test3", "test3", "{BE4B4E98-13BF-4F8A-8892-832E1DAA2EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +65,30 @@ Global
 		{1D03A595-E399-40E5-96C9-BA3D0D454D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D03A595-E399-40E5-96C9-BA3D0D454D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D03A595-E399-40E5-96C9-BA3D0D454D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DE1839A-E49F-44CF-A687-9BA9B263A559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DE1839A-E49F-44CF-A687-9BA9B263A559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DE1839A-E49F-44CF-A687-9BA9B263A559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DE1839A-E49F-44CF-A687-9BA9B263A559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD624B9C-3091-414A-A896-BAAFB45E3292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD624B9C-3091-414A-A896-BAAFB45E3292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD624B9C-3091-414A-A896-BAAFB45E3292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD624B9C-3091-414A-A896-BAAFB45E3292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4283BB3-98EC-4093-AADA-E809D96D1FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4283BB3-98EC-4093-AADA-E809D96D1FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4283BB3-98EC-4093-AADA-E809D96D1FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4283BB3-98EC-4093-AADA-E809D96D1FC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22FBF924-27F7-4522-8C53-6FBA972B6DA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22FBF924-27F7-4522-8C53-6FBA972B6DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22FBF924-27F7-4522-8C53-6FBA972B6DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22FBF924-27F7-4522-8C53-6FBA972B6DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C4B799-93F8-40CC-AB09-81006971286E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C4B799-93F8-40CC-AB09-81006971286E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C4B799-93F8-40CC-AB09-81006971286E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C4B799-93F8-40CC-AB09-81006971286E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,38 +100,14 @@ Global
 		{9C09711F-861E-4135-BC4F-BEA302679AF0} = {8A9B69E0-FFBD-4161-A317-F564CEDC627B}
 		{4C949686-162D-4926-AC55-6BC1A36FE7CB} = {8A9B69E0-FFBD-4161-A317-F564CEDC627B}
 		{1D03A595-E399-40E5-96C9-BA3D0D454D1D} = {8A9B69E0-FFBD-4161-A317-F564CEDC627B}
+		{6DE1839A-E49F-44CF-A687-9BA9B263A559} = {BE4B4E98-13BF-4F8A-8892-832E1DAA2EFD}
+		{AD624B9C-3091-414A-A896-BAAFB45E3292} = {BE4B4E98-13BF-4F8A-8892-832E1DAA2EFD}
+		{F4283BB3-98EC-4093-AADA-E809D96D1FC8} = {BE4B4E98-13BF-4F8A-8892-832E1DAA2EFD}
+		{22FBF924-27F7-4522-8C53-6FBA972B6DA4} = {B474C8FE-687D-43AF-938B-75CA17D9F5D3}
+		{A20CEC2C-CD12-4B9F-A0CA-B55F34FFECCF} = {B474C8FE-687D-43AF-938B-75CA17D9F5D3}
+		{C0C4B799-93F8-40CC-AB09-81006971286E} = {8A9B69E0-FFBD-4161-A317-F564CEDC627B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D181B9A1-39D8-4C3E-8528-67154C2FC021}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://www.caredev.site/tfs/customcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = src\\Caredev.Mego\\Caredev.Mego.csproj
-		SccProjectTopLevelParentUniqueName1 = Caredev.Mego.sln
-		SccProjectName1 = src/Caredev.Mego
-		SccLocalPath1 = src\\Caredev.Mego
-		SccProjectUniqueName2 = test\\Caredev.Mego.Tests\\Caredev.Mego.Tests.csproj
-		SccProjectTopLevelParentUniqueName2 = Caredev.Mego.sln
-		SccProjectName2 = test/Caredev.Mego.Tests
-		SccLocalPath2 = test\\Caredev.Mego.Tests
-		SccProjectUniqueName3 = test\\Caredev.Mego.Tests\\Caredev.Mego.Tests.SqlServer2012.csproj
-		SccProjectTopLevelParentUniqueName3 = Caredev.Mego.sln
-		SccProjectName3 = test/Caredev.Mego.Tests
-		SccLocalPath3 = test\\Caredev.Mego.Tests
-		SccProjectUniqueName4 = test\\Caredev.Mego.Tests\\Caredev.Mego.Tests.SqlServer2005.csproj
-		SccProjectTopLevelParentUniqueName4 = Caredev.Mego.sln
-		SccProjectName4 = test/Caredev.Mego.Tests
-		SccLocalPath4 = test\\Caredev.Mego.Tests
-		SccProjectUniqueName5 = test\\Caredev.Mego.Tests\\Caredev.Mego.Tests.MySql55.csproj
-		SccProjectTopLevelParentUniqueName5 = Caredev.Mego.sln
-		SccProjectName5 = test/Caredev.Mego.Tests
-		SccLocalPath5 = test\\Caredev.Mego.Tests
-		SccProjectUniqueName6 = test\\Caredev.Mego.Tests\\Caredev.Mego.Tests.SQLite3.csproj
-		SccProjectTopLevelParentUniqueName6 = Caredev.Mego.sln
-		SccProjectName6 = test/Caredev.Mego.Tests
-		SccLocalPath6 = test\\Caredev.Mego.Tests
 	EndGlobalSection
 EndGlobal

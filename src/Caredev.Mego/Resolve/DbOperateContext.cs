@@ -30,7 +30,7 @@ namespace Caredev.Mego.Resolve
         /// <summary>
         /// 当前命令对象。
         /// </summary>
-        public DbOperateCommand CurrentCommand { get; internal set; }
+        internal DbOperateCommandBase CurrentCommand { get; set; }
         /// <summary>
         /// 所有操作枚举对象。
         /// </summary>
@@ -269,64 +269,31 @@ namespace Caredev.Mego.Resolve
             var commands = new DbOperateCommandCollection(this);
             var database = Context.Database;
 
+            int parametercount = database.Feature.MaxParameterCountForOperate;
             foreach (var operate in operates)
             {
-                int parametercount = database.Feature.MaxParameterCountForOperate;
                 if (operate is IDbSplitObjectsOperate itemoperate)
                 {
                     var current = commands.CheckParameterCount(parametercount);
                     parametercount = itemoperate.ItemParameterCount * itemoperate.Count;
-                    if (operate is IConcurrencyCheckOperate concurrency)
+                    if (operate is IConcurrencyCheckOperate concurrency && concurrency.NeedCheck
+                        && current.ConcurrencyExpectCount == 0 && !current.IsEmpty)
                     {
-                        if (concurrency.NeedCheck && current.ConcurrencyExpectCount == 0 && current.Any())
-                        {
-                            //如果当前操作需要参与并发检查，但是当前命令中已包含非并发检查操作，则移动到下一个命令中。
-                            current = commands.NextCommand();
-                        }
+                        //如果当前操作需要参与并发检查，但是当前命令中已包含非并发检查操作，则移动到下一个命令中。
+                        current = commands.NextCommand();
                     }
                     if (parametercount > current.ParameterCount)
                     {
-                        int index = 0, length = 0, count = 0, sumcount = itemoperate.Count;
-                        do
-                        {
-                            if (index > 0)
-                            {
-                                current = commands.NextCommand();
-                            }
-                            count = current.ParameterCount / itemoperate.ItemParameterCount;
-                            length = Math.Min(count, sumcount - index);
-                            itemoperate.Split(index, length, () => current.AddOperate(itemoperate, operate.GenerateSql(), index, length));
-                            if (operate is IConcurrencyCheckOperate concurrency2 && concurrency2.NeedCheck)
-                            {
-                                //累加并发检查期望数
-                                current.ConcurrencyExpectCount += concurrency2.ExpectCount;
-                            }
-                            index += length;
-                        } while (index < sumcount - 1);
+                        commands.Register(itemoperate);
                     }
                     else
                     {
-                        if (current.ConcurrencyExpectCount > 0)
-                        {
-                            //如果当前命令包含并发检查操作，则移动到下一个命令中。
-                            current = commands.NextCommand();
-                        }
-                        current.AddOperate(operate, operate.GenerateSql());
-                        if (operate is IConcurrencyCheckOperate concurrency2 && concurrency2.NeedCheck)
-                        {
-                            current.ConcurrencyExpectCount += concurrency2.ExpectCount;
-                        }
+                        commands.Register(operate, parametercount);
                     }
                 }
                 else
                 {
-                    var command = commands.CheckParameterCount(parametercount);
-                    if (command.ConcurrencyExpectCount > 0)
-                    {
-                        //如果当前命令包含并发检查操作，则移动到下一个命令中。
-                        command = commands.NextCommand();
-                    }
-                    command.AddOperate(operate, operate.GenerateSql());
+                    commands.Register(operate, parametercount);
                 }
             }
             return commands;

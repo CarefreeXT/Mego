@@ -34,7 +34,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <summary>
         /// 当前操作相应的命令对象。
         /// </summary>
-        public DbOperateCommand OperateCommand { get; }
+        internal DbOperateCommandBase OperateCommand { get; }
         /// <summary>
         /// 当前数据上下文。
         /// </summary>

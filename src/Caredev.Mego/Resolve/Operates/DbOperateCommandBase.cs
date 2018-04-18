@@ -15,22 +15,19 @@ namespace Caredev.Mego.Resolve.Operates
     /// <summary>
     /// 数据库操作命令对象。
     /// </summary>
-    public class DbOperateCommand : IEnumerable<DbOperateBase>
+    internal abstract class DbOperateCommandBase
     {
         private int currentVariableNameIndex = 0;
         private int currentParameterNameIndex = 0;
         private readonly DbProviderFactory factory;
         private readonly int maxParameterCount;
-        private readonly StringBuilder commandBuilder = new StringBuilder();
-        private readonly Dictionary<object, DbParameter> parameters = new Dictionary<object, DbParameter>();
+        protected readonly Dictionary<object, DbParameter> parameters = new Dictionary<object, DbParameter>();
         private readonly Dictionary<object, int> variables = new Dictionary<object, int>();
-        private readonly IList<DbOperateBase> operates = new List<DbOperateBase>();
-        private Dictionary<DbOperateBase, SplitIndexLength> splitesOperates;
         /// <summary>
         /// 创建数据库操作命令对象。
         /// </summary>
         /// <param name="context">操作上下文。</param>
-        public DbOperateCommand(DbOperateContext context)
+        public DbOperateCommandBase(DbOperateContext context)
         {
             Executor = context;
             var database = context.Context.Database;
@@ -61,6 +58,10 @@ namespace Caredev.Mego.Resolve.Operates
         /// 并发期望影响行数。
         /// </summary>
         public int ConcurrencyExpectCount { get; internal set; }
+        /// <summary>
+        /// 当前命令对象是否为空，即不包含任何操作。
+        /// </summary>
+        public abstract bool IsEmpty { get; }
         /// <summary>
         /// 添加参数。
         /// </summary>
@@ -100,47 +101,49 @@ namespace Caredev.Mego.Resolve.Operates
             return value;
         }
         /// <summary>
-        /// 添加操作。
+        /// 注册操作。
         /// </summary>
         /// <param name="operate">操作对象。</param>
-        /// <param name="sql">该操作相应的语句。</param>
-        internal void AddOperate(DbOperateBase operate, string sql)
-        {
-            operates.Add(operate);
-            commandBuilder.AppendLine(sql);
-        }
+        internal abstract void RegisteOperate(DbOperateBase operate);
         /// <summary>
-        /// 添加操作。
+        /// 注册操作。
         /// </summary>
         /// <param name="operate">操作对象。</param>
-        /// <param name="sql">该操作相应的语句。</param>
         /// <param name="index">分割操作起始索引。</param>
         /// <param name="length">分割操作长度。</param>
-        internal void AddOperate(IDbSplitObjectsOperate operate, string sql, int index, int length)
-        {
-            var operateInstance = (DbOperateBase)operate;
-            operates.Add(operateInstance);
-            commandBuilder.AppendLine(sql);
-            if (splitesOperates == null)
-            {
-                splitesOperates = new Dictionary<DbOperateBase, SplitIndexLength>();
-            }
-            if (!splitesOperates.ContainsKey(operateInstance))
-            {
-                splitesOperates.Add(operateInstance, new SplitIndexLength()
-                {
-                    Operate = operate,
-                    Index = index,
-                    Length = length
-                });
-            }
-        }
+        internal abstract void RegisteOperate(IDbSplitObjectsOperate operate, int index, int length);
         /// <summary>
         /// 执行命令。
         /// </summary>
         /// <param name="executor">数据库执行对象。</param>
         /// <returns>对数据库实际的影响行数。</returns>
-        internal int Execute(DatabaseExecutor executor)
+        internal abstract int Execute(DatabaseExecutor excutor);
+
+        protected class SplitIndexLength
+        {
+            public IDbSplitObjectsOperate Operate;
+            public int Index;
+            public int Length;
+        }
+    }
+    /// <summary>
+    /// 多个数据库操作命令对象。
+    /// </summary>
+    internal class DbMultiOperateCommand : DbOperateCommandBase, IEnumerable<DbOperateBase>
+    {
+        private readonly IList<DbOperateBase> operates = new List<DbOperateBase>();
+        private Dictionary<DbOperateBase, SplitIndexLength> splitesOperates;
+        private readonly StringBuilder commandBuilder = new StringBuilder();
+        /// <summary>
+        /// 创建命令对象。
+        /// </summary>
+        /// <param name="context">操作执行上下文</param>
+        public DbMultiOperateCommand(DbOperateContext context)
+            : base(context) { }
+        /// <inheritdoc/>
+        public override bool IsEmpty => operates.Count == 0;
+        /// <inheritdoc/>
+        internal override int Execute(DatabaseExecutor executor)
         {
             var command = executor.CreateCommand(commandBuilder.ToString());
             if (parameters.Count > 0)
@@ -207,6 +210,32 @@ namespace Caredev.Mego.Resolve.Operates
             }
             return recordsAffectCount;
         }
+        /// <inheritdoc/>
+        internal override void RegisteOperate(DbOperateBase operate)
+        {
+            operates.Add(operate);
+            commandBuilder.AppendLine(operate.GenerateSql());
+        }
+        /// <inheritdoc/>
+        internal override void RegisteOperate(IDbSplitObjectsOperate operate, int index, int length)
+        {
+            var operateInstance = (DbOperateBase)operate;
+            operates.Add(operateInstance);
+            commandBuilder.AppendLine(operateInstance.GenerateSql());
+            if (splitesOperates == null)
+            {
+                splitesOperates = new Dictionary<DbOperateBase, SplitIndexLength>();
+            }
+            if (!splitesOperates.ContainsKey(operateInstance))
+            {
+                splitesOperates.Add(operateInstance, new SplitIndexLength()
+                {
+                    Operate = operate,
+                    Index = index,
+                    Length = length
+                });
+            }
+        }
         /// <summary>
         /// <see cref="IEnumerable{T}"/>接口实现。
         /// </summary>
@@ -223,12 +252,78 @@ namespace Caredev.Mego.Resolve.Operates
         {
             return GetEnumerator();
         }
+    }
+    /// <summary>
+    /// 单个数据库操作命令对象。
+    /// </summary>
+    internal class DbSingleOperateCommand : DbOperateCommandBase
+    {
+        private string _Statement;
+        private SplitIndexLength _SplitInfo;
+        /// <summary>
+        /// 创建命令对象。
+        /// </summary>
+        /// <param name="context">操作执行上下文</param>
+        public DbSingleOperateCommand(DbOperateContext context)
+            : base(context) { }
+        /// <inheritdoc/>
+        public override bool IsEmpty => Operate == null;
+        /// <summary>
+        /// 当前操作对象。
+        /// </summary>
+        public DbOperateBase Operate { get; private set; }
 
-        private struct SplitIndexLength
+        public bool IsBlockStatement { get; set; }
+
+        public bool IsLoopExecution { get; }
+        /// <inheritdoc/>
+        internal override void RegisteOperate(DbOperateBase operate)
         {
-            public IDbSplitObjectsOperate Operate;
-            public int Index;
-            public int Length;
+            Operate = operate;
+            _Statement = operate.GenerateSql();
+        }
+        /// <inheritdoc/>
+        internal override void RegisteOperate(IDbSplitObjectsOperate operate, int index, int length)
+        {
+            var operateInstance = (DbOperateBase)operate;
+            RegisteOperate(operateInstance);
+            _SplitInfo = new SplitIndexLength() { Operate = operate, Index = index, Length = length };
+        }
+        /// <inheritdoc/>
+        internal override int Execute(DatabaseExecutor executor)
+        {
+            var operate = Operate;
+            var command = executor.CreateCommand(_Statement);
+            if (parameters.Count > 0)
+            {
+                command.Parameters.AddRange(parameters.Values.ToArray());
+            }
+            int recordsAffectCount = 0;
+            if (operate.HasResult && operate.Output != null)
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    if (_SplitInfo != null)
+                    {
+                        _SplitInfo.Operate.Split(_SplitInfo.Index, _SplitInfo.Length, () => operate.Read(reader));
+                    }
+                    else
+                    {
+                        operate.Read(reader);
+                        reader.NextResult();
+                    }
+                    recordsAffectCount = reader.RecordsAffected;
+                }
+            }
+            else
+            {
+                recordsAffectCount = command.ExecuteNonQuery();
+            }
+            if (ConcurrencyExpectCount > 0 && ConcurrencyExpectCount != recordsAffectCount)
+            {
+                throw new DbCommitConcurrencyException(Res.ExceptionCommitConcurrency);
+            }
+            return recordsAffectCount;
         }
     }
 }

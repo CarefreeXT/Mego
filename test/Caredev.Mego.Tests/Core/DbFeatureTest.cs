@@ -21,6 +21,7 @@
                     var com = con.CreateCommand();
                     com.Transaction = tran;
                     com.CommandText = MaxInsertRowCountTestSql("t0", MaxInsertRowCount);
+                  
                     com.ExecuteNonQuery();
 
                     com.CommandText = MaxInsertRowCountTestSql("t1", MaxInsertRowCount + 1);

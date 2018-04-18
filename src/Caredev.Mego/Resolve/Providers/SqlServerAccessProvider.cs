@@ -10,5 +10,7 @@ namespace Caredev.Mego.Resolve.Providers
     {
         /// <inheritdoc/>
         public override string ProviderName => "System.Data.SqlClient";
+        /// <inheritdoc/>
+        public override EExecutionMode ExecutionMode => EExecutionMode.MergeOperations;
     }
 }

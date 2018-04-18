@@ -4,9 +4,9 @@
 namespace Caredev.Mego.Resolve.Generators.Implement
 {
     /// <summary>
-    /// 针对 PostgresSQL 数据库的代码生成器。
+    /// 针对 Firebird 数据库的代码生成器。
     /// </summary>
-    public abstract partial class PostgresSQLBaseGenerator : SqlGeneratorBase
+    public abstract class FirebirdBaseGenerator : SqlGeneratorBase
     {
         /// <inheritdoc/>
         public override FragmentWriterBase FragmentWriter
@@ -15,31 +15,22 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             {
                 if (_FragmentWriter == null)
                 {
-                    _FragmentWriter = new PostgresSQLFragmentWriter(this);
+                    _FragmentWriter = new FirebirdFragmentWriter(this);
                 }
                 return _FragmentWriter;
             }
         }
         private FragmentWriterBase _FragmentWriter;
         /// <inheritdoc/>
-        public override string ProviderName => "Npgsql";
+        public override string ProviderName => "FirebirdSql.Data.FirebirdClient";
         /// <inheritdoc/>
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()
         {
-            DefaultSchema = "public",
-            MaxParameterCountForOperate = 200,
-            MaxParameterCount = 2500,
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
-                EDbCapable.TableInherit | EDbCapable.TemporaryTable | EDbCapable.TableVariable |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin
+                EDbCapable.SubQuery | EDbCapable.BatchInsert
         };
-    }
-
-    public class PostgresSQL93Generator : PostgresSQLBaseGenerator
-    {
-        public override short Version => 0x0903;
     }
 }

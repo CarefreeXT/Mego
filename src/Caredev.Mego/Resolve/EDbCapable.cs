@@ -4,8 +4,6 @@
 namespace Caredev.Mego.Resolve
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     /// <summary>
     /// 描述特定数据库拥有的高级特性。
     /// </summary>
@@ -20,7 +18,6 @@ namespace Caredev.Mego.Resolve
         /// 数据结构定义，即 DDL 语句支持。
         /// </summary>
         DataDefinition = 0x00000002,
-
         /// <summary>
         /// 表级继承（仅 PostgreSQL 支持）。
         /// </summary>
@@ -41,7 +38,6 @@ namespace Caredev.Mego.Resolve
         /// 窗口函数。
         /// </summary>
         WindowFunction = 0x00000200,
-
         /// <summary>
         /// 外部复合语句，在非BEGIN - END 语句块声明复合语句。
         /// </summary>
@@ -54,7 +50,6 @@ namespace Caredev.Mego.Resolve
         /// 外部局部变量。
         /// </summary>
         ExternalLocalVariable = 0x00004000,
-
         /// <summary>
         /// 修改数据后可直接返回数据。
         /// </summary>

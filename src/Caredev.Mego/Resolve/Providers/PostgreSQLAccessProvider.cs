@@ -10,5 +10,7 @@ namespace Caredev.Mego.Resolve.Providers
     {
         /// <inheritdoc/>
         public override string ProviderName => "Npgsql";
+        /// <inheritdoc/>
+        public override EExecutionMode ExecutionMode => EExecutionMode.MergeOperations;
     }
 }

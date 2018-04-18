@@ -31,5 +31,9 @@ namespace Caredev.Mego.Resolve
         /// 是否独占模式运行。
         /// </summary>
         bool IsExclusive { get; }
+        /// <summary>
+        /// 当前数据访问提供程序所支持的执行模式。该模式将会影响与数据提交有关操作的实现逻辑。
+        /// </summary>
+        EExecutionMode ExecutionMode { get; }
     }
 }

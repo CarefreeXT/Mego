@@ -3,6 +3,7 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Providers
 {
+    using System;
     /// <summary>
     /// 访问Nuget组件:IBM.Data.DB2
     /// </summary>
@@ -10,5 +11,7 @@ namespace Caredev.Mego.Resolve.Providers
     {
         /// <inheritdoc/>
         public override string ProviderName => "IBM.Data.DB2";
+        /// <inheritdoc/>
+        public override EExecutionMode ExecutionMode => throw new NotImplementedException();
     }
 }
