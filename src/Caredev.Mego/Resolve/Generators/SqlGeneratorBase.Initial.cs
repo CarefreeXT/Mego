@@ -7,6 +7,7 @@ namespace Caredev.Mego.Resolve.Generators
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
+    using Caredev.Mego.Resolve.Operates;
     using Caredev.Mego.Resolve.Outputs;
     using System;
     using System.Collections.Generic;
@@ -70,6 +71,12 @@ namespace Caredev.Mego.Resolve.Generators
     /// <param name="expression">表达式。</param>
     /// <param name="parent">父级数据源语句。</param>
     public delegate void InitialRetrievalDelegate(GenerateContext context, ISourceFragment current, DbRetrievalFunctionExpression expression, ComplexOutputInfo parent);
+    /// <summary>
+    /// 数据结构维护操作委托。
+    /// </summary>
+    /// <param name="context">生成上下文。</param>
+    /// <returns>语句片段。</returns>
+    public delegate SqlFragment MaintenanceOperateDelegate(GenerateContext context);
     //初始化语句生成器对象。
     public partial class SqlGeneratorBase
     {
@@ -80,6 +87,7 @@ namespace Caredev.Mego.Resolve.Generators
         private readonly IDictionary<EExpressionType, InitialMembersDelegate> _InitialMembersMethods;
         private readonly IDictionary<Type, CreateMemberDelegate> _CreateMemberMethods;
         private readonly IDictionary<MemberInfo, InitialRetrievalDelegate> _InitialRetrievalMethods;
+        private readonly IDictionary<EOperateType, MaintenanceOperateDelegate> _MaintenanceMethods;
         /// <summary>
         /// 初始化语句生成器对象。
         /// </summary>
@@ -93,6 +101,7 @@ namespace Caredev.Mego.Resolve.Generators
 
             _CreateMemberMethods = InitialMethodsForCreateMember();
             _InitialRetrievalMethods = InitialMethodsForInitialRetrieval();
+            _MaintenanceMethods = InitialMethodsForMaintenance();
         }
         /// <summary>
         /// 初始化<see cref="CreateSourceDelegate"/>的方法映射。

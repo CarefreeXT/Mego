@@ -18,7 +18,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <param name="context">生成上下文。</param>
         /// <param name="name">对象名称。</param>
         /// <param name="kind">对象种类。</param>
-        public ObjectExsitFragment(GenerateContext context, ObjectNameFragment name, EDatabaseObject kind)
+        public ObjectExsitFragment(GenerateContext context, INameFragment name, EDatabaseObject kind)
             : base(context)
         {
             Name = name;
@@ -27,7 +27,65 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <summary>
         /// 名称对象。
         /// </summary>
-        public ObjectNameFragment Name { get; }
+        public INameFragment Name { get; }
+        /// <summary>
+        /// 对象种类。
+        /// </summary>
+        public EDatabaseObject Kind { get; }
+    }
+    /// <summary>
+    /// 重命名语句片段。
+    /// </summary>
+    public class RenameObjectFragment : SqlFragment
+    {
+        /// <summary>
+        /// 创建重命名语句片段。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="name">对象名称。</param>
+        /// <param name="kind">对象种类。</param>
+        /// <param name="newName">新名称。</param>
+        public RenameObjectFragment(GenerateContext context, INameFragment name, EDatabaseObject kind, string newName)
+            : base(context)
+        {
+            Name = name;
+            Kind = kind;
+            NewName = newName;
+        }
+        /// <summary>
+        /// 名称对象。
+        /// </summary>
+        public INameFragment Name { get; }
+        /// <summary>
+        /// 新名称。
+        /// </summary>
+        public string NewName { get; }
+        /// <summary>
+        /// 对象种类。
+        /// </summary>
+        public EDatabaseObject Kind { get; }
+    }
+    /// <summary>
+    /// 删除对象语句片段。
+    /// </summary>
+    public class DropObjectFragment : SqlFragment
+    {
+        /// <summary>
+        /// 创建删除对象语句片段。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="name">对象名称。</param>
+        /// <param name="kind">对象种类。</param>
+        public DropObjectFragment(GenerateContext context, INameFragment name, EDatabaseObject kind)
+            : base(context)
+        {
+            Name = name;
+            Kind = kind;
+        }
+        /// <summary>
+        /// 名称对象。
+        /// </summary>
+        public INameFragment Name { get; }
         /// <summary>
         /// 对象种类。
         /// </summary>
@@ -43,7 +101,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="name">关系名称。</param>
-        public CreateRelationFragment(GenerateContext context, string name)
+        public CreateRelationFragment(GenerateContext context, INameFragment name)
             : base(context)
         {
             Name = name;
@@ -51,7 +109,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <summary>
         /// 关系名称。
         /// </summary>
-        public string Name { get; }
+        public INameFragment Name { get; }
         /// <summary>
         /// 关系主表名称。
         /// </summary>
@@ -68,6 +126,64 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// 关系外键名称集合。
         /// </summary>
         public string[] ForeignKeys { get; set; }
+        /// <summary>
+        /// 更新时行为。
+        /// </summary>
+        public EReferenceAction? Update { get; internal set; }
+        /// <summary>
+        /// 删除时行为。
+        /// </summary>
+        public EReferenceAction? Delete { get; internal set; }
+    }
+    /// <summary>
+    /// 删除关系语句片段。
+    /// </summary>
+    public class DropRelationFragment : SqlFragment
+    {
+        /// <summary>
+        /// 初始化创建关系。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="name">关系名称。</param>
+        public DropRelationFragment(GenerateContext context, INameFragment name)
+            : base(context)
+        {
+            Name = name;
+        }
+        /// <summary>
+        /// 关系名称。
+        /// </summary>
+        public INameFragment Name { get; }
+        /// <summary>
+        /// 关系外键表名称。
+        /// </summary>
+        public ObjectNameFragment Foreign { get; internal set; }
+    }
+    /// <summary>
+    /// 创建视图语句片段。
+    /// </summary>
+    public class CreateViewFragment : SqlFragment
+    {
+        /// <summary>
+        /// 初始化创建关系。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="name">关系名称。</param>
+        /// <param name="content">视图内容。</param>
+        public CreateViewFragment(GenerateContext context, INameFragment name,string content)
+            : base(context)
+        {
+            Name = name;
+            Content = content;
+        }
+        /// <summary>
+        /// 关系名称。
+        /// </summary>
+        public INameFragment Name { get; }
+        /// <summary>
+        /// 视图内容。
+        /// </summary>
+        public string Content { get; }
     }
     /// <summary>
     /// 创建表语句片段基类。
@@ -101,11 +217,16 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="table">表元数据。</param>
-        public CreateTableFragment(GenerateContext context, TableMetadata table)
+        /// <param name="name">自定义表名称。</param>
+        public CreateTableFragment(GenerateContext context, TableMetadata table, INameFragment name = null)
             : base(context)
         {
             Metadata = table;
-            Table = new ObjectNameFragment(context, table.Name, table.Schema);
+            Name = name;
+            if (name == null)
+            {
+                Name = new ObjectNameFragment(context, table.Name, table.Schema);
+            }
             foreach (var col in table.Members)
             {
                 Members.Add(new CreateColumnFragment(context, col, this));
@@ -118,7 +239,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <summary>
         /// 表名称。
         /// </summary>
-        public ObjectNameFragment Table { get; }
+        public INameFragment Name { get; }
         /// <inheritdoc/>
         public override bool IsTemporary => false;
     }
@@ -143,8 +264,9 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="columns">指定的数据列。</param>
-        public CreateTempTableFragment(GenerateContext context, IEnumerable<ColumnMetadata> columns)
-         : this(context, new TemporaryTableFragment(context, columns))
+        /// <param name="name">自定义表名。</param>
+        public CreateTempTableFragment(GenerateContext context, IEnumerable<ColumnMetadata> columns, INameFragment name = null)
+            : this(context, new TemporaryTableFragment(context, columns, name))
         {
             foreach (var col in columns)
             {

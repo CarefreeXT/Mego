@@ -272,42 +272,38 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="metadatas">数据列元数据集合。</param>
-        public TemporaryTableFragment(GenerateContext context, IEnumerable<ColumnMetadata> metadatas)
-            : this(context, new VariableFragment(context), metadatas)
+        /// <param name="name">表名称。</param>
+        public TemporaryTableFragment(GenerateContext context, IEnumerable<ColumnMetadata> metadatas, INameFragment name = null)
+            : base(context)
         {
-            if (context.Feature.HasCapable(EDbCapable.TableVariable))
+            if (name == null)
             {
-                Name = new VariableFragment(context, "t");
+                if (context.Feature.HasCapable(EDbCapable.TableVariable))
+                {
+                    Name = new VariableFragment(context, 't');
+                }
+                else
+                {
+                    Name = new TempTableNameFragment(context);
+                }
             }
             else
             {
-                Name = new TempTableNameFragment(context);
+                Name = name;
             }
-            _MemberMetadatas = metadatas.ToDictionary(a => (MemberInfo)a.Member, a => a);
-        }
-        /// <summary>
-        /// 创建临时表或表变量。
-        /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <param name="name">表名称。</param>
-        /// <param name="metadatas">数据列元数据集合。</param>
-        public TemporaryTableFragment(GenerateContext context, SqlFragment name, IEnumerable<ColumnMetadata> metadatas)
-            : base(context)
-        {
-            Name = name;
             _MemberMetadatas = metadatas.ToDictionary(a => (MemberInfo)a.Member, a => a);
         }
         /// <summary>
         /// 表名称。
         /// </summary>
-        public SqlFragment Name { get; }
+        public INameFragment Name { get; }
         /// <summary>
         /// 复制当前对象。
         /// </summary>
         /// <returns></returns>
         public TemporaryTableFragment Clone()
         {
-            return new TemporaryTableFragment(Context, Name, _MemberMetadatas.Values);
+            return new TemporaryTableFragment(Context, _MemberMetadatas.Values, Name);
         }
         /// <inheritdoc/>
         public override IMemberFragment GetMember(MemberInfo member)

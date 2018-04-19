@@ -41,8 +41,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         /// <param name="generator"></param>
         public MySqlFragmentWriter(MySqlBaseGenerator generator)
             : base(generator) { }
-        [Obsolete]
-        internal bool SupportComputedColumn { get; set; } = false;
         /// <inheritdoc/>
         public override void WriteDbObject(SqlWriter writer, string name, string schema)
         {

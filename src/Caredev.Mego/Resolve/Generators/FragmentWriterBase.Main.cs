@@ -7,6 +7,7 @@ namespace Caredev.Mego.Resolve.Generators
     using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Generators.Fragments;
+    using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -58,6 +59,13 @@ namespace Caredev.Mego.Resolve.Generators
                 { typeof(UpdateFragment), WriteFragmentForUpdate },
                 { typeof(DeleteFragment), WriteFragmentForDelete },
                 { typeof(SelectFragment), WriteFragmentForSelect },
+                { typeof(CreateTableFragment), WriteFragmentForCreateTable },
+                { typeof(CreateTempTableFragment), WriteFragmentForCreateTemporaryTable },
+                { typeof(CreateViewFragment), WriteFragmentForCreateView },
+                { typeof(CreateRelationFragment), WriteFragmentForCreateRelation },
+                { typeof(DropRelationFragment), WriteFragmentForDropRelation },
+                { typeof(DropObjectFragment), WriteFragmentForDropObject },
+                { typeof(RenameObjectFragment), WriteFragmentForRenameObject },
 
                 { typeof(CommitMemberFragment), WriteFragmentForCommitMember },
 
@@ -348,6 +356,164 @@ namespace Caredev.Mego.Resolve.Generators
                     writer.Write(select.Skip);
                 }
             }, select);
+        }
+        /// <summary>
+        /// 写入<see cref="CreateTableFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForCreateTable(SqlWriter writer, ISqlFragment fragment)
+        {
+            var create = (CreateTableFragment)fragment;
+            var metadata = create.Metadata;
+
+            writer.Write("CREATE TABLE ");
+            create.Name.WriteSql(writer);
+            writer.Write('(');
+            if (metadata.InheritSets.Length > 0)
+            {
+                metadata.Keys.ForEach(key =>
+                {
+                    WriteDbName(writer, key.Name);
+                    WriteDbDataType(writer, key);
+                    writer.Write(" NOT NULL");
+                    writer.WriteLine(", ");
+                });
+            }
+            create.Members.ForEach(() => writer.WriteLine(", "),
+              m => m.WriteSql(writer));
+            var keys = metadata.Keys;
+            writer.WriteLine(",");
+            writer.Write("PRIMARY KEY ( ");
+            keys.ForEach(() => writer.Write(","), key => WriteDbName(writer, key.Name));
+            writer.WriteLine(")");
+            writer.WriteLine(")");
+        }
+        /// <summary>
+        /// 写入<see cref="CreateTempTableFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForCreateTemporaryTable(SqlWriter writer, ISqlFragment fragment)
+        {
+            var content = (CreateTempTableFragment)fragment;
+            if (content.IsVariable)
+            {
+                throw new NotSupportedException(Res.NotSupportedWriteTableVariable);
+            }
+            var create = (CreateTempTableFragment)fragment;
+            writer.Write($"CREATE TEMPORARY TABLE ");
+            create.Table.WriteSql(writer);
+            writer.WriteLine("(");
+            create.Members.ForEach(() => writer.WriteLine(", "),
+                m => m.WriteSql(writer));
+            writer.Write(')');
+        }
+        /// <summary>
+        /// 写入<see cref="CreateViewFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForCreateView(SqlWriter writer, ISqlFragment fragment)
+        {
+            var relation = (CreateViewFragment)fragment;
+            writer.Write("CREATE VIEW ");
+            relation.Name.WriteSql(writer);
+            writer.WriteLine(" AS ");
+            writer.Write(relation.Content);
+        }
+        /// <summary>
+        /// 写入<see cref="CreateRelationFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForCreateRelation(SqlWriter writer, ISqlFragment fragment)
+        {
+            void writerelationaction(EReferenceAction action, SqlWriter w)
+            {
+                switch (action)
+                {
+                    case EReferenceAction.Cascade: w.Write("CASCADE"); break;
+                    case EReferenceAction.SetNull: w.Write("SET NULL"); break;
+                    case EReferenceAction.SetDefault: w.Write("SET DEFAULT"); break;
+                    case EReferenceAction.NoAction: w.Write("NO ACTION"); break;
+                }
+            }
+            var relation = (CreateRelationFragment)fragment;
+
+            writer.Write("ALTER TABLE ");
+            relation.Foreign.WriteSql(writer);
+            writer.Write(" ADD CONSTRAINT ");
+            relation.Name.WriteSql(writer);
+            writer.Write(" FOREIGN KEY(");
+            relation.ForeignKeys.ForEach(() => writer.Write(','), a => WriteDbName(writer, a));
+            writer.Write(") REFERENCES ");
+            relation.Principal.WriteSql(writer);
+
+            writer.Write(" (");
+            relation.PrincipalKeys.ForEach(() => writer.Write(','), a => WriteDbName(writer, a));
+            writer.Write(')');
+
+            if (relation.Delete.HasValue)
+            {
+                writer.Write(" ON DELETE");
+                writerelationaction(relation.Delete.Value, writer);
+            }
+            if (relation.Update.HasValue)
+            {
+                writer.Write(" ON UPDATE");
+                writerelationaction(relation.Update.Value, writer);
+            }
+        }
+        /// <summary>
+        /// 写入<see cref="CreateRelationFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForDropRelation(SqlWriter writer, ISqlFragment fragment)
+        {
+            var relation = (DropRelationFragment)fragment;
+            writer.Write("ALTER TABLE ");
+            relation.Foreign.WriteSql(writer);
+            writer.Write(" DROP CONSTRAINT ");
+            relation.Name.WriteSql(writer);
+        }
+        /// <summary>
+        /// 写入<see cref="DropObjectFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForDropObject(SqlWriter writer, ISqlFragment fragment)
+        {
+            var relation = (DropObjectFragment)fragment;
+            writer.Write("DROP ");
+            switch (relation.Kind)
+            {
+                case EDatabaseObject.Table: writer.Write("TABLE "); break;
+                case EDatabaseObject.View: writer.Write("VIEW "); break;
+                case EDatabaseObject.Index: writer.Write("INDEX "); break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, relation.Kind));
+            }
+            relation.Name.WriteSql(writer);
+        }
+        /// <summary>
+        /// 写入<see cref="RenameObjectFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForRenameObject(SqlWriter writer, ISqlFragment fragment)
+        {
+            var content = (RenameObjectFragment)fragment;
+            writer.Write("RENAME ");
+            switch (content.Kind)
+            {
+                case EDatabaseObject.Table: writer.Write("TABLE "); break;
+                case EDatabaseObject.View: writer.Write("VIEW "); break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, content.Kind));
+            }
+            content.Name.WriteSql(writer);
+            writer.Write(" TO ");
+            WriteDbName(writer, content.NewName);
         }
     }
     public partial class FragmentWriterBase

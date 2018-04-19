@@ -110,7 +110,7 @@ namespace Caredev.Mego.Resolve.Generators
                 var filterMembers = data.UnionConcurrencyMembers(metadata, metadata.Keys);
                 var delete = new DeleteFragment(context, metadata, name);
                 var current = delete.Target;
-                var currenttemptable = new TemporaryTableFragment(context, temptable.Name, filterMembers);
+                var currenttemptable = new TemporaryTableFragment(context, filterMembers, temptable.Name);
                 delete.AddSource(currenttemptable);
                 current.Join(currenttemptable, filterMembers);
                 block.Add(delete);
@@ -168,7 +168,7 @@ namespace Caredev.Mego.Resolve.Generators
                 {
                     var current = new TableFragment(context, subtable);
                     var delete = new DeleteFragment(context, current);
-                    var temptable = new TemporaryTableFragment(context, createtable.Table.Name, table.Keys);
+                    var temptable = new TemporaryTableFragment(context, table.Keys, createtable.Table.Name);
                     current.Join(temptable, table.Keys);
                     delete.AddSource(temptable);
                     block.Add(delete);

@@ -112,7 +112,7 @@ namespace Caredev.Mego.Tests.Models.Simple
         public void InitialTable()
         {
             var manager = this.Database.Manager;
-            if (!Database.SqlQuery<bool>(manager.Exsit<Product>().GenerateSql()).First())
+            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GenerateSql()).First())
             {
                 var list = new List<Resolve.Operates.DbOperateBase>()
                 {
@@ -122,10 +122,12 @@ namespace Caredev.Mego.Tests.Models.Simple
                     manager.CreateTable<Product>(),
                     manager.CreateTable<Warehouse>()
                 };
-
-                list.AddRange(manager.CreateRelation((Order o) => o.Customer));
-                list.AddRange(manager.CreateRelation((Order o) => o.Details));
-                list.AddRange(manager.CreateRelation((OrderDetail o) => o.Product));
+                if (this.Configuration.DatabaseFeature.HasCapable(Resolve.EDbCapable.Relation))
+                {
+                    list.AddRange(manager.CreateRelation((Order o) => o.Customer));
+                    list.AddRange(manager.CreateRelation((Order o) => o.Details));
+                    list.AddRange(manager.CreateRelation((OrderDetail o) => o.Product));
+                }
 
                 this.Executor.Execute(list);
             }

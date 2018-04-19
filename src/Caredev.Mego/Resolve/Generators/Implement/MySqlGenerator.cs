@@ -14,6 +14,19 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         /// <inheritdoc/>
         public override string ProviderName => "MySql.Data.MySqlClient";
         /// <inheritdoc/>
+        public override FragmentWriterBase FragmentWriter
+        {
+            get
+            {
+                if (_FragmentWriter == null)
+                {
+                    _FragmentWriter = new MySqlFragmentWriter(this);
+                }
+                return _FragmentWriter;
+            }
+        }
+        private FragmentWriterBase _FragmentWriter;
+        /// <inheritdoc/>
         protected override IExpressionFragment CreateExpressionForBinary(GenerateContext context, DbExpression expression, ISourceFragment source)
         {
             var binary = (DbBinaryExpression)expression;
@@ -38,7 +51,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 EDbCapable.TemporaryTable |
                 EDbCapable.TableValuedFunction |
                 EDbCapable.ImplicitDeclareVariable | EDbCapable.ExternalLocalVariable |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyJoin
+                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyJoin |
+                EDbCapable.Relation | EDbCapable.Identity
         };
     }
     /// <summary>
@@ -48,46 +62,20 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     {
         /// <inheritdoc/>
         public override short Version => 0x0505;
-        /// <inheritdoc/>
-        public override FragmentWriterBase FragmentWriter
-        {
-            get
-            {
-                if (_FragmentWriter == null)
-                {
-                    _FragmentWriter = new MySqlFragmentWriter(this)
-                    {
-                        SupportComputedColumn = false
-                    };
-                }
-                return _FragmentWriter;
-            }
-        }
-        private FragmentWriterBase _FragmentWriter;
-
     }
     /// <summary>
     /// 针对 MySQL 5.7 及后续版本数据库的代码生成器。
     /// </summary>
     public partial class MySql57Generator : MySqlBaseGenerator
     {
+        /// <summary>
+        /// 创建生成器。
+        /// </summary>
+        public MySql57Generator()
+        {
+            this.Feature.Capability |= EDbCapable.ComputeColumn;
+        }
         /// <inheritdoc/>
         public override short Version => 0x0507;
-        /// <inheritdoc/>
-        public override FragmentWriterBase FragmentWriter
-        {
-            get
-            {
-                if (_FragmentWriter == null)
-                {
-                    _FragmentWriter = new MySqlFragmentWriter(this)
-                    {
-                        SupportComputedColumn = true
-                    };
-                }
-                return _FragmentWriter;
-            }
-        }
-        private FragmentWriterBase _FragmentWriter;
     }
 }

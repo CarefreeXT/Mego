@@ -38,7 +38,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             MaxParameterCount = 999,
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
                 EDbCapable.TemporaryTable |
-                EDbCapable.BatchInsert | EDbCapable.SubQuery
+                EDbCapable.BatchInsert | EDbCapable.SubQuery |
+                EDbCapable.Identity
         };
         /// <inheritdoc/>
         protected override IExpressionFragment CreateExpressionForBinary(GenerateContext context, DbExpression expression, ISourceFragment source)

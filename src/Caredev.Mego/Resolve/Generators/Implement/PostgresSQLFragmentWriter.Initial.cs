@@ -6,8 +6,10 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Common;
     using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Generators.Fragments;
+    using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
+    using Res = Properties.Resources;
     partial class PostgresSQLFragmentWriter
     {
         /// <inheritdoc/>
@@ -18,15 +20,40 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             dictionary.AddOrUpdate(typeof(CreateColumnFragment), WriteFragmentForCreateColumn);
             dictionary.AddOrUpdate(typeof(CreateTableFragment), WriteFragmentForCreateTable);
 
+            dictionary.AddOrUpdate(typeof(ObjectExsitFragment), WriteFragmentForObjectExsit);
+
             return dictionary;
         }
-        private void WriteFragmentForCreateTable(SqlWriter writer, ISqlFragment fragment)
+        private void WriteFragmentForObjectExsit(SqlWriter writer, ISqlFragment fragment)
+        {
+            var exist = (ObjectExsitFragment)fragment;
+            writer.Write("SELECT CASE WHEN EXISTS (");
+            var schema = exist.Context.Feature.DefaultSchema;
+            if (fragment is INameSchemaFragment nameschema && !string.IsNullOrEmpty(nameschema.Schema))
+            {
+                schema = nameschema.Schema;
+            }
+            writer.Write("SELECT 1 FROM information_schema.");
+            switch (exist.Kind)
+            {
+                case Operates.EDatabaseObject.Table: writer.Write("TABLES"); break;
+                case Operates.EDatabaseObject.View: writer.Write("VIEWS"); break;
+            }
+            writer.Write(" t WHERE t.TABLE_SCHEMA='");
+            writer.Write(schema);
+            writer.Write("' AND t.TABLE_NAME='");
+            writer.Write(exist.Name.Name);
+            writer.Write('\'');
+            writer.Write(") THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END");
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForCreateTable(SqlWriter writer, ISqlFragment fragment)
         {
             var create = (CreateTableFragment)fragment;
             var metadata = create.Metadata;
 
             writer.Write("CREATE TABLE ");
-            create.Table.WriteSql(writer);
+            create.Name.WriteSql(writer);
             writer.Write('(');
             create.Members.ForEach(() => writer.WriteLine(", "),
               m => m.WriteSql(writer));
@@ -45,7 +72,21 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 writer.Write(")");
             }
         }
-
+        /// <inheritdoc/>
+        protected override void WriteFragmentForRenameObject(SqlWriter writer, ISqlFragment fragment)
+        {
+            var content = (RenameObjectFragment)fragment;
+            writer.Write("ALTER ");
+            switch (content.Kind)
+            {
+                case EDatabaseObject.Table: writer.Write("TABLE "); break;
+                case EDatabaseObject.View: writer.Write("VIEW "); break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, content.Kind));
+            }
+            content.Name.WriteSql(writer);
+            writer.Write(" RENAME TO ");
+            WriteDbName(writer, content.NewName);
+        }
         private void WriteFragmentForCreateColumn(SqlWriter writer, ISqlFragment fragment)
         {
             var create = (CreateColumnFragment)fragment;

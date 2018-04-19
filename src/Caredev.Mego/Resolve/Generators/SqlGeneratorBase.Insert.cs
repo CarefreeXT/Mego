@@ -381,7 +381,7 @@ namespace Caredev.Mego.Resolve.Generators
                     {
                         currentMembers = prefixMembers.Concat(g.Members);
                     }
-                    var current = new TemporaryTableFragment(context, createtable.Table.Name, currentMembers);
+                    var current = new TemporaryTableFragment(context, currentMembers, createtable.Table.Name);
 
                     block.Add(context.Insert(current, g.Key, currentMembers));
                 }

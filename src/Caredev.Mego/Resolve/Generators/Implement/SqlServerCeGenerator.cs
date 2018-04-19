@@ -29,7 +29,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         {
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert
+                EDbCapable.SubQuery | EDbCapable.BatchInsert |
+                EDbCapable.Relation | EDbCapable.Identity
         };
     }
 }

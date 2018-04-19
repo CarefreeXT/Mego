@@ -76,7 +76,7 @@ namespace Caredev.Mego.Resolve.Generators
                 }
                 else
                 {
-                    current = new TemporaryTableFragment(context, temptable.Name, members);
+                    current = new TemporaryTableFragment(context, members, temptable.Name);
                 }
                 GenerateForUpdateRegister(context, content, current);
 

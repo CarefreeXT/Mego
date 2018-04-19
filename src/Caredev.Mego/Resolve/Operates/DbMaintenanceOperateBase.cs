@@ -15,17 +15,16 @@ namespace Caredev.Mego.Resolve.Operates
         /// </summary>
         /// <param name="context">数据库上下文。</param>
         /// <param name="type">相关的CLR类型。</param>
-        internal DbMaintenanceOperateBase(DbContext context, Type type)
+        /// <param name="name">当前操作对象名称。</param>
+        internal DbMaintenanceOperateBase(DbContext context, Type type, DbName name)
            : base(context, type)
-        { }
+        {
+            Name = name;
+        }
         /// <summary>
-        /// 操作名称。
+        /// 当前操作对象名称。
         /// </summary>
-        public string Name { get; internal set; }
-        /// <summary>
-        /// 操作架构名。
-        /// </summary>
-        public string Schema { get; internal set; }
+        public DbName Name { get; }
         /// <inheritdoc/>
         public override bool HasResult => false;
         /// <inheritdoc/>

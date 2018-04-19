@@ -520,6 +520,15 @@ namespace Caredev.Mego.Properties {
         }
         
         /// <summary>
+        ///   查找类似 不支持类型 {0} 的维护操作生成语句片段。 的本地化字符串。
+        /// </summary>
+        internal static string NotSupportedGenerateMaintenance {
+            get {
+                return ResourceManager.GetString("NotSupportedGenerateMaintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持从类型 {0} 表达式中获取获取查询主体。 的本地化字符串。
         /// </summary>
         internal static string NotSupportedGetQueryBody {
@@ -754,6 +763,15 @@ namespace Caredev.Mego.Properties {
         }
         
         /// <summary>
+        ///   查找类似 不支持写入类型 {0} 的数据库对象语句片段。 的本地化字符串。
+        /// </summary>
+        internal static string NotSupportedWriteDatabaseObject {
+            get {
+                return ResourceManager.GetString("NotSupportedWriteDatabaseObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持写入数据类型 {0} 。 的本地化字符串。
         /// </summary>
         internal static string NotSupportedWriteDbDataType {
@@ -795,6 +813,15 @@ namespace Caredev.Mego.Properties {
         internal static string NotSupportedWriteFragmentForScalar {
             get {
                 return ResourceManager.GetString("NotSupportedWriteFragmentForScalar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持写入表变量语句片段 。 的本地化字符串。
+        /// </summary>
+        internal static string NotSupportedWriteTableVariable {
+            get {
+                return ResourceManager.GetString("NotSupportedWriteTableVariable", resourceCulture);
             }
         }
     }

@@ -7,22 +7,28 @@ namespace Caredev.Mego.Resolve.Operates
     using System.Collections.Generic;
     using System.Text;
     /// <summary>
-    /// 创建表操作。
+    /// 重命名对象操作。
     /// </summary>
-    internal class DbCreateTableOperate : DbMaintenanceOperateBase
+    internal class DbRenameObjectOperate : DbMaintenanceOperateBase
     {
         /// <summary>
-        /// 初始化创建表操作。
+        /// 创建操作。
         /// </summary>
         /// <param name="context">数据上下文。</param>
-        /// <param name="type">数据项CLR类型。</param>
+        /// <param name="type">相关CLR类型。</param>
         /// <param name="operateType">当前操作类型。</param>
         /// <param name="name">操作对象名称。</param>
-        internal DbCreateTableOperate(DbContext context, Type type, EOperateType operateType, DbName name)
-             : base(context, type, name)
+        /// <param name="newName">新名称。</param>
+        internal DbRenameObjectOperate(DbContext context, Type type, EOperateType operateType, DbName name, string newName)
+            : base(context, type ?? typeof(object), name)
         {
             _Type = operateType;
+            NewName = newName;
         }
+        /// <summary>
+        /// 新名称。
+        /// </summary>
+        public string NewName { get; }
         /// <inheritdoc/>
         public override EOperateType Type => _Type;
         private readonly EOperateType _Type;

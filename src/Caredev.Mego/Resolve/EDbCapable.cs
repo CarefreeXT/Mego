@@ -66,5 +66,21 @@ namespace Caredev.Mego.Resolve
         /// 子查询。
         /// </summary>
         SubQuery = 0x00080000,
+        /// <summary>
+        /// 数据关系。
+        /// </summary>
+        Relation = 0x00100000,
+        /// <summary>
+        /// 标识列。
+        /// </summary>
+        Identity = 0x00200000,
+        /// <summary>
+        /// 序列。
+        /// </summary>
+        Sequence = 0x00400000,
+        /// <summary>
+        /// 计算列。
+        /// </summary>
+        ComputeColumn= 0x00800000,
     }
 }

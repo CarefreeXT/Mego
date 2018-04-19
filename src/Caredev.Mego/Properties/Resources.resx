@@ -363,4 +363,13 @@
   <data name="NotSupportedInheritSetUsingDbName" xml:space="preserve">
     <value>不支持在继承的数据对象中使用自定义数据库名称。</value>
   </data>
+  <data name="NotSupportedGenerateMaintenance" xml:space="preserve">
+    <value>不支持类型 {0} 的维护操作生成语句片段。</value>
+  </data>
+  <data name="NotSupportedWriteDatabaseObject" xml:space="preserve">
+    <value>不支持写入类型 {0} 的数据库对象语句片段。</value>
+  </data>
+  <data name="NotSupportedWriteTableVariable" xml:space="preserve">
+    <value>不支持写入表变量语句片段 。</value>
+  </data>
 </root>

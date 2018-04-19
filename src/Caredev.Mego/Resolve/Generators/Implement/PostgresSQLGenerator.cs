@@ -31,10 +31,11 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             MaxParameterCountForOperate = 200,
             MaxParameterCount = 2500,
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
-                EDbCapable.TableInherit | EDbCapable.TemporaryTable | EDbCapable.TableVariable |
+                EDbCapable.TableInherit | EDbCapable.TemporaryTable |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin
+                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin |
+                EDbCapable.Relation | EDbCapable.Identity | EDbCapable.Sequence
         };
     }
 

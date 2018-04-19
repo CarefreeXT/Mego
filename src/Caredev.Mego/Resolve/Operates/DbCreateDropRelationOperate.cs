@@ -3,6 +3,7 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Operates
 {
+    using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Metadatas;
     using System.Linq;
     /// <summary>
@@ -20,14 +21,17 @@ namespace Caredev.Mego.Resolve.Operates
         /// <param name="pairs">主外键对集合。</param>
         internal DbCreateDropRelationOperate(DbContext context, EOperateType type,
             TableMetadata principal, TableMetadata foreign, ForeignPrincipalPair[] pairs)
-             : base(context, typeof(object))
+             : base(context, typeof(object), CreateName(principal, foreign, pairs))
         {
             _Type = type;
             Foreign = foreign;
             Principal = principal;
             Pairs = pairs;
-
-            ForeignName = $"FK_{foreign.Name}_{principal.Name}_{string.Join("_", pairs.Select(a => a.ForeignKey.Name).ToArray())}_{string.Join("_", pairs.Select(a => a.PrincipalKey.Name).ToArray())}";
+        }
+        //创建名称。
+        private static DbName CreateName(TableMetadata principal, TableMetadata foreign, ForeignPrincipalPair[] pairs)
+        {
+            return DbName.NameOnly($"FK_{foreign.Name}_{principal.Name}_{string.Join("_", pairs.Select(a => a.ForeignKey.Name).ToArray())}_{string.Join("_", pairs.Select(a => a.PrincipalKey.Name).ToArray())}");
         }
         /// <summary>
         /// 外键表元数据。
@@ -42,9 +46,9 @@ namespace Caredev.Mego.Resolve.Operates
         /// </summary>
         public ForeignPrincipalPair[] Pairs { get; }
         /// <summary>
-        /// 外键名（由系统自动生成）。
+        /// 关系活动。
         /// </summary>
-        public string ForeignName { get; }
+        public RelationActionAttribute Action { get; set; }
         /// <inheritdoc/>
         public override EOperateType Type => _Type;
         private EOperateType _Type;

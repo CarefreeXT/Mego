@@ -66,9 +66,11 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// 创建临时表名。
         /// </summary>
         /// <param name="context">生成上下文。</param>
-        public TempTableNameFragment(GenerateContext context)
+        /// <param name="name">自定义表名。</param>
+        public TempTableNameFragment(GenerateContext context, string name = null)
             : base(context)
         {
+            _Name = name;
         }
         /// <summary>
         /// 对象名称。
@@ -101,20 +103,41 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="prefix">变量前缀。</param>
-        public VariableFragment(GenerateContext context, string prefix = "v")
+        public VariableFragment(GenerateContext context, char prefix = 'v')
             : base(context)
         {
             _Prefix = prefix;
         }
         /// <summary>
+        /// 创建变量。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="name">变量名。</param>
+        public VariableFragment(GenerateContext context, string name)
+            : base(context)
+        {
+            _Name = name;
+        }
+        /// <summary>
         /// 对象名称。
         /// </summary>
-        public string Name => _Prefix + this.Context.GetVariable(this);
+        public string Name
+        {
+            get
+            {
+                if (_Name == null)
+                {
+                    _Name = _Prefix.ToString() + this.Context.GetVariable(this);
+                }
+                return _Name;
+            }
+        }
+        private string _Name = null;
         /// <summary>
         /// 名称种类。
         /// </summary>
         public EDbNameKind NameKind => EDbNameKind.Contact;
-        private readonly string _Prefix;
+        private readonly char _Prefix;
     }
     /// <summary>
     /// 语句字符串语句片段。

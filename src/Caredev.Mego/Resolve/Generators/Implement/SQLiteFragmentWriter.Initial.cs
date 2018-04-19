@@ -6,10 +6,12 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Common;
     using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Generators.Fragments;
+    using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Res = Properties.Resources;
     partial class SQLiteFragmentWriter
     {
         /// <inheritdoc/>
@@ -24,49 +26,18 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             dictionary.AddOrUpdate(typeof(CreateRelationFragment), WriteFragmentForCreateRelation);
             return dictionary;
         }
-        private void WriteFragmentForCreateRelation(SqlWriter writer, ISqlFragment fragment)
+        /// <inheritdoc/>
+        protected override void WriteFragmentForRenameObject(SqlWriter writer, ISqlFragment fragment)
         {
-            //var relation = (CreateRelationFragment)fragment;
-
-            //writer.Write("ALTER TABLE ");
-            //relation.Foreign.WriteSql(writer);
-            //writer.Write(" CONSTRAINT ");
-            //WriteDbName(writer, relation.Name);
-            //writer.Write(" FOREIGN KEY(");
-            //relation.ForeignKeys.ForEach(() => writer.Write(','), a => WriteDbName(writer, a));
-            //writer.Write(") REFERENCES ");
-            //relation.Principal.WriteSql(writer);
-
-            //writer.Write(" (");
-            //relation.PrincipalKeys.ForEach(() => writer.Write(','), a => WriteDbName(writer, a));
-            //writer.Write(')');
-        }
-        private void WriteFragmentForCreateTable(SqlWriter writer, ISqlFragment fragment)
-        {
-            var create = (CreateTableFragment)fragment;
-            var metadata = create.Metadata;
-
-            writer.Write("CREATE TABLE ");
-            create.Table.WriteSql(writer);
-            writer.Write('(');
-            if (metadata.InheritSets.Length > 0)
+            var content = (RenameObjectFragment)fragment;
+            if(content.Kind!=EDatabaseObject.Table)
             {
-                metadata.Keys.ForEach(key =>
-                {
-                    WriteDbName(writer, key.Name);
-                    WriteDbDataType(writer, key);
-                    writer.Write(" NOT NULL");
-                    writer.WriteLine(", ");
-                });
+                throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, content.Kind));
             }
-            create.Members.ForEach(() => writer.WriteLine(", "),
-              m => m.WriteSql(writer));
-            var keys = metadata.Keys;
-            writer.WriteLine(",");
-            writer.Write("PRIMARY KEY ( ");
-            keys.ForEach(() => writer.Write(", "), key => WriteDbName(writer, key.Name));
-            writer.WriteLine(")");
-            writer.WriteLine(")");
+            writer.Write("ALTER TABLE ");
+            content.Name.WriteSql(writer);
+            writer.Write(" RENAME TO ");
+            WriteDbName(writer, content.NewName);
         }
         private void WriteFragmentForCreateColumn(SqlWriter writer, ISqlFragment fragment)
         {
@@ -121,17 +92,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                     break;
             }
             writer.Write(") THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END");
-        }
-        private void WriteFragmentForCreateTemporaryTable(SqlWriter writer, ISqlFragment fragment)
-        {
-            var create = (CreateTempTableFragment)fragment;
-
-            writer.Write($"CREATE TEMPORARY TABLE ");
-            create.Table.WriteSql(writer);
-            writer.WriteLine("(");
-            create.Members.ForEach(() => writer.WriteLine(", "),
-                m => m.WriteSql(writer));
-            writer.Write(')');
         }
         /// <inheritdoc/>
         protected override void WriteFragmentForDelete(SqlWriter writer, ISqlFragment fragment)

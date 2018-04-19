@@ -117,7 +117,7 @@ namespace Caredev.Mego.Resolve.Operates
         /// </summary>
         /// <param name="executor">数据库执行对象。</param>
         /// <returns>对数据库实际的影响行数。</returns>
-        internal abstract int Execute(DatabaseExecutor excutor);
+        internal abstract int Execute(DatabaseExecutor executor);
 
         protected class SplitIndexLength
         {

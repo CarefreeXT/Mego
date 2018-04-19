@@ -112,31 +112,32 @@ namespace Caredev.Mego.Tests.Models.Inherit
         public void InitialTable()
         {
             var manager = this.Database.Manager;
-            if (!Database.SqlQuery<bool>(manager.Exsit<Product>().GenerateSql()).First())
+            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GenerateSql()).First())
             {
                 var list = new List<Resolve.Operates.DbOperateBase>()
                 {
                     manager.CreateTable<OrderBase>(),
                     manager.CreateTable<Order>(),
-                    manager.CreateRelation<Order>(),
                     manager.CreateTable<OrderDetailBase>(),
                     manager.CreateTable<OrderDetail>(),
-                    manager.CreateRelation<OrderDetail>(),
                     manager.CreateTable<CustomerBase>(),
                     manager.CreateTable<Customer>(),
-                    manager.CreateRelation<Customer>(),
                     manager.CreateTable<ProductBase>(),
                     manager.CreateTable<Product>(),
-                    manager.CreateRelation<Product>(),
                     manager.CreateTable<WarehouseBase>(),
                     manager.CreateTable<Warehouse>(),
-                    manager.CreateRelation<Warehouse>(),
                 };
-
-                list.AddRange(manager.CreateRelation((Order o) => o.Customer));
-                list.AddRange(manager.CreateRelation((Order o) => o.Details));
-                list.AddRange(manager.CreateRelation((OrderDetail o) => o.Product));
-
+                if (this.Configuration.DatabaseFeature.HasCapable(Resolve.EDbCapable.Relation))
+                {
+                    list.Add(manager.CreateRelation<Order>());
+                    list.Add(manager.CreateRelation<OrderDetail>());
+                    list.Add(manager.CreateRelation<Customer>());
+                    list.Add(manager.CreateRelation<Product>());
+                    list.Add(manager.CreateRelation<Warehouse>());
+                    list.AddRange(manager.CreateRelation((Order o) => o.Customer));
+                    list.AddRange(manager.CreateRelation((Order o) => o.Details));
+                    list.AddRange(manager.CreateRelation((OrderDetail o) => o.Product));
+                }
                 this.Executor.Execute(list);
             }
         }

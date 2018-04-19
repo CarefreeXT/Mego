@@ -9,7 +9,7 @@ namespace Caredev.Mego.DataAnnotations
     /// 数据关系操作行为特性。
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class RelationActionAttribute : Attribute
+    public class RelationActionAttribute : Attribute, IColumnAnnotation
     {
         /// <summary>
         /// 创建行为特性。

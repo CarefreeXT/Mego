@@ -51,6 +51,10 @@ namespace Caredev.Mego.Resolve.Operates
         /// <summary>
         /// 存储过程。
         /// </summary>
-        StoredProcedure
+        StoredProcedure,
+        /// <summary>
+        /// 索引。
+        /// </summary>
+        Index
     }
 }

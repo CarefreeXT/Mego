@@ -34,7 +34,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 EDbCapable.TemporaryTable | EDbCapable.TableVariable |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin
+                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin |
+                EDbCapable.Relation | EDbCapable.Identity | EDbCapable.ComputeColumn
         };
     }
     /// <summary>
@@ -58,6 +59,13 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// </summary>
     public class SqlServer2012Generator : SqlServerBaseGenerator
     {
+        /// <summary>
+        /// 创建生成器。
+        /// </summary>
+        public SqlServer2012Generator()
+        {
+            this.Feature.Capability |= EDbCapable.Sequence;
+        }
         /// <inheritdoc/>
         public override short Version => 0x0B00;
     }

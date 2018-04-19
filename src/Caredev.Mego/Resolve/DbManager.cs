@@ -4,6 +4,7 @@
 namespace Caredev.Mego.Resolve
 {
     using Caredev.Mego.Common;
+    using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
     using System;
@@ -29,56 +30,352 @@ namespace Caredev.Mego.Resolve
             _Context = context;
             _Metadata = metadata;
         }
+
         /// <summary>
-        /// 判断是否存在。
+        /// 创建临时数据表。
         /// </summary>
         /// <typeparam name="T">指定对象类型。</typeparam>
+        /// <param name="name">指定表名。</param>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase Exsit<T>() => Exsit(typeof(T));
+        public DbMaintenanceOperateBase CreateTempTable<T>(string name)
+        {
+            return CreateTempTable(typeof(T), name);
+        }
         /// <summary>
-        /// 判断是否存在。
+        /// 创建临时数据表。
         /// </summary>
         /// <param name="type">指定对象类型。</param>
+        /// <param name="name">指定表名。</param>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase Exsit(Type type)
+        public DbMaintenanceOperateBase CreateTempTable(Type type, string name)
         {
-            var table = _Metadata.Table(type);
-            return new DbObjectExsitOperate(_Context, type, EDatabaseObject.Table)
+            return new DbCreateTableOperate(_Context, type, EOperateType.CreateTempTable, DbName.Contact(name));
+        }
+        /// <summary>
+        /// 创建数据表变量。
+        /// </summary>
+        /// <typeparam name="T">指定对象类型。</typeparam>
+        /// <param name="name">指定表名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateTableVariable<T>(string name)
+        {
+            return CreateTableVariable(typeof(T), name);
+        }
+        /// <summary>
+        /// 创建数据表变量。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="name">指定表名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateTableVariable(Type type, string name)
+        {
+            return new DbCreateTableOperate(_Context, type, EOperateType.CreateTableVariable, DbName.Contact(name));
+        }
+        /// <summary>
+        /// 判断指定的数据表是否存在。
+        /// </summary>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="name">表名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase TableIsExsit<T>(string name = "", string schema = "")
+        {
+            if (name == "")
             {
-                Name = table.Name,
-                Schema = table.Schema
-            };
+                return TableIsExsit(typeof(T));
+            }
+            else
+            {
+                return TableIsExsit(typeof(T), DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 判断指定的数据表是否存在。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="name">操作对象名称。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase TableIsExsit(Type type, DbName name = null)
+        {
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbObjectIsExsitOperate(_Context, type, EOperateType.TableIsExsit, name);
         }
         /// <summary>
         /// 创建数据表。
         /// </summary>
         /// <typeparam name="T">指定对象类型。</typeparam>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase CreateTable<T>() => CreateTable(typeof(T));
+        public DbMaintenanceOperateBase CreateTable<T>(string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return CreateTable(typeof(T));
+            }
+            else
+            {
+                return CreateTable(typeof(T), DbName.Create(name, schema));
+            }
+        }
         /// <summary>
         /// 创建数据表。
         /// </summary>
         /// <param name="type">指定对象类型。</param>
+        /// <param name="name">指定表名。</param>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase CreateTable(Type type)
+        public DbMaintenanceOperateBase CreateTable(Type type, DbName name = null)
         {
-            return new DbCreateTableOperate(_Context, type);
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbCreateTableOperate(_Context, type, EOperateType.CreateTable, name);
         }
         /// <summary>
         /// 删除数据表。
         /// </summary>
-        /// <typeparam name="T">指定对象类型。</typeparam>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="newName">操作对象名称。</param>
+        /// <param name="name">表名。</param>
+        /// <param name="schema">架构名。</param>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase DropTable<T>() => DropTable(typeof(T));
+        public DbMaintenanceOperateBase RenameTable<T>(string newName, string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return RenameTable(typeof(T), newName);
+            }
+            else
+            {
+                return RenameTable(typeof(T), newName, DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 重命名数据表。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="newName">操作对象名称。</param>
+        /// <param name="name">操作对象名称。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase RenameTable(Type type, string newName, DbName name = null)
+        {
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbRenameObjectOperate(_Context, type, EOperateType.RenameTable, name, newName);
+        }
+        /// <summary>
+        /// 删除数据表。
+        /// </summary>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="name">表名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase DropTable<T>(string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return DropTable(typeof(T));
+            }
+            else
+            {
+                return DropTable(typeof(T), DbName.Create(name, schema));
+            }
+        }
         /// <summary>
         /// 删除数据表。
         /// </summary>
         /// <param name="type">指定对象类型。</param>
+        /// <param name="name">操作对象名称。</param>
         /// <returns>操作实例。</returns>
-        public DbMaintenanceOperateBase DropTable(Type type)
+        public DbMaintenanceOperateBase DropTable(Type type, DbName name = null)
         {
-            return new DbDropTableOperate(_Context, type);
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbDropObjectOperate(_Context, type, EOperateType.DropTable, name);
         }
+
+        /// <summary>
+        /// 判断指定的视图是否存在。
+        /// </summary>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="name">视图名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase ViewIsExsit<T>(string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return ViewIsExsit(typeof(T));
+            }
+            else
+            {
+                return ViewIsExsit(typeof(T), DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 判断指定的视图是否存在。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="name">操作对象名称。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase ViewIsExsit(Type type, DbName name = null)
+        {
+            if (name == null)
+            {
+                var View = _Metadata.Table(type);
+                name = DbName.Create(View.Name, View.Schema);
+            }
+            return new DbObjectIsExsitOperate(_Context, type, EOperateType.ViewIsExsit, name);
+        }
+        /// <summary>
+        /// 创建视图。
+        /// </summary>
+        /// <typeparam name="T">指定对象类型。</typeparam>
+        /// <param name="query">查询内容。</param>
+        /// <param name="name">视图名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateView<T>(IQueryable<T> query, string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return CreateView(typeof(T), query);
+            }
+            else
+            {
+                return CreateView(typeof(T), query, DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 创建视图。
+        /// </summary>
+        /// <typeparam name="T">指定对象类型。</typeparam>
+        /// <param name="content">视图内容。</param>
+        /// <param name="name">视图名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateView<T>(string content, string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return CreateView(typeof(T), content);
+            }
+            else
+            {
+                return CreateView(typeof(T), content, DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 创建视图。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="query">查询内容。</param>
+        /// <param name="name">指定视图名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateView(Type type, IQueryable query, DbName name = null)
+        {
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbCreateViewOperate(_Context, type, name, query.Expression);
+        }
+        /// <summary>
+        /// 创建视图。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="content">视图内容。</param>
+        /// <param name="name">指定视图名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase CreateView(Type type, string content, DbName name = null)
+        {
+            if (name == null)
+            {
+                var table = _Metadata.Table(type);
+                name = DbName.Create(table.Name, table.Schema);
+            }
+            return new DbCreateViewOperate(_Context, type, name, content);
+        }
+        /// <summary>
+        /// 删除视图。
+        /// </summary>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="newName">操作对象名称。</param>
+        /// <param name="name">视图名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase RenameView<T>(string newName, string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return RenameView(typeof(T), newName);
+            }
+            else
+            {
+                return RenameView(typeof(T), newName, DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 重命名视图。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="newName">操作对象名称。</param>
+        /// <param name="name">操作对象名称。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase RenameView(Type type, string newName, DbName name = null)
+        {
+            if (name == null)
+            {
+                var View = _Metadata.Table(type);
+                name = DbName.Create(View.Name, View.Schema);
+            }
+            return new DbRenameObjectOperate(_Context, type, EOperateType.RenameView, name, newName);
+        }
+        /// <summary>
+        /// 删除视图。
+        /// </summary>
+        /// <typeparam name="T">映射的对象类型。</typeparam>
+        /// <param name="name">视图名。</param>
+        /// <param name="schema">架构名。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase DropView<T>(string name = "", string schema = "")
+        {
+            if (name == "")
+            {
+                return DropView(typeof(T));
+            }
+            else
+            {
+                return DropView(typeof(T), DbName.Create(name, schema));
+            }
+        }
+        /// <summary>
+        /// 删除视图。
+        /// </summary>
+        /// <param name="type">指定对象类型。</param>
+        /// <param name="name">操作对象名称。</param>
+        /// <returns>操作实例。</returns>
+        public DbMaintenanceOperateBase DropView(Type type, DbName name = null)
+        {
+            if (name == null)
+            {
+                var View = _Metadata.Table(type);
+                name = DbName.Create(View.Name, View.Schema);
+            }
+            return new DbDropObjectOperate(_Context, type, EOperateType.DropView, name);
+        }
+
         /// <summary>
         /// 创建对象关系。
         /// </summary>
@@ -167,16 +464,22 @@ namespace Caredev.Mego.Resolve
             }
             else
             {
+                DbCreateDropRelationOperate operate = null;
                 if (navigate.IsForeign.Value)
                 {
-                    yield return new DbCreateDropRelationOperate(_Context, type
+                    operate = new DbCreateDropRelationOperate(_Context, type
                         , navigate.Target, navigate.Source, navigate.Pairs);
                 }
                 else
                 {
-                    yield return new DbCreateDropRelationOperate(_Context, type
+                    operate = new DbCreateDropRelationOperate(_Context, type
                          , navigate.Source, navigate.Target, navigate.Pairs);
                 }
+                if (type == EOperateType.CreateRelation)
+                {
+                    operate.Action = navigate.GetProperty<RelationActionAttribute>();
+                }
+                yield return operate;
             }
         }
     }

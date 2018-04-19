@@ -55,9 +55,10 @@ namespace Caredev.Mego.Resolve.Operates
             }
             else
             {
-                var command = new DbSingleOperateCommand(operationContext);
-                command.IsBlockStatement = _ExecutionMode == EExecutionMode.SingleOperation;
-                current = command;
+                current = new DbSingleOperateCommand(operationContext)
+                {
+                    IsBlockStatement = _ExecutionMode == EExecutionMode.SingleOperation
+                };
             }
             commands.Add(current);
             operationContext.CurrentCommand = current;
