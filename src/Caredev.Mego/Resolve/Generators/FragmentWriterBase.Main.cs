@@ -37,6 +37,7 @@ namespace Caredev.Mego.Resolve.Generators
                 { typeof(RowIndexFragment), WriteFragmentForRowIndex },
                 { typeof(WhileFragment), WriteFragmentForWhile },
                 { typeof(RepeatBlockFragment), WriteFragmentForRepeatBlock },
+                { typeof(StringConcatFragment), WriteFragmentForStringConcat },
 
                 { typeof(AggregateFragment), WriteFragmentForAggregate },
                 { typeof(ColumnFragment),WriteFragmentForColumnMember },
@@ -550,7 +551,7 @@ namespace Caredev.Mego.Resolve.Generators
         protected virtual void WriteFragmentForConstant(SqlWriter writer, ISqlFragment fragment)
         {
             var content = (ConstantFragment)fragment;
-            writer.Write(content.Context.GetParameter(content.Value));
+            WriteParameterName(writer, content.Context.GetParameter(content.Value));
         }
         /// <summary>
         /// 写入<see cref="ConstantListFragment"/>方法。
@@ -561,7 +562,7 @@ namespace Caredev.Mego.Resolve.Generators
         {
             var content = (ConstantListFragment)fragment;
             var context = content.Context;
-            content.Value.ForEach(() => writer.Write(", "), val => writer.Write(context.GetParameter(val)));
+            content.Value.ForEach(() => writer.Write(", "), val => WriteParameterName(writer, context.GetParameter(val)));
         }
         /// <summary>
         /// 写入<see cref="ValueListFragment"/>方法。
@@ -644,7 +645,7 @@ namespace Caredev.Mego.Resolve.Generators
         protected virtual void WriteFragmentForCommitMember(SqlWriter writer, ISqlFragment fragment)
         {
             var content = (CommitMemberFragment)fragment;
-            writer.Write(content.Context.GetParameter(content.Loader[content.Index]));
+            WriteParameterName(writer, content.Context.GetParameter(content.Loader[content.Index]));
         }
         /// <summary>
         /// 写入<see cref="TableFragment"/>方法。
@@ -751,6 +752,18 @@ namespace Caredev.Mego.Resolve.Generators
         {
             var content = (DefaultFragment)fragment;
             writer.Write("DEFAULT");
+        }
+        /// <summary>
+        /// 写入<see cref="StringConcatFragment"/>方法。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="fragment">当前语句。</param>
+        protected virtual void WriteFragmentForStringConcat(SqlWriter writer, ISqlFragment fragment)
+        {
+            var content = (StringConcatFragment)fragment;
+            content.Left.WriteSql(writer);
+            writer.Write(" || ");
+            content.Right.WriteSql(writer);
         }
         /// <summary>
         /// 写入<see cref="UnaryFragment"/>方法。

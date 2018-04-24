@@ -108,10 +108,6 @@ namespace Caredev.Mego.Resolve
             finally
             {
                 ReleaseConnection();
-                if (_ConnectionRequestCount > 0)
-                {
-                    _ConnectionRequestCount--;
-                }
             }
         }
         /// <summary>
@@ -280,10 +276,10 @@ namespace Caredev.Mego.Resolve
                 if (_ConnectionRequestCount == 0)
                 {
                     Connection.Close();
+                    _LocalTransaction = null;
                     _OpenedConnection = false;
                 }
                 _LastTransaction = null;
-                _LocalTransaction = null;
             }
         }
         /// <summary>

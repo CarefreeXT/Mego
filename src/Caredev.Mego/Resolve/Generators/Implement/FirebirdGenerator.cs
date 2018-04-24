@@ -27,11 +27,20 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()
         {
+            MaxIdentifierLength = 31,
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
                 EDbCapable.SubQuery | EDbCapable.BatchInsert |
                 EDbCapable.Relation | EDbCapable.Sequence
         };
+    }
+    /// <summary>
+    /// Firebird 2.5 生成器。
+    /// </summary>
+    public class Firebird25Generator : FirebirdBaseGenerator
+    {
+        /// <inheritdoc/>
+        public override short Version => 0x0205;
     }
 }

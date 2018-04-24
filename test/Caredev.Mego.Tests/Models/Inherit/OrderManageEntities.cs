@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Caredev.Mego.Tests.Models.Inherit
 {
+    /// <summary>
+    /// 自增列继承实体上下文。
+    /// </summary>
     public class OrderManageEntities : DbContext
     {
         public OrderManageEntities(string name)

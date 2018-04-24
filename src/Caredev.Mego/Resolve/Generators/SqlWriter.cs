@@ -15,6 +15,18 @@ namespace Caredev.Mego.Resolve.Generators
         private readonly StringBuilder writer = new StringBuilder();
         private readonly Dictionary<string, object> _Propertys = new Dictionary<string, object>();
         /// <summary>
+        /// 创建写入器。
+        /// </summary>
+        /// <param name="context">生成上下文对象。</param>
+        public SqlWriter(GenerateContext context)
+        {
+            Context = context;  
+        }
+        /// <summary>
+        /// 生成上下文对象。
+        /// </summary>
+        public GenerateContext Context { get; }
+        /// <summary>
         /// 当前写入的源对象。
         /// </summary>
         public SourceFragment Current { get; private set; }

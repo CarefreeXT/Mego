@@ -39,25 +39,13 @@ VALUES  ( @p0, @p1, @p2, @p3, @p4, @p5 ),
 #endif
 
         private const string InsertIdentitySingleObjectTestSql =
-@"DECLARE @v0 AS INT;
-INSERT  INTO [dbo].[Products]
-        ( [Category] ,
-          [Code] ,
-          [IsValid] ,
-          [Name] ,
-          [UpdateDate]
-        )
-VALUES  ( @p0 ,
-          @p1 ,
-          @p2 ,
-          @p3 ,
-          GETDATE()
-        );
-SET @v0 = SCOPE_IDENTITY();
+@"INSERT  INTO [dbo].[Products]
+        ( [Category] ,[Code] ,[IsValid] ,[Name] ,[UpdateDate]        )
+VALUES  ( @p0 ,@p1 ,@p2 ,@p3 ,GETDATE());
 SELECT  a.[Id] ,
         a.[UpdateDate]
 FROM    [dbo].[Products] AS a
-WHERE   a.[Id] = @v0;";
+WHERE   a.[Id] = SCOPE_IDENTITY();";
 
 #if SQLSERVER2005
         private const string InsertIdentityMultiObjectTestSql =

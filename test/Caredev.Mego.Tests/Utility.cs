@@ -58,13 +58,42 @@ namespace Caredev.Mego.Tests
             Assert.AreEqual(left, right, true);
         }
 
-        public static void CommitTest<T>(T context, Action<T> action) where T : DbContext
+        public static void CommitTest<T>(T context, Action<T> action, string sql = "") where T : DbContext
         {
             try
             {
-                using (var scope = new TransactionScope(TransactionScopeOption.Required))
+                if (context.Database.Provider.SupportDistributedTransaction)
                 {
-                    action(context);
+                    using (var scope = new TransactionScope(TransactionScopeOption.Required))
+                    {
+                        try
+                        {
+                            action(context);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            if (sql != Constants.NotSuppored) throw;
+                        }
+                    }
+                }
+                else
+                {
+                    var tran = context.Database.BeginTransaction();
+                    try
+                    {
+                        try
+                        {
+                            action(context);
+                        }
+                        catch (NotSupportedException ex)
+                        {
+                            if (sql != Constants.NotSuppored) throw;
+                        }
+                    }
+                    finally
+                    {
+                        tran.Rollback();
+                    }
                 }
             }
             finally

@@ -98,9 +98,6 @@
             }
         }
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

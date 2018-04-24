@@ -5,6 +5,7 @@ namespace Caredev.Mego.Resolve.Generators
 {
     using Caredev.Mego.Common;
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
@@ -77,6 +78,13 @@ namespace Caredev.Mego.Resolve.Generators
     /// <param name="context">生成上下文。</param>
     /// <returns>语句片段。</returns>
     public delegate SqlFragment MaintenanceOperateDelegate(GenerateContext context);
+    /// <summary>
+    /// 生成语句片段委托。
+    /// </summary>
+    /// <param name="context">生成上下文。</param>
+    /// <param name="content">表达式内容。</param>
+    /// <returns>语句片段。</returns>
+    public delegate SqlFragment GenerateFragmentDelegate(GenerateContext context, DbExpression content);
     //初始化语句生成器对象。
     public partial class SqlGeneratorBase
     {
@@ -86,6 +94,7 @@ namespace Caredev.Mego.Resolve.Generators
         private readonly IDictionary<EExpressionType, RetrievalMembersDelegate> _RetrievalMembersMethods;
         private readonly IDictionary<EExpressionType, InitialMembersDelegate> _InitialMembersMethods;
         private readonly IDictionary<Type, CreateMemberDelegate> _CreateMemberMethods;
+        private readonly IDictionary<Type, GenerateFragmentDelegate> _GenerateFragmentMethods;
         private readonly IDictionary<MemberInfo, InitialRetrievalDelegate> _InitialRetrievalMethods;
         private readonly IDictionary<EOperateType, MaintenanceOperateDelegate> _MaintenanceMethods;
         /// <summary>
@@ -102,6 +111,23 @@ namespace Caredev.Mego.Resolve.Generators
             _CreateMemberMethods = InitialMethodsForCreateMember();
             _InitialRetrievalMethods = InitialMethodsForInitialRetrieval();
             _MaintenanceMethods = InitialMethodsForMaintenance();
+            _GenerateFragmentMethods = InitialMethodsForGenerateFragment();
+        }
+        private IDictionary<Type, GenerateFragmentDelegate> InitialMethodsForGenerateFragment()
+        {
+            return new Dictionary<Type, GenerateFragmentDelegate>()
+            {
+                { typeof(InheritDeleteContent) , GenerateForDeleteInherit },
+                { typeof(DeleteContent)        , GenerateForDeleteContent },
+                { typeof(UpdateContent)        , GenerateForUpdateContent },
+                { typeof(InheritUpdateContent) , GenerateForInheritUpdate },
+                { typeof(InsertContent)        , GenerateForInsertContent },
+                { typeof(InheritInsertContent) , GenerateForInheritInsert },
+                { typeof(QueryContent)         , GenerateForQuery         },
+                { typeof(RelationContent)      , GenerateForRelation      },
+                { typeof(MaintenanceContent)   , GenerateForMaintenance   },
+                { typeof(StatementContent)     , GenerateForStatement     },
+            };
         }
         /// <summary>
         /// 初始化<see cref="CreateSourceDelegate"/>的方法映射。

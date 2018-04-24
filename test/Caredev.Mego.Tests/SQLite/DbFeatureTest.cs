@@ -12,7 +12,7 @@ namespace Caredev.Mego.Tests.Core
         public const bool HasMaxInsertRowCount = false;
         public const bool HasMaxParameterCount = true;
 
-        public const string MaxParameterCountTestSql = "SELECT 1";
+        public const string MaxParameterCountTestSql = @"SELECT * FROM Customers WHERE Id IN ";
         public string MaxInsertRowCountTestSql(string name, int count)
         {
             var builder = new StringBuilder();

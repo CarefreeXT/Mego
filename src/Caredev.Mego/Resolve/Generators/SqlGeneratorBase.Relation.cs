@@ -10,16 +10,20 @@ namespace Caredev.Mego.Resolve.Generators
     using System.Collections.Generic;
     using System.Text;
     using Caredev.Mego.Common;
+    using Caredev.Mego.Resolve.Generators.Contents;
+    using Caredev.Mego.Resolve.Expressions;
+
     public partial class SqlGeneratorBase
     {
         /// <summary>
         /// 生成关系操作语句片段。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="content">表达式对象（为空）。</param>
         /// <returns>生成语句片段。</returns>
-        protected virtual SqlFragment GenerateForRelation(GenerateContext context)
+        protected virtual SqlFragment GenerateForRelation(GenerateContext context, DbExpression content)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = data.Items.Navigate;
             if (!metadata.IsComposite)
             {
@@ -70,7 +74,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationInsert(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = (CompositeNavigateMetadata)data.Items.Navigate;
             var target = new TableFragment(context, data.Table);
             var insert = new InsertValueFragment(context, target, data.CommitObject, data.Items);
@@ -85,7 +89,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationUpdate(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = data.Items.Navigate;
             var update = new UpdateFragment(context, data.Table);
             update.AddSource(update.Target);
@@ -115,7 +119,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationDeleteKey(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = data.Items.Navigate;
             var update = new UpdateFragment(context, data.Table);
             update.AddSource(update.Target);
@@ -137,7 +141,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationUpdateRepeat(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var repeat = new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader);
             repeat.Block.Add(GenerateForRelationUpdate(context));
             return repeat;
@@ -151,7 +155,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationUpdateTempTable(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = data.Items.Navigate;
             var block = new BlockFragment(context);
             var createtemptable = new CreateTempTableFragment(context,
@@ -191,7 +195,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationDelete(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var metadata = (CompositeNavigateMetadata)data.Items.Navigate;
             var target = new TableFragment(context, data.Table);
             var source = data.CommitObject;
@@ -212,7 +216,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationDeleteRepeat(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var repeat = new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader);
             repeat.Block.Add(GenerateForRelationDelete(context));
             return repeat;
@@ -226,7 +230,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForRelationDeleteTempTable(GenerateContext context)
         {
-            var data = (GenerateDataForRelation)context.Data;
+            var data = (RelationContent)context.Data;
             var composite = (CompositeNavigateMetadata)data.Items.Navigate;
             var createtemptable = new CreateTempTableFragment(context,
                 composite.Pairs.Select(a => a.ForeignKey).Concat(composite.CompositePairs.Select(a => a.ForeignKey)));

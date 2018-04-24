@@ -3,6 +3,9 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Generators.Implement
 {
+    /// <summary>
+    /// 针对 Excel 数据库的代码生成器。
+    /// </summary>
     public abstract class ExcelBaseGenerator : SqlGeneratorBase
     {
         /// <inheritdoc/>
@@ -28,5 +31,13 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.SubQuery
         };
+    }
+    /// <summary>
+    /// 针对 Access 数据库的代码生成器。
+    /// </summary>
+    public class ExcelGenerator : ExcelBaseGenerator
+    {
+        /// <inheritdoc/>
+        public override short Version => 0x0400;
     }
 }

@@ -1,10 +1,15 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
+    using System;
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2; 
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Maintenance")]
-    public partial class MaintenanceTest : ISimpleTest
+    public partial class MaintenanceTest
     {
         [TestMethod]
         public void CreateTableTest()
@@ -69,7 +74,7 @@
                 var operate = manager.TableIsExsit<Product>();
 
                 Utility.CompareSql(db, operate, TableIsExsitTestSql);
-            });
+            }, TableIsExsitTestSql);
         }
 
         [TestMethod]
@@ -81,7 +86,7 @@
                 var operate = manager.RenameTable<Product>("TestProduct");
 
                 Utility.CompareSql(db, operate, RenameTableTestSql);
-            });
+            }, RenameTableTestSql);
         }
 
         [TestMethod]
@@ -92,9 +97,8 @@
                 var manager = db.Database.Manager;
                 var operate = manager.CreateView<Product>(from a in db.Products
                                                           select a, "TestProduct");
-
                 Utility.CompareSql(db, operate, CreateViewTestSql);
-            });
+            }, CreateViewTestSql);
         }
 
         [TestMethod]
@@ -106,7 +110,7 @@
                 var operate = manager.CreateView<Product>("SELECT * FROM Products WHERE Id>0", "TestProduct");
 
                 Utility.CompareSql(db, operate, CreateViewTest2Sql);
-            });
+            }, CreateViewTest2Sql);
         }
 
         [TestMethod]
@@ -118,7 +122,7 @@
                 var operate = manager.DropView<Product>("TestProduct");
 
                 Utility.CompareSql(db, operate, DropViewTestSql);
-            });
+            }, DropViewTestSql);
         }
 
         [TestMethod]
@@ -130,7 +134,7 @@
                 var operate = manager.ViewIsExsit<Product>();
 
                 Utility.CompareSql(db, operate, ViewIsExsitTestSql);
-            });
+            }, ViewIsExsitTestSql);
         }
 
 #if !SQLITE
@@ -143,7 +147,7 @@
                 var operate = manager.RenameView<Product>("TestProduct");
 
                 Utility.CompareSql(db, operate, RenameViewTestSql);
-            });
+            }, RenameViewTestSql);
         }
 
         [TestMethod]
@@ -155,7 +159,7 @@
                 var operate = manager.CreateRelation((Order order) => order.Customer).ToArray();
 
                 Utility.CompareSql(db, operate[0], CreateRelationTestSql);
-            });
+            }, CreateRelationTestSql);
         }
 
         [TestMethod]
@@ -167,7 +171,7 @@
                 var operate = manager.DropRelation((Order order) => order.Customer).ToArray();
 
                 Utility.CompareSql(db, operate[0], DropRelationTestSql);
-            });
+            }, DropRelationTestSql);
         }
 
         [TestMethod]
@@ -180,7 +184,7 @@
 
                 Utility.CompareSql(db, operate[0], CreateCompositeRelationTestSql);
                 Utility.CompareSql(db, operate[1], CreateCompositeRelationTestSql1);
-            });
+            }, CreateCompositeRelationTestSql);
         }
 
         [TestMethod]
@@ -193,13 +197,10 @@
 
                 Utility.CompareSql(db, operate[0], DropCompositeRelationTestSql);
                 Utility.CompareSql(db, operate[1], DropCompositeRelationTestSql1);
-            });
+            }, DropCompositeRelationTestSql);
         }
 #endif
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

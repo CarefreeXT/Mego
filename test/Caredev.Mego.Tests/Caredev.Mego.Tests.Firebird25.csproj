@@ -30,7 +30,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;FIREBIR;FIREBIRD25;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FIREBIRD;FIREBIRD25;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -59,7 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
     <Compile Include="Firebird\Constants.cs" />
+    <Compile Include="Firebird\DbFeatureTest.cs" />
+    <Compile Include="Firebird\MaintenanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

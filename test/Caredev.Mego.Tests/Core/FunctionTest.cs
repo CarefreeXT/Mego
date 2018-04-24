@@ -32,10 +32,7 @@
             throw new NotImplementedException();
         }
 
-        public OrderManageEntities CreateSimpleContext()
-        {
-            return new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
 
     }
 }

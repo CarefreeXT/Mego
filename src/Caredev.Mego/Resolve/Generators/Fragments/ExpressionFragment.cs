@@ -215,6 +215,32 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         public IEnumerable Value { get; }
     }
     /// <summary>
+    /// 字符串连接语句片段。
+    /// </summary>
+    public class StringConcatFragment : SqlFragment, ILogicFragment
+    {
+        /// <summary>
+        /// 初始化字符串连接语句片段。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="left">左表达式。</param>
+        /// <param name="right">右表达式。</param>
+        public StringConcatFragment(GenerateContext context, IExpressionFragment left, IExpressionFragment right)
+            : base(context)
+        {
+            Left = left;
+            Right = right;
+        }
+        /// <summary>
+        /// 左表达式。
+        /// </summary>
+        public IExpressionFragment Left { get; set; }
+        /// <summary>
+        /// 右表达式。
+        /// </summary>
+        public IExpressionFragment Right { get; set; }
+    }
+    /// <summary>
     /// 默认值语句片段。
     /// </summary>
     public class DefaultFragment : SqlFragment, IExpressionFragment

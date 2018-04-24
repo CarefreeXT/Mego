@@ -41,6 +41,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                     writer.Write(exist.Name.Name);
                     writer.Write('\'');
                     break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, exist.Kind));
             }
             writer.Write(") THEN TRUE ELSE FALSE END");
         }

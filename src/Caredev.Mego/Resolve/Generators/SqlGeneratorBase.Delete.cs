@@ -4,131 +4,14 @@
 namespace Caredev.Mego.Resolve.Generators
 {
     using Caredev.Mego.Common;
-    using Caredev.Mego.Exceptions;
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
     using System;
     using System.Linq;
-    using Res = Properties.Resources;
     public partial class SqlGeneratorBase
     {
-        /// <summary>
-        /// 生成删除操作语句，对象删除的总入口。
-        /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForDelete(GenerateContext context)
-        {
-            var data = (GenerateDataForDelete)context.Data;
-            if (data.Items.Count == 1)
-            {
-                return GenerateForDeleteSingle(context);
-            }
-            else
-            {
-                if (data.Table.Keys.Length == 1 && !data.NeedConcurrencyCheck)
-                {
-                    return GenerateForDeleteKey(context);
-                }
-                else
-                {
-                    if (context.Feature.HasCapable(EDbCapable.TemporaryTable | EDbCapable.ModifyJoin))
-                    {
-                        return GenerateForDeleteKeysTempTable(context);
-                    }
-                    else
-                    {
-                        return GenerateForDeleteSingleRepeat(context);
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 生成删除单个数据对象语句
-        /// </summary>
-        /// <param name="context">生成上下文</param>
-        /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForDeleteSingle(GenerateContext context)
-        {
-            var data = (GenerateDataForDelete)context.Data;
-            var block = new BlockFragment(context);
-            var name = data.TargetName;
-            foreach (var table in data.GetTables())
-            {
-                var delete = new DeleteFragment(context, table, name);
-                delete.Where = delete.Target.JoinCondition(data.CommitObject, 
-                    data.UnionConcurrencyMembers(table, table.Keys));
-                block.Add(delete);
-            }
-            data.SetConcurrencyExpectCount(data.TableCount);
-            return block;
-        }
-        /// <summary>
-        /// 生成删除若干数据对象（单个主键）语句。
-        /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForDeleteKey(GenerateContext context)
-        {
-            var data = (GenerateDataForDelete)context.Data;
-            var block = new BlockFragment(context);
-            var key = data.Table.Keys[0];
-            var member = (CommitMemberFragment)data.CommitObject.GetMember(key);
-            var values = new ValueListFragment(context, member, data.Items);
-            var name = data.TargetName;
-            foreach (var table in data.GetTables())
-            {
-                var delete = new DeleteFragment(context, table, name);
-                var keyMember = delete.Target.GetMember(key);
-                delete.Where = new ScalarFragment(context, values, keyMember)
-                {
-                    Function = SupportMembers.Enumerable.Contains
-                };
-                block.Add(delete);
-            }
-            return block;
-        }
-        /// <summary>
-        /// 使用临时表形式，生成删除若干数据对象（多个主键）语句，
-        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
-        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
-        /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForDeleteKeysTempTable(GenerateContext context)
-        {
-            var data = (GenerateDataForDelete)context.Data;
-            var block = new BlockFragment(context)
-            {
-                GenerateCreateTemplateTable(context, data.CommitObject, data.Items,data.Table.Keys.Concat(data.ConcurrencyMembers))
-            };
-            var temptable = ((CreateTempTableFragment)block.First()).Table;
-            var name = data.TargetName;
-            foreach (var metadata in data.GetTables())
-            {
-                var filterMembers = data.UnionConcurrencyMembers(metadata, metadata.Keys);
-                var delete = new DeleteFragment(context, metadata, name);
-                var current = delete.Target;
-                var currenttemptable = new TemporaryTableFragment(context, filterMembers, temptable.Name);
-                delete.AddSource(currenttemptable);
-                current.Join(currenttemptable, filterMembers);
-                block.Add(delete);
-            }
-            data.SetConcurrencyExpectCount(data.TableCount + 1);
-            return block;
-        }
-        /// <summary>
-        /// 使用重复生成的方式，生成删除多个对象的语句。
-        /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForDeleteSingleRepeat(GenerateContext context)
-        {
-            var data = (GenerateDataForDelete)context.Data;
-            var block = (BlockFragment)GenerateForDeleteSingle(context);
-            return new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader, block);
-        }
         /// <summary>
         /// 表达式生成删除语句。
         /// </summary>
@@ -137,7 +20,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForDeleteStatement(GenerateContext context, DbExpression content)
         {
-            var data = (GenerateDataForStatement)context.Data;
+            var data = (StatementContent)context.Data;
             var item = data.ItemEpxression;
             var source = CreateSource(context, content) as QueryBaseFragment;
 
@@ -175,6 +58,179 @@ namespace Caredev.Mego.Resolve.Generators
                 }
                 return block;
             }
+        }
+    }
+    partial class SqlGeneratorBase
+    {
+        /// <summary>
+        /// 生成实体删除语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="content">表达式内容（为空）。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteContent(GenerateContext context, DbExpression content)
+        {
+            var data = (DeleteContent)context.Data;
+            data.SetConcurrencyExpectCount(1);
+            if (data.Items.Count == 1)
+            {
+                return GenerateForDeleteSingle(context, data);
+            }
+            else if (data.Table.Keys.Length == 1 && !data.NeedConcurrencyCheck)
+            {
+                return GenerateForDeleteKey(context, data);
+            }
+            else if (context.Feature.HasCapable(EDbCapable.TemporaryTable | EDbCapable.ModifyJoin))
+            {
+                data.SetConcurrencyExpectCount(2);
+                return GenerateForDeleteKeysTempTable(context, data);
+            }
+            else
+            {
+                return GenerateForDeleteSingleRepeat(context, data);
+            }
+        }
+        /// <summary>
+        /// 生成删除单个数据对象语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteSingle(GenerateContext context, DeleteContent data)
+        {
+            return data.DeleteByKeys(data.Table, data.TargetName);
+        }
+        /// <summary>
+        /// 生成删除若干数据对象（单个主键）语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteKey(GenerateContext context, DeleteContent data)
+        {
+            var key = data.Table.Keys[0];
+            var member = (CommitMemberFragment)data.CommitObject.GetMember(key);
+            var values = new ValueListFragment(context, member, data.Items);
+            var table = data.Table;
+            return data.DeleteInKey(data.Table, key, values, data.TargetName);
+        }
+        /// <summary>
+        /// 使用临时表形式，生成删除若干数据对象（多个主键）语句，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
+        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteKeysTempTable(GenerateContext context, DeleteContent data)
+        {
+            var block = new BlockFragment(context)
+            {
+                GenerateCreateTemplateTable(context, data.CommitObject, data.Items
+                    , data.UnionConcurrencyMembers(data.Table, data.Table.Keys))
+            };
+            var temptable = ((CreateTempTableFragment)block.First()).Table;
+            block.Add(data.DeleteByTemptable(data.Table, temptable, data.TargetName));
+            return block;
+        }
+        /// <summary>
+        /// 使用重复生成的方式，生成删除多个对象的语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteSingleRepeat(GenerateContext context, DeleteContent data)
+        {
+            var delete = GenerateForDeleteSingle(context, data);
+            return new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader, new BlockFragment(context, delete));
+        }
+    }
+    partial class SqlGeneratorBase
+    {
+        /// <summary>
+        /// 生成继承实体删除语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="content">表达式内容（为空）。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteInherit(GenerateContext context, DbExpression content)
+        {
+            var data = (InheritDeleteContent)context.Data;
+            data.SetConcurrencyExpectCount(data.Tables.Length);
+            if (data.Items.Count == 1)
+            {
+                return GenerateForDeleteSingle(context, data);
+            }
+            else if (data.Table.Keys.Length == 1 && !data.NeedConcurrencyCheck)
+            {
+                return GenerateForDeleteKey(context, data);
+            }
+            else if (context.Feature.HasCapable(EDbCapable.TemporaryTable | EDbCapable.ModifyJoin))
+            {
+                data.SetConcurrencyExpectCount(data.Tables.Length + 1);
+                return GenerateForDeleteKeysTempTable(context, data);
+            }
+            else
+            {
+                return GenerateForDeleteSingleRepeat(context, data);
+            }
+        }
+        /// <summary>
+        /// 生成删除单个数据对象语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteSingle(GenerateContext context, InheritDeleteContent data)
+        {
+            return new BlockFragment(context, data.Tables.Select(a => data.DeleteByKeys(a)).ToArray());
+        }
+        /// <summary>
+        /// 生成删除若干数据对象（单个主键）语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteKey(GenerateContext context, InheritDeleteContent data)
+        {
+            var key = data.Table.Keys[0];
+            var member = (CommitMemberFragment)data.CommitObject.GetMember(key);
+            var values = new ValueListFragment(context, member, data.Items);
+            return new BlockFragment(context, data.Tables.Select(
+                a => data.DeleteInKey(a, key, values)).ToArray());
+        }
+        /// <summary>
+        /// 使用临时表形式，生成删除若干数据对象（多个主键）语句，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
+        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteKeysTempTable(GenerateContext context, InheritDeleteContent data)
+        {
+            var block = new BlockFragment(context)
+            {
+                GenerateCreateTemplateTable(context, data.CommitObject, data.Items
+                    , data.UnionConcurrencyMembers(data.Table, data.Table.Keys))
+            };
+            var temptable = ((CreateTempTableFragment)block.First()).Table;
+            foreach (var metadata in data.Tables)
+            {
+                block.Add(data.DeleteByTemptable(metadata, temptable));
+            }
+            return block;
+        }
+        /// <summary>
+        /// 使用重复生成的方式，生成删除多个对象的语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForDeleteSingleRepeat(GenerateContext context, InheritDeleteContent data)
+        {
+            var block = (BlockFragment)GenerateForDeleteSingle(context, data);
+            return new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader, block);
         }
     }
 }

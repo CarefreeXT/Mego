@@ -9,6 +9,8 @@ namespace Caredev.Mego.Resolve.Providers
     internal class PostgreSQLAccessProvider : DbAccessProvider
     {
         /// <inheritdoc/>
+        public override bool SupportDistributedTransaction => false;
+        /// <inheritdoc/>
         public override string ProviderName => "Npgsql";
         /// <inheritdoc/>
         public override EExecutionMode ExecutionMode => EExecutionMode.MergeOperations;

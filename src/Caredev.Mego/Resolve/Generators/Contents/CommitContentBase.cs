@@ -1,27 +1,27 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Generators
+namespace Caredev.Mego.Resolve.Generators.Contents
 {
-    using System;
-    using System.Linq;
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Res = Properties.Resources;
     /// <summary>
-    /// 用于提交数据的生成数据对象。
+    /// 提交数据内容对象。
     /// </summary>
-    public abstract class GenerateDataForCommit : GenerateData
+    public abstract class CommitContentBase : OperateContentBase
     {
         /// <summary>
-        /// 创建数据对象。
+        /// 创建提交内容对象。
         /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <param name="operate">当前操作对象。</param>
-        internal GenerateDataForCommit(GenerateContext context, DbObjectsOperateBase operate)
+        /// <param name="context"></param>
+        /// <param name="operate"></param>
+        internal CommitContentBase(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {
             if (operate is IConcurrencyCheckOperate concur)
@@ -29,15 +29,15 @@ namespace Caredev.Mego.Resolve.Generators
                 NeedConcurrencyCheck = concur.NeedCheck;
             }
             Table = context.Metadata.Table(operate.ClrType);
-            TableCount = Table.InheritSets.Length + 1;
+            Items = operate;
             Items = operate;
             Loader = CreateLoader(context, Table);
             CommitObject = new CommitObjectFragment(context, Loader);
         }
         /// <summary>
-        /// 当前关联的数据集合对象。
+        /// 对象集操作对象。
         /// </summary>
-        internal DbObjectsOperateBase Items { get; }
+        public DbObjectsOperateBase Items { get; }
         /// <summary>
         /// 提交相关的表元数据。
         /// </summary>
@@ -59,20 +59,20 @@ namespace Caredev.Mego.Resolve.Generators
         /// </summary>
         public bool NeedConcurrencyCheck { get; }
         /// <summary>
-        /// 当前操作涉及的表的总数。
+        /// 并发成员列表。
         /// </summary>
-        public int TableCount { get; }
-        /// <summary>
-        /// 获取实际需要提交的表（当前表与继承表）的元数据。
-        /// </summary>
-        /// <returns></returns>
-        public virtual IEnumerable<TableMetadata> GetTables()
+        public virtual IEnumerable<ColumnMetadata> ConcurrencyMembers
         {
-            foreach (var table in Table.InheritSets)
+            get
             {
-                yield return table;
+                if (NeedConcurrencyCheck)
+                {
+                    foreach (var member in Table.Concurrencys)
+                    {
+                        yield return member;
+                    }
+                }
             }
-            yield return Table;
         }
         /// <summary>
         /// 创建属性值加载对象。
@@ -84,34 +84,12 @@ namespace Caredev.Mego.Resolve.Generators
         /// <inheritdoc/>
         public override void Inititalze(DbExpression content = null)
         {
-            if (this.Items.DbSet.Name != null && this.Table.InheritSets.Length > 0)
-            {
-                throw new NotSupportedException(Res.NotSupportedInheritSetUsingDbName);
-            }
+            base.Inititalze(content);
             if (Items.Count == 1)
             {
                 foreach (var obj in Items)
                 {
                     Loader.Load(obj);
-                }
-            }
-        }
-        /// <summary>
-        /// 并发成员列表。
-        /// </summary>
-        public IEnumerable<ColumnMetadata> ConcurrencyMembers
-        {
-            get
-            {
-                if (NeedConcurrencyCheck)
-                {
-                    foreach (var table in GetTables())
-                    {
-                        foreach (var member in table.Concurrencys)
-                        {
-                            yield return member;
-                        }
-                    }
                 }
             }
         }

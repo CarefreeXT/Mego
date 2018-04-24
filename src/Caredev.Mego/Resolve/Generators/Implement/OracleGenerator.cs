@@ -27,11 +27,21 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()
         {
+            DefaultSchema = "system",
+            MaxIdentifierLength = 30,
             Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
                 EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyJoin |
                 EDbCapable.Relation | EDbCapable.Sequence
         };
+    }
+    /// <summary>
+    /// Oracle 11g 生成器。
+    /// </summary>
+    public class Oracle11Generator : OracleBaseGenerator
+    {
+        /// <inheritdoc/>
+        public override short Version => 0x0B00;
     }
 }

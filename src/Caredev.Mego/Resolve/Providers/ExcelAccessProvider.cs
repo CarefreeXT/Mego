@@ -11,6 +11,10 @@ namespace Caredev.Mego.Resolve.Providers
     internal class ExcelAccessProvider : DbAccessProvider
     {
         /// <inheritdoc/>
+        public override bool IsExclusive => true;
+        /// <inheritdoc/>
+        public override bool SupportDistributedTransaction => false;
+        /// <inheritdoc/>
         public override string ProviderName => "System.Data.Excel";
         /// <inheritdoc/>
         public override DbProviderFactory Factory => DbAccessProvider.GetFactory("System.Data.OleDb");

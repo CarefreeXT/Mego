@@ -1,7 +1,7 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Generators
+namespace Caredev.Mego.Resolve.Generators.Contents
 {
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Generators.Fragments;
@@ -10,14 +10,14 @@ namespace Caredev.Mego.Resolve.Generators
     /// <summary>
     /// 用于关系新增或删除的生成数据对象。
     /// </summary>
-    public class GenerateDataForRelation : GenerateData
+    public class RelationContent : OperateContentBase
     {
         /// <summary>
         /// 创建数据对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="operate">当前操作对象。</param>
-        internal GenerateDataForRelation(GenerateContext context, DbRelationOperateBase operate)
+        internal RelationContent(GenerateContext context, DbRelationOperateBase operate)
             : base(context, operate)
         {
             Items = operate;

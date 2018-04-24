@@ -21,7 +21,7 @@ namespace Caredev.Mego.Resolve.Operates
         /// <param name="pairs">主外键对集合。</param>
         internal DbCreateDropRelationOperate(DbContext context, EOperateType type,
             TableMetadata principal, TableMetadata foreign, ForeignPrincipalPair[] pairs)
-             : base(context, typeof(object), CreateName(principal, foreign, pairs))
+             : base(context, typeof(object), CreateName(context, principal, foreign, pairs))
         {
             _Type = type;
             Foreign = foreign;
@@ -29,9 +29,15 @@ namespace Caredev.Mego.Resolve.Operates
             Pairs = pairs;
         }
         //创建名称。
-        private static DbName CreateName(TableMetadata principal, TableMetadata foreign, ForeignPrincipalPair[] pairs)
+        private static DbName CreateName(DbContext context, TableMetadata principal, TableMetadata foreign, ForeignPrincipalPair[] pairs)
         {
-            return DbName.NameOnly($"FK_{foreign.Name}_{principal.Name}_{string.Join("_", pairs.Select(a => a.ForeignKey.Name).ToArray())}_{string.Join("_", pairs.Select(a => a.PrincipalKey.Name).ToArray())}");
+            var foreignName = $"FK_{foreign.Name}_{principal.Name}_{string.Join("_", pairs.Select(a => a.ForeignKey.Name).ToArray())}_{string.Join("_", pairs.Select(a => a.PrincipalKey.Name).ToArray())}";
+            var maxlength = context.Configuration.DatabaseFeature.MaxIdentifierLength;
+            if (maxlength.HasValue && foreignName.Length > maxlength.Value)
+            {
+                foreignName = foreignName.Substring(0, maxlength.Value);
+            }
+            return DbName.NameOnly(foreignName);
         }
         /// <summary>
         /// 外键表元数据。

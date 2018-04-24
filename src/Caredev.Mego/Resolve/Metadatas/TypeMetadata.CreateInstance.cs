@@ -56,7 +56,7 @@ namespace Caredev.Mego.Resolve.Metadatas
                 var primarys = Metadata.PrimaryMembers;
                 var complexs = Metadata.ComplexMembers;
 
-                var indexPrimary = 0;
+                //var indexPrimary = 0;
                 var indexComplex = 0;
 
                 for (int i = 0; i < parameters.Length; i++)

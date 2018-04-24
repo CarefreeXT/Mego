@@ -25,8 +25,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         };
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeDefaultMapping = new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping)
         {
-            { typeof(string) , "NVARCHAR(MAX)" },
-            { typeof(byte[]) , "VARBINARY(MAX)" },
+            { typeof(string) , "NTEXT" },
+            { typeof(byte[]) , "IMAGE" },
             { typeof(decimal), "MONEY" }
         };
         /// <summary>
@@ -36,11 +36,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public SqlServerCeFragmentWriter(SqlGeneratorBase generator)
             : base(generator)
         {
-        }
-        /// <inheritdoc/>
-        public override void WriteDbObject(SqlWriter writer, string name, string schema)
-        {
-            WriteDbName(writer, name);
         }
         /// <inheritdoc/>
         public override void WriteDbName(SqlWriter writer, string name)

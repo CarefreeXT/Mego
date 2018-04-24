@@ -33,4 +33,11 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 EDbCapable.Relation | EDbCapable.Identity
         };
     }
+    /// <summary>
+    /// 针对 SQL Server Compact 4.0 数据库的代码生成器。
+    /// </summary>
+    public class SqlServerCe40Generator : SqlServerCeBaseGenerator
+    {
+        public override short Version => 0x0400;
+    }
 }

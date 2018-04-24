@@ -47,11 +47,9 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             var binary = (DbBinaryExpression)expression;
             if (binary.Kind == EBinaryKind.Add && binary.ClrType == typeof(string))
             {
-                var scalar = new ScalarFragment(context,
+                return new StringConcatFragment(context,
                     source.CreateExpression(binary.Left),
                     source.CreateExpression(binary.Right));
-                scalar.Function = SupportMembers.String.Concat;
-                return scalar;
             }
             return base.CreateExpressionForBinary(context, expression, source);
         }

@@ -56,7 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
     <Compile Include="Excel\Constants.cs" />
+    <Compile Include="Excel\DbFeatureTest.cs" />
+    <Compile Include="Excel\MaintenanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

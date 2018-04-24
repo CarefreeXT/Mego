@@ -40,13 +40,12 @@ FROM `customers` AS b
         private const string InsertIdentitySingleObjectTestSql =
 @"INSERT INTO `products` (`Category`, `Code`, `IsValid`, `Name`, `UpdateDate`)
   VALUES (@p0, @p1, @p2, CONCAT(@p3, @p4), NOW());
-SET @v0 = LAST_INSERT_ID();
 SELECT
   a.`Id`,
   a.`Name`,
   a.`UpdateDate`
 FROM `products` AS a
-WHERE a.`Id` = @v0;";
+WHERE a.`Id` =LAST_INSERT_ID();";
 
         private const string InsertIdentityMultiObjectTestSql =
 @"CREATE TEMPORARY TABLE `t$1` (

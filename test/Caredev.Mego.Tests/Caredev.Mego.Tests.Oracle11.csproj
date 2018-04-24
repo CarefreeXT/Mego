@@ -58,10 +58,14 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Commit\Simple\InsertTest.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\InsertTest.cs" />
     <Compile Include="Oracle\Constants.cs" />
     <Compile Include="Oracle\DbFeatureTest.cs" />
+    <Compile Include="Oracle\MaintenanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

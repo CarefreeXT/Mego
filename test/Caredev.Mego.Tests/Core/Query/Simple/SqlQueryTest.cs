@@ -25,9 +25,6 @@
                 Assert.IsTrue(data.Any(a => a.Id > 0));
             }
         }
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

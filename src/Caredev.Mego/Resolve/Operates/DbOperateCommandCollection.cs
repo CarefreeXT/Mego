@@ -21,10 +21,10 @@ namespace Caredev.Mego.Resolve.Operates
         /// <param name="context">操作上下文。</param>
         public DbOperateCommandCollection(DbOperateContext context)
         {
+            _ExecutionMode = context.Context.Database.Provider.ExecutionMode;
             operationContext = context;
             commands = new List<DbOperateCommandBase>();
             CheckParameterCount();
-            _ExecutionMode = context.Context.Database.Provider.ExecutionMode;
         }
         /// <summary>
         /// 检查当前操作集合中参数数量是否足够完成数据提交。

@@ -36,7 +36,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <returns>基本当前片段的完成语句内容。</returns>
         public override string ToString()
         {
-            var writer = new SqlWriter();
+            var writer = new SqlWriter(_Context);
             _Context.WriteFragment(writer, this);
             if (HasTerminator)
             {

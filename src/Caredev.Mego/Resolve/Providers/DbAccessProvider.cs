@@ -52,6 +52,10 @@ namespace Caredev.Mego.Resolve.Providers
         /// </summary>
         public virtual bool IsExclusive => false;
         /// <summary>
+        /// 是否支持分布式事务。
+        /// </summary>
+        public virtual bool SupportDistributedTransaction => true;
+        /// <summary>
         /// 获取数据库版本号。
         /// </summary>
         /// <param name="connection">连接对象。</param>
@@ -59,11 +63,26 @@ namespace Caredev.Mego.Resolve.Providers
         public virtual short GetDatabaseVersion(DbConnection connection)
         {
             string serverVersion = string.Empty;
-            if (connection.State != ConnectionState.Open && !IsExclusive)
+            if (connection.State != ConnectionState.Open)
             {
-                connection.Open();
-                serverVersion = connection.ServerVersion;
-                connection.Close();
+                if (IsExclusive)
+                {
+                    try
+                    {
+                        serverVersion = connection.ServerVersion;
+                    }
+                    catch
+                    {
+                        connection.Open();
+                        serverVersion = connection.ServerVersion;
+                    }
+                }
+                else
+                {
+                    connection.Open();
+                    serverVersion = connection.ServerVersion;
+                    connection.Close();
+                }
             }
             else
             {

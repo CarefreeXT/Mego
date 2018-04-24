@@ -3,17 +3,17 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Generators
 {
+    using Caredev.Mego.Exceptions;
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
     using Caredev.Mego.Resolve.Outputs;
-    using Caredev.Mego.Resolve.ValueGenerates;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Caredev.Mego.Exceptions;
     using Res = Properties.Resources;
     /// <summary>
     /// 语句生成器基类。
@@ -46,33 +46,86 @@ namespace Caredev.Mego.Resolve.Generators
         {
             var context = new GenerateContext(operate, this);
             context.Data.Inititalze(content);
-            SqlFragment fragment = null;
-            switch (operate.Type)
+            if (!_GenerateFragmentMethods.TryGetValue(context.Data.GetType(), out GenerateFragmentDelegate method))
             {
-                case EOperateType.InsertObjects: fragment = GenerateForInsert(context); break;
-                case EOperateType.UpdateObjects: fragment = GenerateForUpdate(context); break;
-                case EOperateType.DeleteObjects: fragment = GenerateForDelete(context); break;
-                case EOperateType.QueryObject:
-                case EOperateType.QueryCollection: fragment = GenerateForQuery(context, content); break;
-                case EOperateType.InsertPropertys: fragment = GenerateForInsert(context, content); break;
-                case EOperateType.UpdatePropertys: fragment = GenerateForUpdate(context, content); break;
-                case EOperateType.InsertStatement: fragment = GenerateForInsertStatement(context, content); break;
-                case EOperateType.UpdateStatement: fragment = GenerateForUpdateStatement(context, content); break;
-                case EOperateType.DeleteStatement: fragment = GenerateForDeleteStatement(context, content); break;
-                case EOperateType.AddRelation:
-                case EOperateType.RemoveRelation: fragment = GenerateForRelation(context); break;
-                default:
-                    if (operate is DbMaintenanceOperateBase maintenance)
-                    {
-                        fragment = GenerateForMaintenance(context);
-                    }
-                    break;
+                throw new NotImplementedException();
             }
+            var fragment = method(context, content);
             return fragment.ToString();
         }
     }
     public partial class SqlGeneratorBase : IDbSqlGenerator
     {
+        /// <summary>
+        /// 创建操作内容数据对象。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="operate">操作对象。</param>
+        /// <returns></returns>
+        public virtual OperateContentBase CreateData(GenerateContext context, DbOperateBase operate)
+        {
+            switch (operate.Type)
+            {
+                case EOperateType.AddRelation:
+                case EOperateType.RemoveRelation:
+                    return new RelationContent(context, operate as DbRelationOperateBase);
+                case EOperateType.QueryCollection:
+                case EOperateType.QueryObject:
+                    return new QueryContent(context, operate as DbQueryOperateBase);
+                case EOperateType.InsertStatement:
+                case EOperateType.UpdateStatement:
+                case EOperateType.DeleteStatement:
+                    return new StatementContent(context, operate as DbStatementOperateBase);
+                default:
+                    if (operate is DbObjectsOperateBase objects)
+                    {
+                        var metadata = context.Metadata.Table(objects.ClrType);
+                        var isherit = metadata.InheritSets.Length > 0;
+                        switch (operate.Type)
+                        {
+                            case EOperateType.InsertObjects:
+                            case EOperateType.InsertPropertys:
+                                if (isherit)
+                                {
+                                    return new InheritInsertContent(context, objects);
+                                }
+                                else
+                                {
+                                    return new InsertContent(context, objects);
+                                }
+                            case EOperateType.UpdateObjects:
+                            case EOperateType.UpdatePropertys:
+                                if (isherit)
+                                {
+                                    return new InheritUpdateContent(context, objects);
+                                }
+                                else
+                                {
+                                    return new UpdateContent(context, objects);
+                                }
+                            case EOperateType.DeleteObjects:
+                                if (isherit)
+                                {
+                                    return new InheritDeleteContent(context, objects);
+                                }
+                                else
+                                {
+                                    return new DeleteContent(context, objects);
+                                }
+                            default:
+                                throw new System.InvalidOperationException();
+                        }
+                    }
+                    else if (operate is DbMaintenanceOperateBase maintenance)
+                    {
+                        return new MaintenanceContent(context, maintenance);
+                    }
+                    else
+                    {
+                        return new OperateContentBase(context, operate);
+                    }
+            }
+        }
 
         private SourceFragment GenerateForQuery(GenerateContext context, DbExpression content)
         {

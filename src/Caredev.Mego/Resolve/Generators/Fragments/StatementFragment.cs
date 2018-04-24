@@ -189,6 +189,21 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         public IEnumerable<ISqlFragment> Values => _KeyValues.Values;
         private readonly Dictionary<ColumnMetadata, ISqlFragment> _KeyValues;
         /// <summary>
+        /// 插入返回成员。
+        /// </summary>
+        public List<IMemberFragment> ReturnMembers
+        {
+            get
+            {
+                if (_ReturnMembers == null)
+                {
+                    _ReturnMembers = new List<IMemberFragment>();
+                }
+                return _ReturnMembers;
+            }
+        }
+        private List<IMemberFragment> _ReturnMembers;
+        /// <summary>
         /// 设置当前要插入的值。
         /// </summary>
         /// <param name="member">更新成员。</param>
@@ -283,7 +298,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// <param name="context">生成上下文。</param>
         /// <param name="target">删除目标表元数据。</param>
         /// <param name="name">自定义对象名称。</param>
-        public DeleteFragment(GenerateContext context, TableMetadata target, DbName name)
+        public DeleteFragment(GenerateContext context, TableMetadata target, DbName name = null)
             : this(context, new TableFragment(context, target, name))
         {
 

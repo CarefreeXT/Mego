@@ -12,7 +12,7 @@ namespace Caredev.Mego.Tests.Core
         public const bool HasMaxInsertRowCount = false;
         public const bool HasMaxParameterCount = false;
 
-        public const string MaxParameterCountTestSql = "SELECT 1";
+        public const string MaxParameterCountTestSql = @"SELECT * FROM ""SIMPLE"".""Customers"" WHERE ""Id"" IN";
         public string MaxInsertRowCountTestSql(string name, int count)
         {
             var builder = new StringBuilder();
@@ -31,7 +31,16 @@ namespace Caredev.Mego.Tests.Core
         public void CreateDatabaseIfNoExsits(DbContext context)
         {
             var stringbuilder = new OracleConnectionStringBuilder(context.Database.Connection.ConnectionString);
-
+            var database = stringbuilder.UserID.ToUpper();
+            stringbuilder.UserID = "SYSTEM";
+            using (var con = new OracleConnection(stringbuilder.ToString()))
+            {
+                if (con.ExecuteScalar<int>("SELECT COUNT(1) FROM ALL_USERS WHERE USERNAME=:p0", database) == 0)
+                {
+                    con.ExecuteNonQuery($"CREATE USER {database} IDENTIFIED BY manager");
+                    con.ExecuteNonQuery($"GRANT DBA TO  {database}");
+                }
+            }
         }
     }
 }

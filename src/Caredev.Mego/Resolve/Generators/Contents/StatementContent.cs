@@ -1,7 +1,7 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Generators
+namespace Caredev.Mego.Resolve.Generators.Contents
 {
     using Caredev.Mego.Exceptions;
     using Caredev.Mego.Resolve.Expressions;
@@ -12,14 +12,14 @@ namespace Caredev.Mego.Resolve.Generators
     /// <summary>
     /// 语句式提交数据。
     /// </summary>
-    public class GenerateDataForStatement : GenerateData
+    public class StatementContent : OperateContentBase
     {
         /// <summary>
         /// 创建数据对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="operate">当前操作对象。</param>
-        internal GenerateDataForStatement(GenerateContext context, DbStatementOperateBase operate)
+        internal StatementContent(GenerateContext context, DbStatementOperateBase operate)
             : base(context, operate)
         {
             Statement = operate;

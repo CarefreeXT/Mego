@@ -57,7 +57,10 @@
   <ItemGroup>
     <Compile Include="Access\Constants.cs" />
     <Compile Include="Access\DbFeatureTest.cs" />
+    <Compile Include="Access\MaintenanceTest.cs" />
     <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Core\MaintenanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -79,8 +79,7 @@ FROM    [dbo].[Customers] AS b
 #endif
 
         private const string InsertIdentitySingleObjectTestSql =
-@"DECLARE @v0 AS INT;
-INSERT  INTO [dbo].[Products]
+@"INSERT  INTO [dbo].[Products]
         ( [Category] ,
           [Code] ,
           [IsValid] ,
@@ -93,12 +92,11 @@ VALUES  ( @p0 ,
           @p3 + @p4 ,
           GETDATE()
         );
-SET @v0 = SCOPE_IDENTITY();
 SELECT  a.[Id] ,
         a.[Name] ,
         a.[UpdateDate]
 FROM    [dbo].[Products] AS a
-WHERE   a.[Id] = @v0;";
+WHERE   a.[Id] = SCOPE_IDENTITY();";
 
 #if SQLSERVER2005
         private const string InsertIdentityMultiObjectTestSql =

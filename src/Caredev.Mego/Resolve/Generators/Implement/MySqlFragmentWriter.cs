@@ -42,11 +42,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public MySqlFragmentWriter(MySqlBaseGenerator generator)
             : base(generator) { }
         /// <inheritdoc/>
-        public override void WriteDbObject(SqlWriter writer, string name, string schema)
-        {
-            WriteDbName(writer, name);
-        }
-        /// <inheritdoc/>
         public override void WriteDbName(SqlWriter writer, string name)
         {
             writer.Write('`');

@@ -5,6 +5,7 @@ namespace Caredev.Mego.Resolve.Generators
 {
     using Caredev.Mego.Common;
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
     using Caredev.Mego.Resolve.Outputs;
@@ -37,37 +38,12 @@ namespace Caredev.Mego.Resolve.Generators
             Metadata = configure.Metadata;
             _Translator = configure.Translator;
             Feature = dataContext.Database.Feature;
-            switch (operate.Type)
-            {
-                case EOperateType.InsertObjects:
-                case EOperateType.InsertPropertys:
-                    Data = new GenerateDataForInsert(this, operate as DbObjectsOperateBase);
-                    break;
-                case EOperateType.UpdateObjects:
-                case EOperateType.UpdatePropertys:
-                    Data = new GenerateDataForUpdate(this, operate as DbObjectsOperateBase);
-                    break;
-                case EOperateType.DeleteObjects:
-                    Data = new GenerateDataForDelete(this, operate as DbObjectsOperateBase);
-                    break;
-                case EOperateType.AddRelation:
-                case EOperateType.RemoveRelation:
-                    Data = new GenerateDataForRelation(this, operate as DbRelationOperateBase);
-                    break;
-                case EOperateType.InsertStatement:
-                case EOperateType.UpdateStatement:
-                case EOperateType.DeleteStatement:
-                    Data = new GenerateDataForStatement(this, operate as DbStatementOperateBase);
-                    break;
-                default:
-                    Data = new GenerateData(this, operate);
-                    break;
-            }
+            Data = generator.CreateData(this, operate);
         }
         /// <summary>
         /// 当前生成数据对象。
         /// </summary>
-        public GenerateData Data { get; }
+        public OperateContentBase Data { get; }
         /// <summary>
         /// 元数据引擎对象。
         /// </summary>
@@ -87,7 +63,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <returns>参数名。</returns>
         public string GetParameter(object value)
         {
-            return Data.OperateCommand.AddParameter(value, "@p");
+            return Data.OperateCommand.AddParameter(value, "p");
         }
         /// <summary>
         /// 获取变量名。

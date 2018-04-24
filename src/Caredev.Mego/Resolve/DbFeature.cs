@@ -27,6 +27,10 @@ namespace Caredev.Mego.Resolve
         /// </summary>
         public int? MaxInsertRowCount { get; set; } = 1000;
         /// <summary>
+        /// 标识名称字符串的最大长度。
+        /// </summary>
+        public int? MaxIdentifierLength { get; set; }
+        /// <summary>
         /// 默认数据架构名。
         /// </summary>
         public string DefaultSchema { get; set; } = string.Empty;

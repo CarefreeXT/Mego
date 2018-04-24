@@ -2,12 +2,8 @@
 {
     using System;
     using System.Data.Common;
-    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Caredev.Mego.Resolve.Generators;
-    using Caredev.Mego.Resolve.Operates;
     using System.Text;
-
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Database")]
     public partial class DbFeatureTest
     {
@@ -21,7 +17,7 @@
                     var com = con.CreateCommand();
                     com.Transaction = tran;
                     com.CommandText = MaxInsertRowCountTestSql("t0", MaxInsertRowCount);
-                  
+
                     com.ExecuteNonQuery();
 
                     com.CommandText = MaxInsertRowCountTestSql("t1", MaxInsertRowCount + 1);
@@ -47,10 +43,14 @@
             Utility.CommitTest(CreateSimpleContext(), db =>
             {
                 var con = db.Database.Connection;
-                con.Open();
+                if (con.State != System.Data.ConnectionState.Open)
+                {
+                    con.Open();
+                }
                 var com = con.CreateCommand();
                 StringBuilder builder = new StringBuilder();
-                builder.Append("SELECT * FROM Customers WHERE Id IN (");
+                builder.Append(MaxParameterCountTestSql);
+                builder.Append("(");
                 for (int i = 0; i < MaxParameterCount; i++)
                 {
                     com.AddParameter("p" + i.ToString(), i);
@@ -63,7 +63,7 @@
                         builder.Append(",@p" + i.ToString());
                     }
                 }
-                builder.Append(");");
+                builder.Append(")");
 
                 com.CommandText = builder.ToString();
                 com.ExecuteNonQuery();
@@ -89,33 +89,41 @@
         [TestMethod]
         public void InitialSimpleDatabaseTest()
         {
-            using (var db = CreateSimpleContext())
+            using (var db = Constants.CreateSimpleContext(true))
             {
                 CreateDatabaseIfNoExsits(db);
+            }
+            using (var db = CreateSimpleContext())
+            {
                 db.InitialTable();
                 db.InitialData();
             }
         }
 
+#if MYSQL || SQLSERVER
         [TestMethod]
         public void InitialInheritDataBaseTest()
         {
-            using (var db = CreateInheritContext())
+            using (var db = Constants.CreateInheritContext(true))
             {
                 CreateDatabaseIfNoExsits(db);
+            }
+            using (var db = CreateInheritContext())
+            {
                 db.InitialTable();
                 db.InitialData();
             }
-        }
+        } 
+#endif
 
-        public Models.Simple.OrderManageEntities CreateSimpleContext()
-        {
-            return new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+#if ORACLE || FIREBIRD
+        public Models.Simple2.OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
 
-        public Models.Inherit.OrderManageEntities CreateInheritContext()
-        {
-            return new Models.Inherit.OrderManageEntities(Constants.ConnectionNameInherit);
-        }
+        public Models.Inherit2.OrderManageEntities CreateInheritContext() => Constants.CreateInheritContext();
+#else
+        public Models.Simple.OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
+
+        public Models.Inherit.OrderManageEntities CreateInheritContext() => Constants.CreateInheritContext();
+#endif
     }
 }

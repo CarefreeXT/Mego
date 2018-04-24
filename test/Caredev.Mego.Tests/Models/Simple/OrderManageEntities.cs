@@ -8,7 +8,7 @@ using System.Linq;
 namespace Caredev.Mego.Tests.Models.Simple
 {
     /// <summary>
-    /// 普通实体集
+    /// 自增列普通实体上下文。
     /// </summary>
     public class OrderManageEntities : DbContext
     {

@@ -10,5 +10,7 @@ namespace Caredev.Mego.Tests
     {
         public readonly static string ConnectionNameInherit = "IOrderManageFor" + TestCategoryRootName;
         public readonly static string ConnectionNameSimple = "OrderManageFor" + TestCategoryRootName;
+
+        public const string NotSuppored = nameof(NotSuppored);
     }
 }

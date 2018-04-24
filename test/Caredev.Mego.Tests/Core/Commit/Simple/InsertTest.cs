@@ -2,10 +2,14 @@
 {
     using System;
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Insert")]
-    public partial class InsertTest : ISimpleTest
+    public partial class InsertTest
     {
         [TestMethod]
         public void InsertSingleObjectTest()
@@ -178,10 +182,7 @@
             });
         }
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }
 

@@ -11,7 +11,17 @@ namespace Caredev.Mego.Tests
 #if SQLSERVER2012
         public const string TestCategoryRootName = "SqlServer2012";
 #else
-        public const string TestCategoryRootName = "SqlServer2005"; 
+        public const string TestCategoryRootName = "SqlServer2005";
 #endif
+
+        public static Models.Simple.OrderManageEntities CreateSimpleContext(bool isinitial = false)
+        {
+            return new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
+        }
+
+        public static Models.Inherit.OrderManageEntities CreateInheritContext(bool isinitial = false)
+        {
+            return new Models.Inherit.OrderManageEntities(Constants.ConnectionNameInherit);
+        }
     }
 }

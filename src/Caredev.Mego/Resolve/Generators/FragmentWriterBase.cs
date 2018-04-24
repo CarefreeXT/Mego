@@ -49,12 +49,34 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="name">名称。</param>
         public abstract void WriteDbName(SqlWriter writer, string name);
         /// <summary>
+        /// 写入参数名称。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="name">名称。</param>
+        public virtual void WriteParameterName(SqlWriter writer, string name)
+        {
+            writer.Write('@');
+            writer.Write(name);
+        }
+        /// <summary>
         /// 写入数据库对象名称。
         /// </summary>
         /// <param name="writer">语句写入器。</param>
         /// <param name="name">名称。</param>
         /// <param name="schema">架构名。</param>
-        public abstract void WriteDbObject(SqlWriter writer, string name, string schema);
+        public virtual void WriteDbObject(SqlWriter writer, string name, string schema)
+        {
+            if (string.IsNullOrEmpty(schema))
+            {
+                schema = writer.Context.Feature.DefaultSchema;
+            }
+            if (!string.IsNullOrEmpty(schema))
+            {
+                WriteDbName(writer, schema);
+                writer.Write('.');
+            }
+            WriteDbName(writer, name);
+        }
         /// <summary>
         /// 写入语句终止符。
         /// </summary>

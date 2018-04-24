@@ -4,6 +4,7 @@
 namespace Caredev.Mego.Resolve.Generators
 {
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Metadatas;
     using System;
@@ -64,7 +65,7 @@ namespace Caredev.Mego.Resolve.Generators
             , IEnumerable<ColumnMetadata> members)
         {
             DbName name = null;
-            if (context.Data is GenerateDataForInsert data)
+            if (context.Data is CommitContentBase data)
             {
                 name = data.TargetName;
             }

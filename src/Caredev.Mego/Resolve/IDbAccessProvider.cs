@@ -32,6 +32,10 @@ namespace Caredev.Mego.Resolve
         /// </summary>
         bool IsExclusive { get; }
         /// <summary>
+        /// 是否支持分布式事务。
+        /// </summary>
+        bool SupportDistributedTransaction { get; }
+        /// <summary>
         /// 当前数据访问提供程序所支持的执行模式。该模式将会影响与数据提交有关操作的实现逻辑。
         /// </summary>
         EExecutionMode ExecutionMode { get; }

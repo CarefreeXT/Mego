@@ -34,7 +34,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 EDbCapable.TemporaryTable | EDbCapable.TableVariable |
                 EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
                 EDbCapable.ExternalCompoundStatement | EDbCapable.ExternalLocalVariable |
-                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyReturning | EDbCapable.ModifyJoin |
+                EDbCapable.SubQuery | EDbCapable.BatchInsert | EDbCapable.ModifyJoin |
                 EDbCapable.Relation | EDbCapable.Identity | EDbCapable.ComputeColumn
         };
     }

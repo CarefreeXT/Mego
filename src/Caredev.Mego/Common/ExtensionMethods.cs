@@ -203,6 +203,26 @@ namespace Caredev.Mego.Common
                 return value;
             }
         }
+        /// <summary>
+        /// 从字典移除指定键的项
+        /// </summary>
+        /// <typeparam name="TKey">键的类型。</typeparam>
+        /// <typeparam name="TValue">值的类型。</typeparam>
+        /// <param name="dicrionary">目标字典对象。</param>
+        /// <param name="key">用于检索的键。</param>
+        /// <returns>如果存在删除则返回 True，否则返回False。</returns>
+        public static bool TryRemove<TKey, TValue>(this IDictionary<TKey, TValue> dicrionary, TKey key)
+        {
+            lock (dicrionary)
+            {
+                if (dicrionary.ContainsKey(key))
+                {
+                    dicrionary.Remove(key);
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }
 #if (NET35 || NET40)

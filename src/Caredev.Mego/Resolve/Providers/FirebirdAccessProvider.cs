@@ -12,5 +12,7 @@ namespace Caredev.Mego.Resolve.Providers
         public override string ProviderName => "FirebirdSql.Data.FirebirdClient";
         /// <inheritdoc/>
         public override EExecutionMode ExecutionMode => EExecutionMode.SingleOperation;
+        /// <inheritdoc/>
+        protected override string VersionPattern => @"Firebird\s+(?<main>\d{1,2})\.(?<minor>\d{1,2})";
     }
 }

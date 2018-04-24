@@ -21,8 +21,11 @@ namespace Caredev.Mego.Resolve.Operates
         private int currentParameterNameIndex = 0;
         private readonly DbProviderFactory factory;
         private readonly int maxParameterCount;
-        protected readonly Dictionary<object, DbParameter> parameters = new Dictionary<object, DbParameter>();
         private readonly Dictionary<object, int> variables = new Dictionary<object, int>();
+        /// <summary>
+        /// 当前命令注册的常规参数。
+        /// </summary>
+        protected readonly Dictionary<object, DbParameter> Parameters = new Dictionary<object, DbParameter>();
         /// <summary>
         /// 创建数据库操作命令对象。
         /// </summary>
@@ -78,12 +81,12 @@ namespace Caredev.Mego.Resolve.Operates
 #endif
             if (currentParameterNameIndex >= maxParameterCount)
                 throw new Exception("Parameter count");
-            if (!parameters.TryGetValue(value, out DbParameter parameter))
+            if (!Parameters.TryGetValue(value, out DbParameter parameter))
             {
                 parameter = factory.CreateParameter();
                 parameter.Value = value;
                 parameter.ParameterName = prefix + (currentParameterNameIndex++).ToString("X");
-                parameters.Add(value, parameter);
+                Parameters.Add(value, parameter);
             }
             return parameter.ParameterName;
         }
@@ -117,213 +120,55 @@ namespace Caredev.Mego.Resolve.Operates
         /// </summary>
         /// <param name="executor">数据库执行对象。</param>
         /// <returns>对数据库实际的影响行数。</returns>
-        internal abstract int Execute(DatabaseExecutor executor);
-
-        protected class SplitIndexLength
+        internal int Execute(DatabaseExecutor executor)
         {
-            public IDbSplitObjectsOperate Operate;
-            public int Index;
-            public int Length;
-        }
-    }
-    /// <summary>
-    /// 多个数据库操作命令对象。
-    /// </summary>
-    internal class DbMultiOperateCommand : DbOperateCommandBase, IEnumerable<DbOperateBase>
-    {
-        private readonly IList<DbOperateBase> operates = new List<DbOperateBase>();
-        private Dictionary<DbOperateBase, SplitIndexLength> splitesOperates;
-        private readonly StringBuilder commandBuilder = new StringBuilder();
-        /// <summary>
-        /// 创建命令对象。
-        /// </summary>
-        /// <param name="context">操作执行上下文</param>
-        public DbMultiOperateCommand(DbOperateContext context)
-            : base(context) { }
-        /// <inheritdoc/>
-        public override bool IsEmpty => operates.Count == 0;
-        /// <inheritdoc/>
-        internal override int Execute(DatabaseExecutor executor)
-        {
-            var command = executor.CreateCommand(commandBuilder.ToString());
-            if (parameters.Count > 0)
-            {
-                command.Parameters.AddRange(parameters.Values.ToArray());
-            }
-            var readOperates = operates.Where(operate => operate.HasResult && operate.Output != null).ToArray();
-            int recordsAffectCount = 0;
-#if DEBUG
             var start = DateTime.Now;
-            Debug.WriteLine($"---------- 开始执行 ：{start.ToString("HH:mm:ss.fff")} ----------");
-            Debug.WriteLine("");
+            BeginExecute(start);
+            var recordsAffectCount = ExecuteImp(executor);
+            EndExecute(start);
+            if (ConcurrencyExpectCount > 0 && ConcurrencyExpectCount != recordsAffectCount)
+            {
+                throw new DbCommitConcurrencyException(Res.ExceptionCommitConcurrency);
+            }
+            return recordsAffectCount;
+        }
+
+        [Conditional("DEUBG")]
+        internal static void OutputCommand(DbCommand command)
+        {
+            Debug.Write("Command Content : ");
             Debug.WriteLine(command.CommandText);
             Debug.WriteLine("");
             foreach (DbParameter p in command.Parameters)
             {
                 Debug.WriteLine($"\t{p.ParameterName}\t:{p.Value}");
             }
-#endif
-            if (readOperates.Length > 0)
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    if (splitesOperates != null)
-                    {
-                        foreach (var operate in readOperates)
-                        {
-                            if (splitesOperates.TryGetValue(operate, out SplitIndexLength value))
-                            {
-                                value.Operate.Split(value.Index, value.Length, () => operate.Read(reader));
-                            }
-                            else
-                            {
-                                operate.Read(reader);
-                            }
-                            reader.NextResult();
-                        }
-                    }
-                    else
-                    {
-                        foreach (var operate in readOperates)
-                        {
-                            operate.Read(reader);
-                            reader.NextResult();
-                        }
-                    }
-                    recordsAffectCount = reader.RecordsAffected;
-                }
-            }
-            else
-            {
-                recordsAffectCount = command.ExecuteNonQuery();
-            }
-#if DEBUG
+        }
+
+        [Conditional("DEUBG")]
+        private static void BeginExecute(DateTime start)
+        {
+            Debug.WriteLine($"---------- 开始执行 ：{start.ToString("HH:mm:ss.fff")} ----------");
+            Debug.WriteLine("");
+        }
+
+        [Conditional("DEUBG")]
+        private static void EndExecute(DateTime start)
+        {
             var end = DateTime.Now;
             var space = end - start;
             Debug.WriteLine("");
             Debug.WriteLine($"---------- 执行完成 ：{end.ToString("HH:mm:ss.fff")}，执行耗时：{space.TotalMilliseconds}毫秒 ----------");
             Debug.WriteLine("");
-#endif
-            if (ConcurrencyExpectCount > 0 && ConcurrencyExpectCount != recordsAffectCount)
-            {
-                throw new DbCommitConcurrencyException(Res.ExceptionCommitConcurrency);
-            }
-            return recordsAffectCount;
         }
-        /// <inheritdoc/>
-        internal override void RegisteOperate(DbOperateBase operate)
-        {
-            operates.Add(operate);
-            commandBuilder.AppendLine(operate.GenerateSql());
-        }
-        /// <inheritdoc/>
-        internal override void RegisteOperate(IDbSplitObjectsOperate operate, int index, int length)
-        {
-            var operateInstance = (DbOperateBase)operate;
-            operates.Add(operateInstance);
-            commandBuilder.AppendLine(operateInstance.GenerateSql());
-            if (splitesOperates == null)
-            {
-                splitesOperates = new Dictionary<DbOperateBase, SplitIndexLength>();
-            }
-            if (!splitesOperates.ContainsKey(operateInstance))
-            {
-                splitesOperates.Add(operateInstance, new SplitIndexLength()
-                {
-                    Operate = operate,
-                    Index = index,
-                    Length = length
-                });
-            }
-        }
-        /// <summary>
-        /// <see cref="IEnumerable{T}"/>接口实现。
-        /// </summary>
-        /// <returns>枚举器</returns>
-        public IEnumerator<DbOperateBase> GetEnumerator()
-        {
-            return operates.GetEnumerator();
-        }
-        /// <summary>
-        /// <see cref="IEnumerable"/>接口实现。
-        /// </summary>
-        /// <returns>枚举器</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-    /// <summary>
-    /// 单个数据库操作命令对象。
-    /// </summary>
-    internal class DbSingleOperateCommand : DbOperateCommandBase
-    {
-        private string _Statement;
-        private SplitIndexLength _SplitInfo;
-        /// <summary>
-        /// 创建命令对象。
-        /// </summary>
-        /// <param name="context">操作执行上下文</param>
-        public DbSingleOperateCommand(DbOperateContext context)
-            : base(context) { }
-        /// <inheritdoc/>
-        public override bool IsEmpty => Operate == null;
-        /// <summary>
-        /// 当前操作对象。
-        /// </summary>
-        public DbOperateBase Operate { get; private set; }
 
-        public bool IsBlockStatement { get; set; }
+        internal abstract int ExecuteImp(DatabaseExecutor executor);
 
-        public bool IsLoopExecution { get; }
-        /// <inheritdoc/>
-        internal override void RegisteOperate(DbOperateBase operate)
+        protected class SplitIndexLength
         {
-            Operate = operate;
-            _Statement = operate.GenerateSql();
-        }
-        /// <inheritdoc/>
-        internal override void RegisteOperate(IDbSplitObjectsOperate operate, int index, int length)
-        {
-            var operateInstance = (DbOperateBase)operate;
-            RegisteOperate(operateInstance);
-            _SplitInfo = new SplitIndexLength() { Operate = operate, Index = index, Length = length };
-        }
-        /// <inheritdoc/>
-        internal override int Execute(DatabaseExecutor executor)
-        {
-            var operate = Operate;
-            var command = executor.CreateCommand(_Statement);
-            if (parameters.Count > 0)
-            {
-                command.Parameters.AddRange(parameters.Values.ToArray());
-            }
-            int recordsAffectCount = 0;
-            if (operate.HasResult && operate.Output != null)
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    if (_SplitInfo != null)
-                    {
-                        _SplitInfo.Operate.Split(_SplitInfo.Index, _SplitInfo.Length, () => operate.Read(reader));
-                    }
-                    else
-                    {
-                        operate.Read(reader);
-                        reader.NextResult();
-                    }
-                    recordsAffectCount = reader.RecordsAffected;
-                }
-            }
-            else
-            {
-                recordsAffectCount = command.ExecuteNonQuery();
-            }
-            if (ConcurrencyExpectCount > 0 && ConcurrencyExpectCount != recordsAffectCount)
-            {
-                throw new DbCommitConcurrencyException(Res.ExceptionCommitConcurrency);
-            }
-            return recordsAffectCount;
+            public IDbSplitObjectsOperate Operate;
+            public int Index;
+            public int Length;
         }
     }
 }

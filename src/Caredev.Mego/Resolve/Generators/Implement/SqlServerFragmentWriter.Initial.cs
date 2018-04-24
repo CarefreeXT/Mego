@@ -10,7 +10,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
+    using Res = Properties.Resources;
     partial class SqlServerFragmentWriter
     {
         /// <inheritdoc/>
@@ -87,6 +87,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 case Operates.EDatabaseObject.Table: writer.Write("U"); break;
                 case Operates.EDatabaseObject.View: writer.Write("V"); break;
                 case Operates.EDatabaseObject.ScalarFunction: writer.Write("FN"); break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, exist.Kind));
             }
             writer.Write("') IS NULL THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT) END");
         }

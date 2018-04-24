@@ -48,20 +48,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Write('\"');
         }
         /// <inheritdoc/>
-        public override void WriteDbObject(SqlWriter writer, string name, string schema)
-        {
-            if (!string.IsNullOrEmpty(schema))
-            {
-                WriteDbName(writer, schema);
-            }
-            else
-            {
-                WriteDbName(writer, "public");
-            }
-            writer.Write('.');
-            WriteDbName(writer, name);
-        }
-        /// <inheritdoc/>
         protected override IDictionary<Type, string> InitialClrTypeDefaultMapping()
         {
             return new Dictionary<Type, string>(_ClrTypeDbTypeDefaultMapping);

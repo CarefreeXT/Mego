@@ -13,7 +13,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
-            { typeof(bool), "BOOLEAN" },
+            { typeof(bool), "SMALLINT" },
             { typeof(int), "INTEGER" },
             { typeof(short), "SMALLINT" },
             { typeof(long), "BIGINT" },
@@ -42,11 +42,14 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         /// <inheritdoc/>
         public override void WriteDbName(SqlWriter writer, string name)
         {
+            writer.Write('\"');
             writer.Write(name);
+            writer.Write('\"');
         }
         /// <inheritdoc/>
-        public override void WriteDbObject(SqlWriter writer, string name, string schema)
+        public override void WriteParameterName(SqlWriter writer, string name)
         {
+            writer.Write(':');
             writer.Write(name);
         }
         /// <inheritdoc/>
@@ -58,6 +61,14 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         protected override IDictionary<Type, string> InitialClrTypeSimpleMapping()
         {
             return new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForBlock(SqlWriter writer, ISqlFragment fragment)
+        {
+            writer.WriteLine("EXECUTE BLOCK AS ");
+            base.WriteFragmentForBlock(writer, fragment);
+            writer.WriteLine();
+            writer.Write(" END");
         }
     }
 }

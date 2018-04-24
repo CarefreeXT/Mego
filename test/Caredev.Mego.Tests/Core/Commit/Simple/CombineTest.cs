@@ -95,9 +95,6 @@ namespace Caredev.Mego.Tests.Core.Commit.Simple
             });
         }
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

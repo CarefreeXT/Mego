@@ -19,9 +19,8 @@ namespace Caredev.Mego.Tests.Core
         {
             var builder = new StringBuilder();
             builder.AppendLine(@"CREATE TABLE [" + name + "] (Id INTEGER);");
-            return builder.ToString();
-            builder.AppendLine(@"INSERT  INTO [" + name + "] ( [Id] )");
 
+            builder.AppendLine(@"INSERT  INTO [" + name + "] ( [Id] )");
             builder.AppendLine(@"VALUES");
             builder.Append("(0)");
             for (int i = 1; i < count; i++)
@@ -39,7 +38,7 @@ namespace Caredev.Mego.Tests.Core
             var database = stringbuilder.DataSource;
             var file = new FileInfo(typeof(DbFeatureTest).Assembly.Location);
             var fullname = Path.Combine(file.Directory.FullName, database);
-            if (File.Exists(fullname))
+            if (!File.Exists(fullname))
             {
                 throw new InvalidOperationException($"Please must manually create the file [{fullname}]");
             }

@@ -12,5 +12,7 @@ namespace Caredev.Mego.Tests
         public const string TestCategoryFoundation = "`Foundation";
 
         public const string ConnectionNameSimple = "OrderManageForSqlServer2012";
+
+        public const string NotSuppored = nameof(NotSuppored);
     }
 }

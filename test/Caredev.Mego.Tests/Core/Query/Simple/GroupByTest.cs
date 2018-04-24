@@ -117,10 +117,6 @@
                 Assert.IsTrue(data.Any(a => a.Key > 0));
             }
         }
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
-
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

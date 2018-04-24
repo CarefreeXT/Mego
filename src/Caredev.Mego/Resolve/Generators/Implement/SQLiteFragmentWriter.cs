@@ -43,16 +43,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             return new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping);
         }
         /// <inheritdoc/>
-        public override void WriteDbObject(SqlWriter writer, string name, string schema)
-        {
-            if (!string.IsNullOrEmpty(schema))
-            {
-                WriteDbName(writer, schema);
-                writer.Write('.');
-            }
-            WriteDbName(writer, name);
-        }
-        /// <inheritdoc/>
         public override void WriteDbName(SqlWriter writer, string name)
         {
             writer.Write('[');

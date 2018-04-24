@@ -8,7 +8,7 @@
     public class AnonymousSetTest : ISimpleTest
     {
         [TestMethod]
-        public void AnonymousQueryTest()    
+        public void AnonymousQueryTest()
         {
             using (var db = CreateContext())
             {
@@ -28,7 +28,7 @@
             {
                 var ds = db.Set(new { Id = 0 }, "OrderDetails");
                 var data = db.OrderDetails.First();
-                
+
                 var operate = ds.Remove(new { data.Id });
                 int count = db.Executor.Execute(operate);
                 var value = db.OrderDetails.Where(a => a.Id == data.Id).Count();
@@ -58,7 +58,7 @@
                 Assert.IsNotNull(test);
             });
         }
-        
+
         [TestMethod]
         public void UpdateSingleObjectTest()
         {
@@ -69,7 +69,7 @@
                 var newitem = new { data.Id, Name = "Customer 100" };
                 var ds = db.Set(newitem, "Customers");
                 var operate = ds.Update(newitem);
-         
+
                 db.Executor.Execute(operate);
                 var id = data.Id;
                 var value = db.Customers.FirstOrDefault(a => a.Id == id);
@@ -78,9 +78,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameSimple);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

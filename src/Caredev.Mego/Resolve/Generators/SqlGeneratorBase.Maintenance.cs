@@ -5,11 +5,11 @@ namespace Caredev.Mego.Resolve.Generators
 {
     using Caredev.Mego.Resolve.Generators.Fragments;
     using Caredev.Mego.Resolve.Operates;
+    using Caredev.Mego.Resolve.Expressions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Res = Properties.Resources;
-
     partial class SqlGeneratorBase
     {
         /// <summary>
@@ -40,8 +40,9 @@ namespace Caredev.Mego.Resolve.Generators
         /// 生成数据库维护语句片段。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="content">表达式对象（为空）。</param>
         /// <returns>生成的语句片段。</returns>
-        protected virtual SqlFragment GenerateForMaintenance(GenerateContext context)
+        protected virtual SqlFragment GenerateForMaintenance(GenerateContext context, DbExpression content)
         {
             var operate = context.Data.Operate;
             if (_MaintenanceMethods.TryGetValue(operate.Type, out MaintenanceOperateDelegate method))

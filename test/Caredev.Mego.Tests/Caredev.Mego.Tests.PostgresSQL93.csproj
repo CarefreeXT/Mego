@@ -58,12 +58,32 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\InsertTest.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
     <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Core\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Core\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="PostgreSQL\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="PostgreSQL\Commit\Simple\InsertTest.cs" />
     <Compile Include="PostgreSQL\Constants.cs" />
     <Compile Include="PostgreSQL\DbFeatureTest.cs" />
     <Compile Include="PostgreSQL\MaintenanceTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\GroupByTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="PostgreSQL\Query\Simple\SqlQueryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,24 +1,23 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Generators
+namespace Caredev.Mego.Resolve.Generators.Contents
 {
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
-    using System.Collections.Generic;
     using System.Linq;
     /// <summary>
-    /// 用于删除数据的生成数据对象。
+    /// 更新数据内容对象。
     /// </summary>
-    public class GenerateDataForDelete : GenerateDataForCommit
+    public class DeleteContent : CommitContentBase
     {
         /// <summary>
-        /// 创建数据对象。
+        /// 创建内容对象。
         /// </summary>
-        /// <param name="context">生成上下文。</param>
-        /// <param name="operate">当前操作对象。</param>
-        internal GenerateDataForDelete(GenerateContext context, DbObjectsOperateBase operate)
-          : base(context, operate)
+        /// <param name="context"></param>
+        /// <param name="operate"></param>
+        internal DeleteContent(GenerateContext context, DbObjectsOperateBase operate)
+            : base(context, operate)
         {
         }
         /// <inheritdoc/>
@@ -33,7 +32,5 @@ namespace Caredev.Mego.Resolve.Generators
                 return new PropertyValueLoader(context, table, table.Keys);
             }
         }
-        /// <inheritdoc/>
-        public override IEnumerable<TableMetadata> GetTables() => base.GetTables().Reverse();
     }
 }

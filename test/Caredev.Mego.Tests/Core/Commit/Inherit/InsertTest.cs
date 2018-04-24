@@ -174,9 +174,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext()
-        {
-            return new OrderManageEntities(Constants.ConnectionNameInherit);
-        }
+        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }
