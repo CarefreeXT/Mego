@@ -18,8 +18,8 @@ namespace Caredev.Mego.Resolve.Metadatas
     /// </summary>
     public partial class TypeMetadata : TypeMetadataBase
     {
-        private static readonly Dictionary<Type, MethodInfo> DataReaderMethodMap;
-        private static readonly MethodInfo getItemMethod = typeof(DbDataReader).GetMethod("get_Item", new[] { typeof(int) });
+        internal static readonly Dictionary<Type, MethodInfo> DataReaderMethodMap;
+        internal static readonly MethodInfo getItemMethod = typeof(DbDataReader).GetMethod("get_Item", new[] { typeof(int) });
         /// <summary>
         /// 初始化<see cref="DbDataReader"/>函数映射。
         /// </summary>

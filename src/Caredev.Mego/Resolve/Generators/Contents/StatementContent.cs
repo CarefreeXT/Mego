@@ -10,15 +10,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using System;
     using Res = Properties.Resources;
     /// <summary>
-    /// 语句式提交数据。
+    /// 语句式内容对象。
     /// </summary>
     public class StatementContent : OperateContentBase
     {
         /// <summary>
-        /// 创建数据对象。
+        /// 创建内容对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>
-        /// <param name="operate">当前操作对象。</param>
+        /// <param name="operate">操作对象。</param>
         internal StatementContent(GenerateContext context, DbStatementOperateBase operate)
             : base(context, operate)
         {
@@ -26,15 +26,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             Table = context.Metadata.Table(operate.DbSet.ClrType);
         }
         /// <summary>
-        /// 当前操作语句对象。
+        /// 操作语句对象。
         /// </summary>
         public DbStatementOperateBase Statement { get; }
         /// <summary>
-        /// 当前作用数据表元数据。
+        /// 作用数据表元数据。
         /// </summary>
         public TableMetadata Table { get; }
         /// <summary>
-        /// 当前作用目标名称。
+        /// 目标名称。
         /// </summary>
         public DbName TargetName => Statement.DbSet.Name;
         /// <summary>

@@ -7,24 +7,17 @@ namespace Caredev.Mego.Tests.Core
     public partial class DbFeatureTest
     {
         public const int MaxInsertRowCount = 1000;
-        public const int MaxParameterCount = 3000;
+        public const int MaxParameterCount = 1000;
 
         public const bool HasMaxInsertRowCount = false;
-        public const bool HasMaxParameterCount = false;
+        public const bool HasMaxParameterCount = true;
 
+        public const string ParameterPrefix = ":p";
         public const string MaxParameterCountTestSql = @"SELECT * FROM ""SIMPLE"".""Customers"" WHERE ""Id"" IN";
         public string MaxInsertRowCountTestSql(string name, int count)
         {
             var builder = new StringBuilder();
-            builder.AppendLine("BEGIN");
-            builder.AppendLine(@"CREATE GLOBAL TEMPORARY TABLE " + name + @"(Id NUMBER);");
-            builder.AppendLine(@"INSERT ALL");
-            for (int i = 0; i < count; i++)
-            {
-                builder.AppendLine(@"INTO " + name + @" ( Id ) VALUES (" + i.ToString() + ")");
-            }
-            builder.AppendLine("SELECT * FROM dual;");
-            builder.AppendLine("END;");
+            builder.AppendLine("SELECT 1 FROM dual");
             return builder.ToString();
         }
 

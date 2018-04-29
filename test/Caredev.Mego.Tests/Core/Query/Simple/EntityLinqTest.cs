@@ -1,12 +1,16 @@
 ﻿namespace Caredev.Mego.Tests.Core.Query.Simple
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Query.Simple")]
-    public partial class EntityLinqTest : ISimpleTest
+    public partial class EntityLinqTest 
     {
         [TestMethod]
         public void QueryListTest()

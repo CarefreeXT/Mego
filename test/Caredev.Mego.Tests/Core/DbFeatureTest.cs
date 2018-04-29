@@ -56,11 +56,11 @@
                     com.AddParameter("p" + i.ToString(), i);
                     if (i == 0)
                     {
-                        builder.Append("@p" + i.ToString());
+                        builder.Append(ParameterPrefix + i.ToString());
                     }
                     else
                     {
-                        builder.Append(",@p" + i.ToString());
+                        builder.Append("," + ParameterPrefix + i.ToString());
                     }
                 }
                 builder.Append(")");
@@ -69,7 +69,7 @@
                 com.ExecuteNonQuery();
                 com.AddParameter("p" + MaxParameterCount.ToString(), MaxParameterCount);
 
-                builder.Insert(builder.Length - 2, ",@p" + MaxParameterCount.ToString());
+                builder.Insert(builder.Length - 2, "," + ParameterPrefix + MaxParameterCount.ToString());
                 com.CommandText = builder.ToString();
                 try
                 {

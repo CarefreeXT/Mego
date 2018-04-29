@@ -18,47 +18,6 @@ namespace Caredev.Mego.Resolve.Generators
     using Res = Properties.Resources;
     public partial class SqlGeneratorBase
     {
-        private WhileFragment GenerateForInsertIdentityMultipleWhile(GenerateContext context, CommitIdentityUnit mainunit, CreateVariableFragment index,
-            ColumnMetadata rowindex, TemporaryTableFragment temporaryTable, RowIndexFragment rowindexfragment, out TableFragment whileTarget)
-        {
-            var whilefragment = new WhileFragment(context, context.LessThan(index.Name, rowindexfragment));
-            var block = whilefragment.Block;
-            var whileInsert = context.Insert(temporaryTable, mainunit.Table,
-               mainunit.Members.Where(a => a.ValueType != ECommitValueType.Database).Select(a => a.Metadata));
-            var whileSelect = (QueryBaseFragment)whileInsert.Query;
-            whileSelect.Where = context.Equal(temporaryTable.GetMember(rowindex), index.Name);
-            block.Add(whileInsert);
-            var whileUpdate = new UpdateFragment(context, temporaryTable);
-            var getidentity = whileUpdate.CreateExpression(
-                context.Translate(Expression.Call(null, SupportMembers.DbFunctions.GetIdentity)));
-            whileUpdate.SetValue(mainunit.Identity.Metadata, getidentity);
-            whileUpdate.Where = context.Equal(temporaryTable.GetMember(rowindex), index.Name);
-            block.Add(whileUpdate);
-            block.Add(context.Assign(index.Name, context.Add(index.Name, context.StatementString("1"))));
-            whileTarget = (TableFragment)whileInsert.Target;
-            return whilefragment;
-        }
-
-        private SqlFragment GenerateForInsertIdentityMultipleRepeat(GenerateContext context, CommitIdentityUnit mainunit, ColumnMetadata rowindex,
-            TemporaryTableFragment temporaryTable, RowIndexFragment rowindexfragment, DbObjectsOperateBase operate, out TableFragment whileTarget)
-        {
-            var repeatfragment = new RepeatBlockFragment(context, operate);
-            var block = repeatfragment.Block;
-            var whileInsert = context.Insert(temporaryTable, mainunit.Table,
-               mainunit.Members.Where(a => a.ValueType != ECommitValueType.Database).Select(a => a.Metadata));
-            var whileSelect = (QueryBaseFragment)whileInsert.Query;
-            whileSelect.Where = context.Equal(temporaryTable.GetMember(rowindex), new RowIndexFragment(context));
-            block.Add(whileInsert);
-            var whileUpdate = new UpdateFragment(context, temporaryTable);
-            var getidentity = whileUpdate.CreateExpression(
-                context.Translate(Expression.Call(null, SupportMembers.DbFunctions.GetIdentity)));
-            whileUpdate.SetValue(mainunit.Identity.Metadata, getidentity);
-            whileUpdate.Where = context.Equal(temporaryTable.GetMember(rowindex), new RowIndexFragment(context));
-            block.Add(whileUpdate);
-            whileTarget = (TableFragment)whileInsert.Target;
-            return repeatfragment;
-        }
-        
         /// <summary>
         /// 生成用于插入的语句片段。
         /// </summary>
@@ -140,16 +99,11 @@ namespace Caredev.Mego.Resolve.Generators
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="content">插入表达式。</param>
-        /// <returns>生成结果。</returns>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertContent(GenerateContext context, DbExpression content)
         {
             var data = (InsertContent)context.Data;
-            if (content != null && content is DbSelectExpression select)
-            {
-                context.RegisterSource(select.Source, data.CommitObject);
-                context.RegisterSource(select.Source.Item, data.CommitObject);
-            }
-
+            RegisterExpressionForCommit(context, content, data.CommitObject);
             if (context.Feature.HasCapable(EDbCapable.ModifyReturning))
             {
                 return GenerateForInsertReturnMembers(context, data);
@@ -194,8 +148,9 @@ namespace Caredev.Mego.Resolve.Generators
         /// <summary>
         /// 使用INSERT返回语句生成插入数据对象语句。
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertReturnMembers(GenerateContext context, InsertContent data)
         {
             InsertValueFragment insert = null;
@@ -221,6 +176,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// 生成插入若干数据对象语句。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertSimple(GenerateContext context, InsertContent data)
         {
@@ -240,6 +196,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertTempTable(GenerateContext context, InsertContent data)
         {
@@ -261,6 +218,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// 生成插入单个数据对象语句，对象的主键是标识列。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertIdentitySingle(GenerateContext context, InsertContent data)
         {
@@ -283,6 +241,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertIdentityTempTable(GenerateContext context, InsertContent data)
         {
@@ -327,14 +286,16 @@ namespace Caredev.Mego.Resolve.Generators
     }
     public partial class SqlGeneratorBase
     {
+        /// <summary>
+        /// 生成用于插入继承数据对象的语句片段。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="content">插入表达式。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInheritInsert(GenerateContext context, DbExpression content)
         {
             var data = (InheritInsertContent)context.Data;
-            if (content != null && content is DbSelectExpression select)
-            {
-                context.RegisterSource(select.Source, data.CommitObject);
-                context.RegisterSource(select.Source.Item, data.CommitObject);
-            }
+            RegisterExpressionForCommit(context, content, data.CommitObject);
             if (data.Units[0] is CommitKeyUnit keyunit)
             {//没有标识列
                 if (data.Items.Count > 1)
@@ -372,6 +333,12 @@ namespace Caredev.Mego.Resolve.Generators
                 }
             }
         }
+        /// <summary>
+        /// 生成插入若干数据对象语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertSimple(GenerateContext context, InheritInsertContent data)
         {
             var block = new BlockFragment(context);
@@ -387,6 +354,14 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 使用临时表形式，生成删除若干数据对象（多个主键）语句，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
+        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertTempTable(GenerateContext context, InheritInsertContent data)
         {
             var keyunits = data.Units.OfType<CommitKeyUnit>().ToArray();
@@ -408,6 +383,12 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 生成插入单个数据对象语句，对象的主键是标识列。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertIdentitySingle(GenerateContext context, InheritInsertContent data)
         {
             var identityUnit = (CommitIdentityUnit)data.Units[0];
@@ -454,6 +435,14 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 使用临时表形式，生成插入单个数据对象语句，对象的主键是标识列，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
+        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">内容对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForInsertIdentityTempTable(GenerateContext context, InheritInsertContent data)
         {
             var identityUnit = (CommitIdentityUnit)data.Units[0];
@@ -504,6 +493,45 @@ namespace Caredev.Mego.Resolve.Generators
     }
     public partial class SqlGeneratorBase
     {
+        private WhileFragment GenerateForInsertIdentityMultipleWhile(GenerateContext context, CommitIdentityUnit mainunit, CreateVariableFragment index,
+            ColumnMetadata rowindex, TemporaryTableFragment temporaryTable, RowIndexFragment rowindexfragment, out TableFragment whileTarget)
+        {
+            var whilefragment = new WhileFragment(context, context.LessThan(index.Name, rowindexfragment));
+            var block = whilefragment.Block;
+            var whileInsert = context.Insert(temporaryTable, mainunit.Table,
+               mainunit.Members.Where(a => a.ValueType != ECommitValueType.Database).Select(a => a.Metadata));
+            var whileSelect = (QueryBaseFragment)whileInsert.Query;
+            whileSelect.Where = context.Equal(temporaryTable.GetMember(rowindex), index.Name);
+            block.Add(whileInsert);
+            var whileUpdate = new UpdateFragment(context, temporaryTable);
+            var getidentity = whileUpdate.CreateExpression(
+                context.Translate(Expression.Call(null, SupportMembers.DbFunctions.GetIdentity)));
+            whileUpdate.SetValue(mainunit.Identity.Metadata, getidentity);
+            whileUpdate.Where = context.Equal(temporaryTable.GetMember(rowindex), index.Name);
+            block.Add(whileUpdate);
+            block.Add(context.Assign(index.Name, context.Add(index.Name, context.StatementString("1"))));
+            whileTarget = (TableFragment)whileInsert.Target;
+            return whilefragment;
+        }
+        private SqlFragment GenerateForInsertIdentityMultipleRepeat(GenerateContext context, CommitIdentityUnit mainunit, ColumnMetadata rowindex,
+            TemporaryTableFragment temporaryTable, RowIndexFragment rowindexfragment, DbObjectsOperateBase operate, out TableFragment whileTarget)
+        {
+            var repeatfragment = new RepeatBlockFragment(context, operate);
+            var block = repeatfragment.Block;
+            var whileInsert = context.Insert(temporaryTable, mainunit.Table,
+               mainunit.Members.Where(a => a.ValueType != ECommitValueType.Database).Select(a => a.Metadata));
+            var whileSelect = (QueryBaseFragment)whileInsert.Query;
+            whileSelect.Where = context.Equal(temporaryTable.GetMember(rowindex), new RowIndexFragment(context));
+            block.Add(whileInsert);
+            var whileUpdate = new UpdateFragment(context, temporaryTable);
+            var getidentity = whileUpdate.CreateExpression(
+                context.Translate(Expression.Call(null, SupportMembers.DbFunctions.GetIdentity)));
+            whileUpdate.SetValue(mainunit.Identity.Metadata, getidentity);
+            whileUpdate.Where = context.Equal(temporaryTable.GetMember(rowindex), new RowIndexFragment(context));
+            block.Add(whileUpdate);
+            whileTarget = (TableFragment)whileInsert.Target;
+            return repeatfragment;
+        }
         private IExpressionFragment CreateIdentityFragment(GenerateContext context, ISourceFragment fragment)
         {
             var getidentity = context.Translate(Expression.Call(null, SupportMembers.DbFunctions.GetIdentity));

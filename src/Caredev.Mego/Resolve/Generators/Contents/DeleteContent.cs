@@ -7,15 +7,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using Caredev.Mego.Resolve.Operates;
     using System.Linq;
     /// <summary>
-    /// 更新数据内容对象。
+    /// 更新数据的内容对象。
     /// </summary>
-    public class DeleteContent : CommitContentBase
+    public class DeleteContent : ContentBase
     {
         /// <summary>
         /// 创建内容对象。
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="operate"></param>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="operate">操作对象。</param>
         internal DeleteContent(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {

@@ -10,6 +10,8 @@ namespace Caredev.Mego.Resolve.Metadatas
     using System;
     using System.Linq;
     using Caredev.Mego.Common;
+    using Caredev.Mego.Resolve.ValueConversion;
+
     /// <summary>
     /// 数据列元数据。
     /// </summary>
@@ -21,7 +23,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="table">表元数据对象。</param>
         /// <param name="member">属性信息对象。</param>
         /// <param name="name">强制指定列名。</param>
-        public ColumnMetadata(TableMetadata table, PropertyInfo member, string name = "") 
+        public ColumnMetadata(TableMetadata table, PropertyInfo member, string name = "")
         {
             Table = table;
             Member = member;
@@ -74,6 +76,25 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// 所在的表元数据对象。
         /// </summary>
         public TableMetadata Table { get; }
+        /// <summary>
+        /// 当前列的存储类型。
+        /// </summary>
+        public Type StorageType
+        {
+            get
+            {
+                if (_StorageType == null)
+                {
+                    _StorageType = Member.PropertyType;
+                    if (Table.Engine.TryGetConversion(_StorageType, out ConversionInfo info))
+                    {
+                        _StorageType = info.StorageType;
+                    }
+                }
+                return _StorageType;
+            }
+        }
+        private Type _StorageType;
         /// <summary>
         /// 当前列是否为主键列。
         /// </summary>

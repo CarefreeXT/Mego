@@ -3,6 +3,7 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve
 {
+    using Caredev.Mego.Resolve.Commands;
     using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections;
@@ -30,7 +31,7 @@ namespace Caredev.Mego.Resolve
         /// <summary>
         /// 当前命令对象。
         /// </summary>
-        internal DbOperateCommandBase CurrentCommand { get; set; }
+        internal OperateCommandBase CurrentCommand { get; set; }
         /// <summary>
         /// 所有操作枚举对象。
         /// </summary>
@@ -263,10 +264,10 @@ namespace Caredev.Mego.Resolve
             }
         }
         //根据操作集合生成执行命令集合对象。
-        private DbOperateCommandCollection GenerateCommands(IEnumerable<DbOperateBase> operateCollection)
+        private OperateCommandCollection GenerateCommands(IEnumerable<DbOperateBase> operateCollection)
         {
             var operates = operateCollection.ToArray();
-            var commands = new DbOperateCommandCollection(this);
+            var commands = new OperateCommandCollection(this);
             var database = Context.Database;
 
             int parametercount = database.Feature.MaxParameterCountForOperate;

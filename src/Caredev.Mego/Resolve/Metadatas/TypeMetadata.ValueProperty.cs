@@ -4,6 +4,7 @@
 namespace Caredev.Mego.Resolve.Metadatas
 {
     using Caredev.Mego.Common;
+    using Caredev.Mego.Resolve.ValueConversion;
     using System;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -17,7 +18,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="data">数据对象。</param>
         /// <param name="indexs">指定属性的索引数组。</param>
         /// <param name="values">输出属性值的目标数数组。</param>
-        public void GetProperty(object data, int[] indexs, object[] values)
+        internal void GetProperty(object data, int[] indexs, object[] values)
         {
             if (GetPropertyMethod == null)
             {
@@ -31,7 +32,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="data">数据对象。</param>
         /// <param name="index">指定属性的索引。</param>
         /// <param name="value">设置的属性值。</param>
-        public void SetProperty(object data, int index, object value)
+        internal void SetProperty(object data, int index, object value)
         {
             if (SetPropertyMethod == null)
             {
@@ -163,8 +164,19 @@ namespace Caredev.Mego.Resolve.Metadatas
                     il.Emit(OpCodes.Ldloc, index);
                     il.Emit(OpCodes.Ldloc, item);
                     il.Emit(OpCodes.Callvirt, property.GetGetMethod(true));
-                    if (property.PropertyType.IsValueType)
-                        il.Emit(OpCodes.Box, property.PropertyType);
+                    var targetType = property.PropertyType;
+                    //处理值转换，Object -> Storage
+                    if (Metadata.Engine.TryGetConversion(targetType, out ConversionInfo info))
+                    {
+                        il.Emit(OpCodes.Call, info.ConvertToStorage);
+                    }
+                    else
+                    {
+                        if (targetType.IsValueType)
+                        {
+                            il.Emit(OpCodes.Box, targetType);
+                        }
+                    }
                     il.Emit(OpCodes.Stelem_Ref);
 
                     il.Emit(OpCodes.Br, forAdd);

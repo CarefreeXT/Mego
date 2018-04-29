@@ -1371,11 +1371,21 @@ namespace Caredev.Mego.Common
             {
                 var type = typeof(Caredev.Mego.DbFunctions);
                 GetIdentity = type.GetMethod(nameof(GetIdentity));
+                SequenceValue = type.GetMethod(nameof(SequenceValue));
+                SequenceNext = type.GetMethod(nameof(SequenceNext));
             }
             /// <summary>
             /// 标识列插入后获取自增列值。
             /// </summary>
             public static readonly MethodInfo GetIdentity;
+            /// <summary>
+            /// 获取序列的当前值。
+            /// </summary>
+            public static readonly MethodInfo SequenceValue;
+            /// <summary>
+            /// 获取序列的下一个值。
+            /// </summary>
+            public static readonly MethodInfo SequenceNext;
         }
         /// <summary>
         /// 系统使用成员

@@ -12,15 +12,6 @@ namespace Caredev.Mego.Resolve.Generators
     using Res = Properties.Resources;
     public partial class SqlGeneratorBase
     {
-        //生成前注册相关表达式。
-        private void GenerateForUpdateRegister(GenerateContext context, DbExpression content, ISourceFragment source)
-        {
-            if (content != null && content is DbSelectExpression select)
-            {
-                context.RegisterSource(select.Source, source, true);
-                context.RegisterSource(select.Source.Item, source, true);
-            }
-        }
         /// <summary>
         /// 表达式生成更新语句。
         /// </summary>
@@ -101,10 +92,45 @@ namespace Caredev.Mego.Resolve.Generators
     public partial class SqlGeneratorBase
     {
         /// <summary>
+        /// 生成更新操作语句。
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="content">更新表达式。</param>
+        /// <returns>语句片段。</returns>
+        protected virtual SqlFragment GenerateForUpdateContent(GenerateContext context, DbExpression content)
+        {
+            var data = (UpdateContent)context.Data;
+            if (data.Items.Count == 1)
+            {
+                data.SetConcurrencyExpectCount(1);
+                RegisterExpressionForCommit(context, content, data.CommitObject);
+                return GenerateForUpdateSingle(context, data);
+            }
+            else if (context.Feature.HasCapable(EDbCapable.TemporaryTable))
+            {
+                data.SetConcurrencyExpectCount(2);
+                if (context.Feature.HasCapable(EDbCapable.ModifyJoin))
+                {
+                    return GenerateForUpdateTempTable(context, data, content);
+                }
+                else
+                {
+                    return GenerateForUpdateTempTableRepeat(context, data, content);
+                }
+            }
+            else
+            {
+                data.SetConcurrencyExpectCount(1);
+                RegisterExpressionForCommit(context, content, data.CommitObject);
+                return GenerateForUpdateRepeat(context, data, content);
+            }
+            throw new NotImplementedException();
+        }
+        /// <summary>
         /// 生成更新单个数据对象语句。
         /// </summary>
         /// <param name="context">生成上下文</param>
-        /// <param name="content">更新表达式。</param>
+        /// <param name="data">数据对象。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateSingle(GenerateContext context, UpdateContent data)
         {
@@ -123,12 +149,13 @@ namespace Caredev.Mego.Resolve.Generators
         /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
         /// <param name="content">更新表达式。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateTempTable(GenerateContext context, UpdateContent data, DbExpression content)
         {
             var temptable = new TemporaryTableFragment(context, data.Columns);
-            GenerateForUpdateRegister(context, content, temptable);
+            RegisterExpressionForCommit(context, content, temptable);
             var update = data.UpdateByTemptable(data.Unit, temptable, data.TargetName);
 
             var block = new BlockFragment(context, update);
@@ -145,11 +172,12 @@ namespace Caredev.Mego.Resolve.Generators
         /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>特性
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
         /// <param name="content">更新表达式。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateTempTableRepeat(GenerateContext context, UpdateContent data, DbExpression content)
         {
-            GenerateForUpdateRegister(context, content, data.CommitObject);
+            RegisterExpressionForCommit(context, content, data.CommitObject);
             var temptable = new TemporaryTableFragment(context, data.Columns);
             var block = new BlockFragment(context);
             foreach (var key in data.Table.Keys)
@@ -173,6 +201,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// 使用重复生成的方式，生成更新多个对象的语句
         /// </summary>
         /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
         /// <param name="content">更新表达式。</param>
         /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateRepeat(GenerateContext context, UpdateContent data, DbExpression content)
@@ -181,24 +210,27 @@ namespace Caredev.Mego.Resolve.Generators
             var repeat = new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader, block);
             return repeat;
         }
+    }
+    public partial class SqlGeneratorBase
+    {
         /// <summary>
-        /// 生成更新操作语句，对象更新的总入口。
+        /// 生成继承数据对象的更新操作语句。
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="content">更新表达式。</param>
         /// <returns>语句片段。</returns>
-        protected virtual SqlFragment GenerateForUpdateContent(GenerateContext context, DbExpression content)
+        protected virtual SqlFragment GenerateForInheritUpdate(GenerateContext context, DbExpression content)
         {
-            var data = (UpdateContent)context.Data;
+            var data = (InheritUpdateContent)context.Data;
             if (data.Items.Count == 1)
             {
-                data.SetConcurrencyExpectCount(1);
-                GenerateForUpdateRegister(context, content, data.CommitObject);
+                data.SetConcurrencyExpectCount(data.Tables.Length);
+                RegisterExpressionForCommit(context, content, data.CommitObject);
                 return GenerateForUpdateSingle(context, data);
             }
             else if (context.Feature.HasCapable(EDbCapable.TemporaryTable))
             {
-                data.SetConcurrencyExpectCount(2);
+                data.SetConcurrencyExpectCount(data.Tables.Length + 1);
                 if (context.Feature.HasCapable(EDbCapable.ModifyJoin))
                 {
                     return GenerateForUpdateTempTable(context, data, content);
@@ -210,15 +242,18 @@ namespace Caredev.Mego.Resolve.Generators
             }
             else
             {
-                data.SetConcurrencyExpectCount(1);
-                GenerateForUpdateRegister(context, content, data.CommitObject);
+                data.SetConcurrencyExpectCount(data.Tables.Length);
+                RegisterExpressionForCommit(context, content, data.CommitObject);
                 return GenerateForUpdateRepeat(context, data, content);
             }
             throw new NotImplementedException();
         }
-    }
-    public partial class SqlGeneratorBase
-    {
+        /// <summary>
+        /// 生成更新单个数据对象语句。
+        /// </summary>
+        /// <param name="context">生成上下文</param>
+        /// <param name="data">数据对象。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateSingle(GenerateContext context, InheritUpdateContent data)
         {
             var block = new BlockFragment(context);
@@ -234,6 +269,15 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 使用临时表形式，生成更新若干数据对象语句，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>
+        /// 和<see cref="EDbCapable.ModifyJoin"/>两个特性
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <param name="content">更新表达式。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateTempTable(GenerateContext context, InheritUpdateContent data, DbExpression content)
         {
             var block = new BlockFragment(context);
@@ -242,7 +286,7 @@ namespace Caredev.Mego.Resolve.Generators
             foreach (var unit in data.Units)
             {
                 var current = new TemporaryTableFragment(context, data.Columns, temptable.Name);
-                GenerateForUpdateRegister(context, content, current);
+                RegisterExpressionForCommit(context, content, current);
                 var update = data.UpdateByTemptable(unit, current, data.TargetName);
                 block.Add(update);
                 current.Members.ForEach(m => temptable.GetMember(m.Property));
@@ -256,9 +300,17 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 使用临时表形式，生成更新若干数据对象语句，更新语句将是独立的，
+        /// 要求数据库拥有<see cref="EDbCapable.TemporaryTable"/>特性
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <param name="content">更新表达式。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateTempTableRepeat(GenerateContext context, InheritUpdateContent data, DbExpression content)
         {
-            GenerateForUpdateRegister(context, content, data.CommitObject);
+            RegisterExpressionForCommit(context, content, data.CommitObject);
             var temptable = new TemporaryTableFragment(context, data.Columns);
             var block = new BlockFragment(context);
             foreach (var key in data.Table.Keys)
@@ -282,40 +334,18 @@ namespace Caredev.Mego.Resolve.Generators
             }
             return block;
         }
+        /// <summary>
+        /// 使用重复生成的方式，生成更新多个对象的语句
+        /// </summary>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="data">数据对象。</param>
+        /// <param name="content">更新表达式。</param>
+        /// <returns>语句片段。</returns>
         protected virtual SqlFragment GenerateForUpdateRepeat(GenerateContext context, InheritUpdateContent data, DbExpression content)
         {
             var block = (BlockFragment)GenerateForUpdateSingle(context, data);
             var repeat = new RepeatBlockFragment(context, data.Items, data.CommitObject.Loader, block);
             return repeat;
-        }
-        protected virtual SqlFragment GenerateForInheritUpdate(GenerateContext context, DbExpression content)
-        {
-            var data = (InheritUpdateContent)context.Data;
-            if (data.Items.Count == 1)
-            {
-                data.SetConcurrencyExpectCount(data.Tables.Length);
-                GenerateForUpdateRegister(context, content, data.CommitObject);
-                return GenerateForUpdateSingle(context, data);
-            }
-            else if (context.Feature.HasCapable(EDbCapable.TemporaryTable))
-            {
-                data.SetConcurrencyExpectCount(data.Tables.Length + 1);
-                if (context.Feature.HasCapable(EDbCapable.ModifyJoin))
-                {
-                    return GenerateForUpdateTempTable(context, data, content);
-                }
-                else
-                {
-                    return GenerateForUpdateTempTableRepeat(context, data, content);
-                }
-            }
-            else
-            {
-                data.SetConcurrencyExpectCount(data.Tables.Length);
-                GenerateForUpdateRegister(context, content, data.CommitObject);
-                return GenerateForUpdateRepeat(context, data, content);
-            }
-            throw new NotImplementedException();
         }
     }
 }

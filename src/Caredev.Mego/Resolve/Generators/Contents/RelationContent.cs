@@ -13,10 +13,10 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     public class RelationContent : OperateContentBase
     {
         /// <summary>
-        /// 创建数据对象。
+        /// 创建内容对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>
-        /// <param name="operate">当前操作对象。</param>
+        /// <param name="operate">操作对象。</param>
         internal RelationContent(GenerateContext context, DbRelationOperateBase operate)
             : base(context, operate)
         {

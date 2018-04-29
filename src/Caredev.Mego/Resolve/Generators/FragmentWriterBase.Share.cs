@@ -17,20 +17,26 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="source">数据源语句。</param>
         protected virtual void WriteFragmentForSourceContent(SqlWriter writer, ISourceFragment source)
         {
-            if (source is SelectFragment || source is SetFragment)
+            if (source is ValuesFragment)
             {
-                writer.Write('(');
                 source.WriteSql(writer);
-                writer.Write(')');
             }
             else
             {
-                source.WriteSql(writer);
-            }
-            if (!(source is InheritFragment))
-            {
-                writer.Write(" AS ");
-                writer.Write(source.AliasName);
+                if (source is SelectFragment || source is SetFragment)
+                {
+                    writer.Write('(');
+                    source.WriteSql(writer);
+                    writer.Write(')');
+                }
+                else
+                {
+                    source.WriteSql(writer);
+                }
+                if (!(source is InheritFragment))
+                {
+                    WriteAliasName(writer, source.AliasName);
+                }
             }
         }
         /// <summary>

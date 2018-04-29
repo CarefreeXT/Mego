@@ -6,6 +6,8 @@ namespace Caredev.Mego.Common
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Common;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -222,6 +224,24 @@ namespace Caredev.Mego.Common
                 }
                 return false;
             }
+        }
+        /// <summary>
+        /// 判断是否为输入参数。
+        /// </summary>
+        /// <param name="parameter">参数对象。</param>
+        /// <returns>判断结果。</returns>
+        public static bool IsInput(this DbParameter parameter)
+        {
+            return (parameter.Direction & ParameterDirection.Input) == ParameterDirection.Input;
+        }
+        /// <summary>
+        /// 判断是否为输出参数。
+        /// </summary>
+        /// <param name="parameter">参数对象。</param>
+        /// <returns>判断结果。</returns>
+        public static bool IsOutput(this DbParameter parameter)
+        {
+            return (parameter.Direction & ParameterDirection.Output) == ParameterDirection.Output;
         }
     }
 }

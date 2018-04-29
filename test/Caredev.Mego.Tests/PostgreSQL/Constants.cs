@@ -8,7 +8,7 @@ namespace Caredev.Mego.Tests
 {
     internal partial class Constants
     {
-        public const string TestCategoryRootName = "PostgresSQL93";
+        public const string TestCategoryRootName = "PostgreSQL93";
 
         public static Models.Simple.OrderManageEntities CreateSimpleContext(bool isinitial = false)
         {

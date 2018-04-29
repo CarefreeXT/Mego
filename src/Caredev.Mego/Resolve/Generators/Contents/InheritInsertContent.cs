@@ -8,23 +8,27 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using Caredev.Mego.Resolve.Operates;
     using Caredev.Mego.Resolve.ValueGenerates;
     /// <summary>
-    /// 插入继承数据内容对象。
+    /// 插入继承数据的内容对象。
     /// </summary>
-    public class InheritInsertContent : InheritCommitUnitBase
+    public class InheritInsertContent : InheritContentUnitBase
     {
         /// <summary>
         /// 创建内容对象。
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="operate"></param>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="operate">操作对象。</param>
         internal InheritInsertContent(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {
         }
+        /// <summary>
+        /// 是否存在由表达式生成的主键成员。
+        /// </summary>
         public bool HasExpressionKey => _HasExpressionKey;
         private bool _HasExpressionKey;
-
+        /// <inheritdoc/>
         public override ValueGenerateBase GetValueGenerator(ColumnMetadata column) => column.GeneratedForInsert;
+        /// <inheritdoc/>
         public override void Inititalze(DbExpression content = null)
         {
             base.Inititalze(content);

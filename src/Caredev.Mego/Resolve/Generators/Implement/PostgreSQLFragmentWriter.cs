@@ -9,9 +9,9 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Resolve.Metadatas;
 
     /// <summary>
-    /// PostgresSQL 语句片段写入器。
+    /// PostgreSQL 语句片段写入器。
     /// </summary>
-    public partial class PostgresSQLFragmentWriter : FragmentWriterBase
+    public partial class PostgreSQLFragmentWriter : FragmentWriterBase
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
@@ -36,7 +36,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         /// 创建 SQL Server 语句片段写入器。
         /// </summary>
         /// <param name="generator">片段生成器。</param>
-        public PostgresSQLFragmentWriter(SqlGeneratorBase generator)
+        public PostgreSQLFragmentWriter(SqlGeneratorBase generator)
             : base(generator)
         {
         }

@@ -38,16 +38,95 @@ namespace Caredev.Mego.Resolve.Operates
         /// </summary>
         public Expression Expression { get; }
         /// <inheritdoc/>
-        internal override bool Read(DbDataReader reader)
+        internal override bool Read(DbDataReader reader) => Read(reader, false);
+        /// <summary>
+        /// 读取数据，回写对象属性。
+        /// </summary>
+        /// <param name="reader">数据读取器。</param>
+        /// <param name="isMoveResult">是否移动<see cref="DbDataReader"/>结果集。</param>
+        internal bool Read(DbDataReader reader, bool isMoveResult)
         {
             var output = (ComplexOutputInfo)Output;
             var metadata = output.Metadata;
             var fields = output.ItemFields;
-            foreach (var obj in this)
+            if (isMoveResult)
             {
-                reader.Read();
-                metadata.ModifyProperty(reader, fields, obj);
+                foreach (var obj in this)
+                {
+                    reader.Read();
+                    metadata.ModifyProperty(reader, fields, obj);
+                    reader.NextResult();
+                }
             }
+            else
+            {
+                foreach (var obj in this)
+                {
+                    reader.Read();
+                    metadata.ModifyProperty(reader, fields, obj);
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 读取数据，回写对象属性。
+        /// </summary>
+        /// <param name="reader">数据读取器。</param>
+        /// <param name="obj">指定回写的对象。</param>
+        /// <returns>是否成功。</returns>
+        internal bool Read(DbDataReader reader, object obj)
+        {
+            var output = (ComplexOutputInfo)Output;
+            var metadata = output.Metadata;
+            var fields = output.ItemFields;
+            reader.Read();
+            metadata.ModifyProperty(reader, fields, obj);
+            return true;
+        }
+        /// <summary>
+        /// 从数据库参数中读取值，回写数据对象。
+        /// </summary>
+        /// <param name="parameters">写入参数。</param>
+        /// <returns>是否成功。</returns>
+        internal bool Read(DbParameter[] parameters)
+        {
+            var output = (ComplexOutputInfo)Output;
+            var metadata = output.Metadata;
+            var fields = output.ItemFields;
+            var values = new object[parameters.Length];
+            if (this.Count == 1)
+            {
+                CopyTo(parameters, values);
+                foreach (var item in this)
+                {
+                    metadata.ModifyProperty(values, fields, item);
+                    return true;
+                }
+            }
+            else
+            {
+                var list = CopyTo(parameters, new Array[parameters.Length]);
+                var index = 0;
+                foreach (var item in this)
+                {
+                    CopyTo(list, values, index++);
+                    metadata.ModifyProperty(values, fields, item);
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 从数据库参数中读取值，回写指定数据对象。
+        /// </summary>
+        /// <param name="parameters">写入参数。</param>
+        /// <param name="values">值数组。</param>
+        /// <param name="obj">指定回写的数据对象。</param>
+        /// <returns>是否成功。</returns>
+        internal bool Read(DbParameter[] parameters, object[] values, object obj)
+        {
+            var output = (ComplexOutputInfo)Output;
+            CopyTo(parameters, values);
+            output.Metadata.ModifyProperty(values, output.ItemFields, obj);
             return true;
         }
         /// <inheritdoc/>
@@ -64,6 +143,28 @@ namespace Caredev.Mego.Resolve.Operates
         {
             _HasResult = value;
             return this;
+        }
+        private static void CopyTo(DbParameter[] parameters, object[] values)
+        {
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                values[i] = parameters[i].Value;
+            }
+        }
+        private static void CopyTo(Array[] data, object[] values, int index)
+        {
+            for (var i = 0; i < values.Length; i++)
+            {
+                values[i] = data[i].GetValue(index);
+            }
+        }
+        private static Array[] CopyTo(DbParameter[] parameters, Array[] values)
+        {
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                values[i] = (Array)parameters[i].Value;
+            }
+            return values;
         }
     }
 }

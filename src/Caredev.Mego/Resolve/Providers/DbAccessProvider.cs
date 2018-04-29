@@ -4,6 +4,7 @@
 namespace Caredev.Mego.Resolve.Providers
 {
     using Caredev.Mego.Common;
+    using Caredev.Mego.Resolve.Commands;
     using System;
     using System.Data;
     using System.Data.Common;
@@ -103,5 +104,13 @@ namespace Caredev.Mego.Resolve.Providers
         /// <see cref="IDbAccessProvider.ExecutionMode"/>
         /// </summary>
         public abstract EExecutionMode ExecutionMode { get; }
+        /// <summary>
+        /// 创建自定义命令对象。
+        /// </summary>
+        /// <returns>命令对象。</returns>
+        public virtual ICustomCommand CreateCustomCommand()
+        {
+            throw new NotImplementedException(Res.ExceptionNotImplementeCustomCommand);
+        }
     }
 }

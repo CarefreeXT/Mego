@@ -4,11 +4,12 @@
 namespace Caredev.Mego.Resolve.Operates
 {
     using System;
+    using System.Collections;
     /// <summary>
     /// 实现该接口的对象操作，当操作的对象过多无法一次性提交时，
     /// 可多次分开操作，该接口完成相应操作的数据成员及方法。
     /// </summary>
-    internal interface IDbSplitObjectsOperate
+    internal interface IDbSplitObjectsOperate : IEnumerable
     {
         /// <summary>
         /// 在指定函数调用过程中，从指定的索引分割当前操作为指定长度的集合。

@@ -11,8 +11,10 @@ namespace Caredev.Mego.Resolve.Metadatas
     using Res = Properties.Resources;
     public partial class TypeMetadata
     {
-        //修改基础属性值（修改所有属性）
+        // DataReader 修改基础属性值（修改所有属性）
         private Action<DbDataReader, int[], object> ModifyPrimaryPropertyMethod;
+        // Array 修改基础属性值（修改所有属性）
+        private Action<object[], int[], object> ModifyPrimaryProperty2Method;
         //设置复杂属性值（一次只能修改一个属性）
         private Action<object, int, object> SetComplexPropertyMethod;
         //获取复杂属性值
@@ -24,7 +26,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="indexs">赋值索引列表，按属性的排列顺序依次获取指定<see cref="DbDataReader"/>
         /// 索引处的值，若索引为 -1 则表示忽略该属性。</param>
         /// <param name="target">目标对象。</param>
-        public void ModifyProperty(DbDataReader reader, int[] indexs, object target)
+        internal void ModifyProperty(DbDataReader reader, int[] indexs, object target)
         {
             if (ClrType.IsAnonymous())
             {
@@ -37,12 +39,31 @@ namespace Caredev.Mego.Resolve.Metadatas
             ModifyPrimaryPropertyMethod(reader, indexs, target);
         }
         /// <summary>
+        /// 根据属性索引列表加载指定的值到目标对象。
+        /// </summary>
+        /// <param name="data">数据内容。</param>
+        /// <param name="indexs">赋值索引列表，按属性的排列顺序依次获取指定<see cref="DbDataReader"/>
+        /// 索引处的值，若索引为 -1 则表示忽略该属性。</param>
+        /// <param name="target">目标对象。</param>
+        internal void ModifyProperty(object[] data, int[] indexs, object target)
+        {
+            if (ClrType.IsAnonymous())
+            {
+                throw new InvalidOperationException(Res.ExceptionAnonymousObjectPropertyIsReadOnly);
+            }
+            if (ModifyPrimaryProperty2Method == null)
+            {
+                ModifyPrimaryProperty2Method = (Action<object[], int[], object>)new ModifyPrimaryProperty2Generator(this).Compile();
+            }
+            ModifyPrimaryProperty2Method(data, indexs, target);
+        }
+        /// <summary>
         /// 设置指定索引位置的复杂属性值。
         /// </summary>
         /// <param name="source">设置对象。</param>
         /// <param name="index">属性相应的索引。</param>
         /// <param name="value">设置的值。</param>
-        public void SetComplexProperty(object source, int index, object value)
+        internal void SetComplexProperty(object source, int index, object value)
         {
             if (ClrType.IsAnonymous())
             {
@@ -60,7 +81,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="source">获取的对象。</param>
         /// <param name="index">属性相应的索引。</param>
         /// <returns>检索值。</returns>
-        public object GetComplexProperty(object source, int index)
+        internal object GetComplexProperty(object source, int index)
         {
             if (GetComplexPropertyMethod == null)
             {
@@ -69,7 +90,63 @@ namespace Caredev.Mego.Resolve.Metadatas
             return GetComplexPropertyMethod(source, index);
         }
         /// <summary>
-        /// 修改普通属性代码生成器。
+        /// 使用数组修改普通属性代码生成器。
+        /// </summary>
+        private sealed class ModifyPrimaryProperty2Generator : MethodILGenerateor<Action<object[], int[], object>>
+        {
+            public ModifyPrimaryProperty2Generator(TypeMetadata metadata)
+             : base(metadata)
+            {
+            }
+
+            private LocalBuilder item;
+            private LocalBuilder field;
+
+            private LocalBuilder value;
+            /// <inheritdoc/>
+            public override Delegate Compile()
+            {
+                value = il.DeclareLocal(typeof(object));
+
+                var itemType = Metadata.ClrType;
+                item = il.DeclareLocal(itemType);
+                field = il.DeclareLocal(typeof(int));
+
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Castclass, Metadata.ClrType);
+                il.Emit(OpCodes.Stloc, item);
+
+                var members = Metadata.PrimaryMembers;
+                int count = members.Count - 1;
+                for (int i = 0; i <= count; i++)
+                {
+                    Property(members[i].Member, i);
+                }
+
+                il.Emit(OpCodes.Ret);
+                return base.Compile();
+            }
+
+            private void Property(PropertyInfo property, int currentIndex)
+            {
+                Label judgeLabel = il.DefineLabel();
+                //var field = fields[index];
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldc_I4, currentIndex);
+                il.Emit(OpCodes.Ldelem_I4);
+                il.Emit(OpCodes.Stloc, field);
+                //if(field >= 0)
+                il.Emit(OpCodes.Ldloc, field);
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.Emit(OpCodes.Blt_S, judgeLabel);
+                //item.Property = values[field]
+                il.PropertySetValue(property, item, () => il.ArrayGetValue(Metadata, property, field));
+
+                il.MarkLabel(judgeLabel);
+            }
+        }
+        /// <summary>
+        /// 使用<see cref="DbDataReader"/>修改普通属性代码生成器。
         /// </summary>
         private sealed class ModifyPrimaryPropertyGenerator : MethodILGenerateor<Action<DbDataReader, int[], object>>
         {
@@ -104,59 +181,16 @@ namespace Caredev.Mego.Resolve.Metadatas
             {
                 Label judgeLabel = il.DefineLabel();
                 //var field = fields[index];
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldc_I4, currentIndex);
-                il.Emit(OpCodes.Ldelem_I4);
-                il.Emit(OpCodes.Stloc, field);
-                //if(field >= 0)
-                il.Emit(OpCodes.Ldloc, field);
-                il.Emit(OpCodes.Ldc_I4_0);
-                il.Emit(OpCodes.Blt_S, judgeLabel);
-
+                il.GetFieldByIndex(field, currentIndex);
+                //if(field >= 0
+                il.IfFieldGreaterEqualZero(field, ref judgeLabel);
                 var propertyType = property.PropertyType;
-                if (propertyType.IsNullable())
-                {
-                    //if(!reader.IsDBNull(field))
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldloc, field);
-                    il.Emit(OpCodes.Callvirt, SupportMembers.DataReader.IsDBNull);
-                    il.Emit(OpCodes.Ldc_I4_0);
-                    il.Emit(OpCodes.Ceq);
-                    il.Emit(OpCodes.Brfalse_S, judgeLabel);
-                }
-
-                InvokeSet(property);
+                //if(!reader.IsDBNull(field))
+                il.IfReaderIsDbNull(propertyType, field, ref judgeLabel);
+                //item.Property = reader.GetValue(field)
+                il.PropertySetValue(property, item, () => il.ReaderGetValue(Metadata, property, field));
 
                 il.MarkLabel(judgeLabel);
-            }
-
-            private void InvokeSet(PropertyInfo propertyInfo)
-            {
-                var propertyType = propertyInfo.PropertyType;
-
-                il.Emit(OpCodes.Ldloc, item);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldloc, field);
-
-                if (DataReaderMethodMap.TryGetValue(propertyInfo.PropertyType, out MethodInfo getMethod))
-                {
-                    il.Emit(OpCodes.Callvirt, getMethod);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Callvirt, getItemMethod);
-                    il.Emit(OpCodes.Castclass, propertyInfo.PropertyType);
-                }
-                if (propertyType.IsGenericType
-                       && propertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))
-                       )
-                {
-                    var propetyType = propertyInfo.PropertyType;
-                    var constructor = propetyType.GetConstructor(new Type[] { propetyType.GetGenericArguments()[0] });
-                    il.Emit(OpCodes.Newobj, constructor);
-                }
-
-                il.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod(true));
             }
         }
         /// <summary>
@@ -239,7 +273,7 @@ namespace Caredev.Mego.Resolve.Metadatas
                 }
 
                 il.MarkLabel(endLabel);
-  
+
                 il.Emit(OpCodes.Ldnull);
                 il.Emit(OpCodes.Ret);
 

@@ -9,44 +9,21 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Res = Properties.Resources;
-    partial class PostgresSQLFragmentWriter
+    partial class PostgreSQLFragmentWriter
     {
         /// <inheritdoc/>
         protected override IDictionary<Type, WriteFragmentDelegate> InitialMethodsForWriteFragment()
         {
             var dictionary = base.InitialMethodsForWriteFragment();
 
+            dictionary.AddOrUpdate(typeof(ValuesFragment), WriteFragmentForValues);
             dictionary.AddOrUpdate(typeof(CreateColumnFragment), WriteFragmentForCreateColumn);
-            dictionary.AddOrUpdate(typeof(CreateTableFragment), WriteFragmentForCreateTable);
-
             dictionary.AddOrUpdate(typeof(ObjectExsitFragment), WriteFragmentForObjectExsit);
 
             return dictionary;
-        }
-        private void WriteFragmentForObjectExsit(SqlWriter writer, ISqlFragment fragment)
-        {
-            var exist = (ObjectExsitFragment)fragment;
-            writer.Write("SELECT CASE WHEN EXISTS (");
-            var schema = exist.Context.Feature.DefaultSchema;
-            if (fragment is INameSchemaFragment nameschema && !string.IsNullOrEmpty(nameschema.Schema))
-            {
-                schema = nameschema.Schema;
-            }
-            writer.Write("SELECT 1 FROM information_schema.");
-            switch (exist.Kind)
-            {
-                case EDatabaseObject.Table: writer.Write("TABLES"); break;
-                case EDatabaseObject.View: writer.Write("VIEWS"); break;
-                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, exist.Kind));
-            }
-            writer.Write(" t WHERE t.TABLE_SCHEMA='");
-            writer.Write(schema);
-            writer.Write("' AND t.TABLE_NAME='");
-            writer.Write(exist.Name.Name);
-            writer.Write('\'');
-            writer.Write(") THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END");
         }
         /// <inheritdoc/>
         protected override void WriteFragmentForCreateTable(SqlWriter writer, ISqlFragment fragment)
@@ -94,14 +71,159 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         {
             base.WriteFragmentForInsertValue(writer, fragment);
             var insert = (InsertValueFragment)fragment;
-            if (insert.ReturnMembers.Count > 0)
+            OutputReturnMembers(writer, insert.ReturnMembers);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForUpdate(SqlWriter writer, ISqlFragment fragment)
+        {
+            var update = (UpdateFragment)fragment;
+
+            writer.Write("UPDATE ");
+            WriteFragmentForSource(writer, update.Target);
+            writer.WriteLine();
+            writer.Write("SET ");
+            var values = update.Values.ToArray();
+            for (int i = 0; i < update.Members.Count; i++)
+            {
+                var member = update.Members[i];
+                var value = values[i];
+                if (i > 0)
+                    writer.Write(", ");
+                WriteDbName(writer, member.OutputName);
+                writer.Write(" = ");
+                value.WriteSql(writer);
+            }
+            var sources = update.Sources.Where(a => a != update.Target).ToArray();
+            IExpressionFragment joinfilter = null;
+            if (sources.Length > 0)
             {
                 writer.WriteLine();
-                writer.Write("RETURNING ");
-                insert.ReturnMembers.ForEach(
-                    () => writer.Write(","),
-                    column => this.WriteDbName(writer, column.OutputName));
+                writer.Write("FROM ");
+                if (sources[0].Join.HasValue)
+                {
+                    joinfilter = sources[0].Condition;
+                    WriteFragmentForSourceContent(writer, sources[0]);
+                    for (int i = 1; i < sources.Length; i++)
+                    {
+                        writer.WriteLine();
+                        WriteFragmentForSource(writer, sources[i]);
+                    }
+                }
+                else
+                {
+                    sources.ForEach(() => writer.WriteLine(),
+                        source => WriteFragmentForSource(writer, source));
+                }
             }
+            if (joinfilter != null)
+            {
+                writer.WriteLine();
+                writer.Write("WHERE ");
+                if (update.Where != null)
+                {
+                    joinfilter.Merge(update.Where).WriteSql(writer);
+                }
+                else
+                {
+                    joinfilter.WriteSql(writer);
+                }
+            }
+            else
+            {
+                WriteFragmentForWhere(writer, update.Where);
+            }
+            OutputReturnMembers(writer, update.ReturnMembers, update.Target);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForDelete(SqlWriter writer, ISqlFragment fragment)
+        {
+            var current = (DeleteFragment)fragment;
+            writer.Write("DELETE FROM ");
+            WriteFragmentForSourceContent(writer, current.Target);
+            var sources = current.Sources.Where(a => a != current.Target).ToArray();
+            if (sources.Length > 0)
+            {
+                writer.WriteLine();
+                writer.Write("USING ");
+                sources.ForEach(() => writer.Write(","), source => WriteFragmentForSourceContent(writer, source));
+
+                var conditions = sources.Where(a => a.Condition != null).Select(a => a.Condition).ToList();
+                if (conditions.Count > 0 || current.Where != null)
+                {
+                    writer.WriteLine();
+                    writer.Write("WHERE ");
+                    if (current.Where != null)
+                    {
+                        if (conditions.Count > 0)
+                        {
+                            current.Where.Merge(conditions).WriteSql(writer);
+                        }
+                        else
+                        {
+                            current.Where.WriteSql(writer);
+                        }
+                    }
+                    else if (conditions.Count > 0)
+                    {
+                        conditions.Merge().WriteSql(writer);
+                    }
+                }
+            }
+            else
+            {
+                WriteFragmentForWhere(writer, current.Where);
+            }
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
+        {
+            var select = (SelectFragment)fragment;
+            writer.Enter(delegate ()
+            {
+                writer.Write("SELECT");
+                if (select.Distinct) writer.Write(" DISTINCT");
+                writer.WriteLine();
+                WriteFragmentForSelectMembers(writer, select.Members);
+                WriteFragmentForFrom(writer, select.Sources);
+                WriteFragmentForWhere(writer, select.Where);
+                WriteFragmentForGroupBy(writer, select.GroupBys);
+                WriteFragmentForOrderBy(writer, select.Sorts);
+                if (select.Take > 0)
+                {
+                    writer.WriteLine();
+                    writer.Write("LIMIT ");
+                    writer.Write(select.Take);
+                }
+                if (select.Skip > 0)
+                {
+                    writer.WriteLine();
+                    writer.Write("OFFSET ");
+                    writer.Write(select.Skip);
+                }
+            }, select);
+        }
+        private void WriteFragmentForObjectExsit(SqlWriter writer, ISqlFragment fragment)
+        {
+            var exist = (ObjectExsitFragment)fragment;
+            writer.Write("SELECT CASE WHEN EXISTS (");
+            var schema = exist.Context.Feature.DefaultSchema;
+            if (fragment is INameSchemaFragment nameschema && !string.IsNullOrEmpty(nameschema.Schema))
+            {
+                schema = nameschema.Schema;
+            }
+            writer.Write("SELECT 1 FROM information_schema.");
+            switch (exist.Kind)
+            {
+                case EDatabaseObject.Table: writer.Write("TABLES"); break;
+                case EDatabaseObject.View: writer.Write("VIEWS"); break;
+                default: throw new NotSupportedException(string.Format(Res.NotSupportedWriteDatabaseObject, exist.Kind));
+            }
+            writer.Write(" t WHERE t.TABLE_SCHEMA='");
+            writer.Write(schema);
+            writer.Write("' AND t.TABLE_NAME='");
+            writer.Write(exist.Name.Name);
+            writer.Write('\'');
+            writer.Write(") THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END");
         }
         private void WriteFragmentForCreateColumn(SqlWriter writer, ISqlFragment fragment)
         {
@@ -133,36 +255,49 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 }
             }
         }
-        /// <inheritdoc/>
-        protected override void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
+        private void WriteFragmentForValues(SqlWriter writer, ISqlFragment fragment)
         {
-            var select = (SelectFragment)fragment;
-            writer.Enter(delegate ()
+            var values = (ValuesFragment)fragment;
+            writer.Write("(VALUES");
+            var loader = values.Source.Loader;
+            values.Data.ForEach(() => writer.WriteLine(","),
+                item =>
+                {
+                    loader.Load(item);
+                    writer.Write('(');
+                    values.Values.ForEach(() => writer.Write(","), val => val.WriteSql(writer));
+                    writer.Write(')');
+                });
+            writer.Write(") AS ");
+            writer.Write(values.AliasName);
+            writer.Write(" (");
+            values.Members.ForEach(
+                () => writer.Write(","),
+                column => this.WriteDbName(writer, column.OutputName));
+            writer.WriteLine(")");
+        }
+
+        private void OutputReturnMembers(SqlWriter writer, List<IMemberFragment> members, ISourceFragment target = null)
+        {
+            if (members.Count > 0)
             {
-                writer.Write("SELECT");
-                if (select.Distinct) writer.Write(" DISTINCT");
                 writer.WriteLine();
-                WriteFragmentForSelectMembers(writer, select.Members);
-                WriteFragmentForFrom(writer, select.Sources);
-                WriteFragmentForWhere(writer, select.Where);
-                WriteFragmentForGroupBy(writer, select.GroupBys);
-                WriteFragmentForOrderBy(writer, select.Sorts);
-                if (select.Take > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("LIMIT ");
-                    writer.Write(select.Take);
-                }
-                if (select.Skip > 0)
-                {
-                    writer.WriteLine();
-                    writer.Write("OFFSET ");
-                    writer.Write(select.Skip);
-                }
-            }, select);
+                writer.Write("RETURNING ");
+                members.ForEach(
+                    () => writer.Write(","),
+                    column =>
+                    {
+                        if (target != null)
+                        {
+                            writer.Write(target.AliasName);
+                            writer.Write('.');
+                        }
+                        this.WriteDbName(writer, column.OutputName);
+                    });
+            }
         }
     }
-    partial class PostgresSQLFragmentWriter
+    partial class PostgreSQLFragmentWriter
     {
         /// <inheritdoc/>
         protected override IDictionary<MemberInfo, WriteFragmentDelegate> InitialMethodsForWriteScalar()

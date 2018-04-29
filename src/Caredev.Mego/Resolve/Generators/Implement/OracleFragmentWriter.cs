@@ -23,14 +23,14 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             { typeof(long), "NUMBER" },
             { typeof(float), "BINARY_FLOAT" },
             { typeof(double), "BINARY_DOUBLE" },
-            { typeof(Guid), "CHAR(36)" },
+            { typeof(Guid), "RAW(16)" },
             { typeof(SByte), "TINYINT" },
             { typeof(DateTime), "TIMESTAMP" },
             { typeof(DateTimeOffset), "TIMESTAMP WITH TIME ZONE" }
         };
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeDefaultMapping = new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping)
         {
-            { typeof(string) , "NCLOB" },
+            { typeof(string) , "NVARCHAR2(2000)" },
             { typeof(byte[]) , "BLOB" },
             { typeof(decimal), "NUMERIC(18,4)" },
         };
@@ -48,6 +48,12 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Write('\"');
             writer.Write(name);
             writer.Write('\"');
+        }
+        /// <inheritdoc/>
+        public override void WriteAliasName(SqlWriter writer, string name)
+        {
+            writer.Write(' ');
+            writer.Write(name);
         }
         /// <inheritdoc/>
         public override void WriteParameterName(SqlWriter writer, string name)
@@ -75,9 +81,9 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             }
             else
             {
-                if (strattr.IsUnicode) writer.Write('N');
                 if (strattr.Length > 0)
                 {
+                    if (strattr.IsUnicode) writer.Write('N');
                     if (strattr.IsFixed)
                     {
                         writer.Write("CHAR");
@@ -92,7 +98,14 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 }
                 else
                 {
-                    writer.Write("CLOB");
+                    if (strattr.IsUnicode)
+                    {
+                        writer.Write("NVARCHAR2(2000)");
+                    }
+                    else
+                    {
+                        writer.Write("VARCHAR2(4000)");
+                    }
                 }
             }
         }

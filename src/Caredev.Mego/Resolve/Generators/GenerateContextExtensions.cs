@@ -65,7 +65,7 @@ namespace Caredev.Mego.Resolve.Generators
             , IEnumerable<ColumnMetadata> members)
         {
             DbName name = null;
-            if (context.Data is CommitContentBase data)
+            if (context.Data is ContentBase data)
             {
                 name = data.TargetName;
             }

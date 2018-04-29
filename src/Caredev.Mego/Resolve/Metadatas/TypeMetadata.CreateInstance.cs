@@ -20,7 +20,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// <param name="fields">字段索引列表。</param>
         /// <param name="complexs">读取值的暂存数组。</param>
         /// <returns></returns>
-        public object CreateInstance(DbDataReader reader, int[] fields, object[] complexs)
+        internal object CreateInstance(DbDataReader reader, int[] fields, object[] complexs)
         {
             if (KeyIndexs != null && reader.IsDBNull(fields[KeyIndexs[0]]))
                 return null;
@@ -86,47 +86,18 @@ namespace Caredev.Mego.Resolve.Metadatas
             {
                 Label endLabel = il.DefineLabel();
                 Label defaultLabel = il.DefineLabel();
-                //var field = fields[index];
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldc_I4, currentIndex);
-                il.Emit(OpCodes.Ldelem_I4);
-                il.Emit(OpCodes.Stloc, field);
-                //if(field >= 0)
-                il.Emit(OpCodes.Ldloc, field);
-                il.Emit(OpCodes.Ldc_I4_0);
-                il.Emit(OpCodes.Blt_S, defaultLabel);
-
                 var propertyType = propertyInfo.PropertyType;
-
+                //var field = fields[index];
+                il.GetFieldByIndex(field, currentIndex);
+                //if(field >= 0)
+                il.IfFieldGreaterEqualZero(field, ref defaultLabel);
                 //if(!reader.IsDBNull(field))
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldloc, field);
-                il.Emit(OpCodes.Callvirt, SupportMembers.DataReader.IsDBNull);
-                il.Emit(OpCodes.Ldc_I4_0);
-                il.Emit(OpCodes.Ceq);
-                il.Emit(OpCodes.Brfalse_S, defaultLabel);
+                il.IfReaderIsDbNull(propertyType, field, ref defaultLabel);
+                //reader.GetValue(field)
+                il.ReaderGetValue(Metadata, propertyInfo, field);
 
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldloc, field);
-
-                if (DataReaderMethodMap.TryGetValue(propertyInfo.PropertyType, out MethodInfo getMethod))
-                {
-                    il.Emit(OpCodes.Callvirt, getMethod);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Callvirt, getItemMethod);
-                    il.Emit(OpCodes.Castclass, propertyInfo.PropertyType);
-                }
-                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                {
-                    var propetyType = propertyInfo.PropertyType;
-                    var constructor = propetyType.GetConstructor(new Type[] { propetyType.GetGenericArguments()[0] });
-                    il.Emit(OpCodes.Newobj, constructor);
-                }
 
                 il.Emit(OpCodes.Br_S, endLabel);
-
                 il.MarkLabel(defaultLabel);
                 Default(parameter.ParameterType);
                 il.MarkLabel(endLabel);
@@ -176,85 +147,41 @@ namespace Caredev.Mego.Resolve.Metadatas
 
                 var members = Metadata.PrimaryMembers;
                 for (int i = 0; i < members.Count; i++)
+                {
                     SimpleProperty(members[i].Member, i);
+                }
 
                 var complexs = Metadata.ComplexMembers;
                 for (int i = 0; i < complexs.Count; i++)
-                    ComplexProperty(complexs[i].Member, i);
+                {
+                    var property = complexs[i].Member;
+                    //item.Property = complexs[index2];
+                    il.PropertySetValue(property, item, () =>
+                    {
+                        il.Emit(OpCodes.Ldarg_2);
+                        il.Emit(OpCodes.Ldc_I4, i);
+                        il.Emit(OpCodes.Ldelem_Ref);
+                        il.Emit(OpCodes.Castclass, property.PropertyType);
+                    });
+                }
 
                 il.Emit(OpCodes.Ldloc, item);
                 il.Emit(OpCodes.Ret);
                 return base.Compile();
             }
 
-            private void ComplexProperty(PropertyInfo property, int currentIndex)
+            private void SimpleProperty(PropertyInfo property, int i)
             {
-                //item.Property = complexs[index2];
-                il.Emit(OpCodes.Ldloc, item);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Ldc_I4, currentIndex);
-                il.Emit(OpCodes.Ldelem_Ref);
-                il.Emit(OpCodes.Castclass, property.PropertyType);
-                il.Emit(OpCodes.Callvirt, property.GetSetMethod());
-            }
-
-            private void SimpleProperty(PropertyInfo property, int currentIndex)
-            {
-                Label judgeLabel = il.DefineLabel();
+                var judgeLabel = il.DefineLabel();
                 //var field = fields[index];
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldc_I4, currentIndex);
-                il.Emit(OpCodes.Ldelem_I4);
-                il.Emit(OpCodes.Stloc, field);
+                il.GetFieldByIndex(field, i);
                 //if(field >= 0)
-                il.Emit(OpCodes.Ldloc, field);
-                il.Emit(OpCodes.Ldc_I4_0);
-                il.Emit(OpCodes.Blt_S, judgeLabel);
-
-                var propertyType = property.PropertyType;
-                if (propertyType.IsNullable())
-                {
-                    //if(!reader.IsDBNull(field))
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldloc, field);
-                    il.Emit(OpCodes.Callvirt, SupportMembers.DataReader.IsDBNull);
-                    il.Emit(OpCodes.Ldc_I4_0);
-                    il.Emit(OpCodes.Ceq);
-                    il.Emit(OpCodes.Brfalse_S, judgeLabel);
-                }
-
-                InvokeSet(property);
-
+                il.IfFieldGreaterEqualZero(field, ref judgeLabel);
+                //if(!reader.IsDBNull(field))
+                il.IfReaderIsDbNull(property.PropertyType, field, ref judgeLabel);
+                //item.Property = reader.GetValue(field)
+                il.PropertySetValue(property, item, () => il.ReaderGetValue(Metadata, property, field));
                 il.MarkLabel(judgeLabel);
-            }
-
-            private void InvokeSet(PropertyInfo propertyInfo)
-            {
-                var propertyType = propertyInfo.PropertyType;
-
-                il.Emit(OpCodes.Ldloc, item);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldloc, field);
-
-                if (DataReaderMethodMap.TryGetValue(propertyInfo.PropertyType, out MethodInfo getMethod))
-                {
-                    il.Emit(OpCodes.Callvirt, getMethod);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Callvirt, getItemMethod);
-                    il.Emit(OpCodes.Castclass, propertyInfo.PropertyType);
-                }
-                if (propertyType.IsGenericType
-                       && propertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))
-                       )
-                {
-                    var propetyType = propertyInfo.PropertyType;
-                    var constructor = propetyType.GetConstructor(new Type[] { propetyType.GetGenericArguments()[0] });
-                    il.Emit(OpCodes.Newobj, constructor);
-                }
-
-                il.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod(true));
             }
         }
     }

@@ -2,10 +2,14 @@
 {
     using System;
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.InsertPropertys")]
-    public partial class InsertPropertysTest : ISimpleTest
+    public partial class InsertPropertysTest
     {
         [TestMethod]
         public void InsertSingleObjectTest()

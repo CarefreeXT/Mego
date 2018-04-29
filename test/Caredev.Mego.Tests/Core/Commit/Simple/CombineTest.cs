@@ -44,7 +44,10 @@ namespace Caredev.Mego.Tests.Core.Commit.Simple
                 var query = from a in db.Customers
                             where a.Id >= 10 && a.Id < 200
                             select a;
-                db.Database.Connection.Open();
+                if (db.Database.Connection.State != System.Data.ConnectionState.Open)
+                {
+                    db.Database.Connection.Open();
+                }
                 var list = query.ToList();
                 var obj = query.First();
 
@@ -52,7 +55,7 @@ namespace Caredev.Mego.Tests.Core.Commit.Simple
                 var query2 = from b in db.Customers
                              where b.Id >= 200
                              select b;
-                
+
                 var str = query.ToString();
                 var customer = new Customer()
                 {

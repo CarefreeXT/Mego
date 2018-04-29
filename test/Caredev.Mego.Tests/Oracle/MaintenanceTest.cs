@@ -6,9 +6,9 @@
 @"CREATE TABLE ""SIMPLE"".""TestProduct""(
 	""Id"" NUMBER NOT NULL, 
 	""Category"" NUMBER NOT NULL, 
-	""Code"" NCLOB NULL, 
+	""Code"" NVARCHAR2(2000) NULL, 
 	""IsValid"" NUMBER(1) NOT NULL, 
-	""Name"" NCLOB NULL, 
+	""Name"" NVARCHAR2(2000) NULL, 
 	""UpdateDate"" TIMESTAMP NOT NULL,
 	PRIMARY KEY ( ""Id"")
 )";
@@ -52,7 +52,7 @@
 @"CREATE VIEW ""SIMPLE"".""TestProduct"" AS 
 SELECT
 a.""Id"", a.""Category"", a.""Code"", a.""IsValid"", a.""Name"", a.""UpdateDate""
-FROM ""SIMPLE"".""Products"" AS a";
+FROM ""SIMPLE"".""Products"" a";
 
         private const string CreateViewTest2Sql =
 @"CREATE VIEW ""SIMPLE"".""TestProduct""

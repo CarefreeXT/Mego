@@ -2,10 +2,14 @@
 {
     using System.Linq;
     using Caredev.Mego.Exceptions;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Query.Simple")]
-    public partial class SingleEntityTest : ISimpleTest
+    public partial class SingleEntityTest 
     {
 
         [TestMethod]

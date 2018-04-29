@@ -68,7 +68,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// </summary>
         /// <param name="source">集合对象。</param>
         /// <param name="target">目标对象。</param>
-        public void CollectionAdd(object source, object target)
+        internal void CollectionAdd(object source, object target)
         {
             if (CollectionAddMethod == null)
             {
@@ -81,7 +81,7 @@ namespace Caredev.Mego.Resolve.Metadatas
         /// </summary>
         /// <param name="source">集合对象。</param>
         /// <param name="target">目标对象。</param>
-        public void CollectionRemove(object source, object target)
+        internal void CollectionRemove(object source, object target)
         {
             if (CollectionRemoveMethod == null)
             {

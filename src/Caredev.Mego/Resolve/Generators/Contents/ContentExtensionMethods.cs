@@ -1,4 +1,6 @@
-﻿
+﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
+// Licensed under the GNU Lesser General Public License v3.0.
+// See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Generators.Contents
 {
     using Caredev.Mego.Common;
@@ -13,14 +15,30 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using Res = Properties.Resources;
     internal static class ContentExtensionMethods
     {
-        internal static DeleteFragment DeleteByKeys(this CommitContentBase data, TableMetadata table, DbName name = null)
+        /// <summary>
+        /// 创建通过主键删除的语句片段。
+        /// </summary>
+        /// <param name="data">内容对象。</param>
+        /// <param name="table">删除表的元数据。</param>
+        /// <param name="name">指定名称。</param>
+        /// <returns>语句片段。</returns>
+        internal static DeleteFragment DeleteByKeys(this ContentBase data, TableMetadata table, DbName name = null)
         {
             var delete = new DeleteFragment(data.GenerateContext, table, name);
             delete.Where = delete.Target.JoinCondition(data.CommitObject,
                 data.UnionConcurrencyMembers(table, table.Keys));
             return delete;
         }
-        internal static DeleteFragment DeleteInKey(this CommitContentBase data, TableMetadata table
+        /// <summary>
+        /// 创建通过 IN 主键删除的语句片段。
+        /// </summary>
+        /// <param name="data">内容对象。</param>
+        /// <param name="table">删除表的元数据。</param>
+        /// <param name="key">主键元数据。</param>
+        /// <param name="values">值列表对象。</param>
+        /// <param name="name">指定名称。</param>
+        /// <returns>语句片段。</returns>
+        internal static DeleteFragment DeleteInKey(this ContentBase data, TableMetadata table
             , ColumnMetadata key, ValueListFragment values, DbName name = null)
         {
             var context = data.GenerateContext;
@@ -32,7 +50,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             };
             return delete;
         }
-        internal static DeleteFragment DeleteByTemptable(this CommitContentBase data
+        /// <summary>
+        /// 创建通过临时博删除的语句片段。
+        /// </summary>
+        /// <param name="data">内容对象。</param>
+        /// <param name="metadata">删除表的元数据。</param>
+        /// <param name="temptable">临时表。</param>
+        /// <param name="name">指定名称。</param>
+        /// <returns>语句片段。</returns>
+        internal static DeleteFragment DeleteByTemptable(this ContentBase data
             , TableMetadata metadata, TemporaryTableFragment temptable, DbName name = null)
         {
             var context = data.GenerateContext;
@@ -45,7 +71,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return delete;
         }
 
-        internal static UpdateFragment UpdateByKeys(this CommitContentBase data, CommitUnitBase unit, DbName name = null)
+        internal static UpdateFragment UpdateByKeys(this ContentBase data, CommitUnitBase unit, DbName name = null)
         {
             var context = data.GenerateContext;
             var metadata = unit.Table;
@@ -56,7 +82,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return update;
         }
 
-        internal static UpdateFragment UpdateByTemptable(this CommitContentBase data, CommitUnitBase unit, TemporaryTableFragment current, DbName name = null)
+        internal static UpdateFragment UpdateByTemptable(this ContentBase data, CommitUnitBase unit, SourceFragment current, DbName name = null)
         {
             var context = data.GenerateContext;
             var metadata = unit.Table;
@@ -67,7 +93,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return update;
         }
 
-        internal static InsertValueFragment InsertKeyUnit(this CommitContentBase data, CommitKeyUnit unit, DbName name = null)
+        internal static InsertValueFragment InsertKeyUnit(this ContentBase data, CommitKeyUnit unit, DbName name = null)
         {
             var context = data.GenerateContext;
             var target = new TableFragment(context, unit.Table, name);
@@ -77,7 +103,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return insert;
         }
 
-        internal static InsertValueFragment InsertUnit(this CommitContentBase data, CommitIdentityUnit unit, DbName name = null)
+        internal static InsertValueFragment InsertUnit(this ContentBase data, CommitIdentityUnit unit, DbName name = null)
         {
             var context = data.GenerateContext;
             var target = new TableFragment(context, unit.Table, name);
@@ -88,7 +114,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
         }
 
 
-        internal static InsertValueFragment InsertTemptable(this CommitContentBase data, TemporaryTableFragment temptable, IEnumerable<CommitMember> members)
+        internal static InsertValueFragment InsertTemptable(this ContentBase data, TemporaryTableFragment temptable, IEnumerable<CommitMember> members)
         {
             var context = data.GenerateContext;
             var insert = new InsertValueFragment(context, temptable, data.CommitObject, data.Items);
@@ -97,7 +123,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return insert;
         }
 
-        internal static InsertFragment InsertTemptable(this CommitContentBase data, TemporaryTableFragment temptable, CommitKeyUnit unit, DbName name = null)
+        internal static InsertFragment InsertTemptable(this ContentBase data, TemporaryTableFragment temptable, CommitKeyUnit unit, DbName name = null)
         {
             var members = unit.Keys.Concat(unit.Members).Select(a => a.Metadata);
             var context = data.GenerateContext;
@@ -111,19 +137,31 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             }
             return current;
         }
-
-        internal static SelectFragment SelectReturns(this ICommitContentUnit unit, ISourceFragment target)
+        /// <summary>
+        /// 创建通过主键及值关联的返回数据语句片段。
+        /// </summary>
+        /// <param name="unit">内容对象。</param>
+        /// <param name="target">目标对象。</param>
+        /// <returns>语句片段。</returns>
+        internal static SelectFragment SelectReturns(this IContentUnit unit, ISourceFragment target)
         {
-            var data = (CommitContentBase)unit;
+            var data = (ContentBase)unit;
             var context = data.GenerateContext;
             var select = new SelectFragment(context, target);
             select.Members.AddRange(unit.ReturnMembers.Select(a => target.GetMember(a.Metadata)));
             select.Where = target.JoinCondition(data.CommitObject, data.Table.Keys);
             return select;
         }
-        internal static SelectFragment SelectReturns(this ICommitContentUnit unit, ISourceFragment target, TemporaryTableFragment temptable)
+        /// <summary>
+        /// 创建通过临时表关联的返回数据语句片段。
+        /// </summary>
+        /// <param name="unit">内容对象。</param>
+        /// <param name="target">目标对象。</param>
+        /// <param name="temptable">临时表。</param>
+        /// <returns>语句片段。</returns>
+        internal static SelectFragment SelectReturns(this IContentUnit unit, ISourceFragment target, TemporaryTableFragment temptable)
         {
-            var data = (CommitContentBase)unit;
+            var data = (ContentBase)unit;
             var context = data.GenerateContext;
             var select = new SelectFragment(context, target);
             select.Members.AddRange(unit.ReturnMembers.Select(a => target.GetMember(a.Metadata)));
@@ -133,11 +171,11 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             return select;
         }
 
-        internal static void GenerateOutput(this ICommitContentUnit unit)
+        internal static void GenerateOutput(this IContentUnit unit)
         {
             if (unit.ReturnMembers.Any())
             {
-                var data = (CommitContentBase)unit;
+                var data = (ContentBase)unit;
                 var returns = unit.ReturnMembers.Select(a => a.Metadata.Member).ToArray();
                 var metadata = data.GenerateContext.Metadata.Type(data.Items.ClrType);
                 var fields = Utility.Array<int>(metadata.PrimaryMembers.Count, -1);
@@ -151,7 +189,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
             }
         }
 
-        private static void SetCommitMembers(this CommitContentBase data, UpdateFragment update, CommitUnitBase unit, ISourceFragment source = null)
+        private static void SetCommitMembers(this ContentBase data, UpdateFragment update, CommitUnitBase unit, ISourceFragment source = null)
         {
             source = source ?? data.CommitObject;
             foreach (var member in unit.Members)
@@ -181,15 +219,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
                     break;
             }
         }
-
         /// <summary>
         /// 根据属性映射表达式创建提交单元。
         /// </summary>
+        /// <param name="data">数据对象。</param>
         /// <param name="commitUnit">当前提交单元。</param>
         /// <param name="columns">指定的列元数据集合。</param>
         /// <param name="content">属性映射表达式。</param>
         /// <returns>当前提交单元。</returns>
-        public static CommitUnitBase CreateCommitUnit(this ICommitContentUnit data, CommitUnitBase commitUnit, IEnumerable<ColumnMetadata> columns, DbExpression content)
+        public static CommitUnitBase CreateCommitUnit(this IContentUnit data, CommitUnitBase commitUnit, IEnumerable<ColumnMetadata> columns, DbExpression content)
         {
             if (content is DbSelectExpression select && select.Item is DbNewExpression newExpression)
             {
@@ -227,11 +265,12 @@ namespace Caredev.Mego.Resolve.Generators.Contents
         /// <summary>
         /// 创建指定数据列提交单元成员。
         /// </summary>
+        /// <param name="data">数据对象。</param>
         /// <param name="column">指定数据列。</param>
         /// <param name="generator">值生成对象。</param>
         /// <param name="customExpression">自定义表达式。</param>
         /// <returns>创建结果。</returns>
-        public static CommitMember CreateCommitUnitMember(this ICommitContentUnit data, ColumnMetadata column, ValueGenerateBase generator, DbExpression customExpression = null)
+        public static CommitMember CreateCommitUnitMember(this IContentUnit data, ColumnMetadata column, ValueGenerateBase generator, DbExpression customExpression = null)
         {
             var context = data.GenerateContext;
             if (generator == null)
@@ -262,8 +301,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
                 }
             }
         }
-
-        public static CommitUnitBase CreateUnitForIdentity(this ICommitContentUnit data, TableMetadata metadata, DbExpression content, out bool hasExpkey)
+        /// <summary>
+        /// 创建具有标识列的提交单元。
+        /// </summary>
+        /// <param name="data">数据对象。</param>
+        /// <param name="metadata">表元数据。</param>
+        /// <param name="content">内容表达式。</param>
+        /// <param name="hasExpkey">是否包含表达式生成的主键。</param>
+        /// <returns></returns>
+        public static CommitUnitBase CreateUnitForIdentity(this IContentUnit data, TableMetadata metadata, DbExpression content, out bool hasExpkey)
         {
             var identity = metadata.Keys.FirstOrDefault(a => a.GeneratedForInsert != null && a.GeneratedForInsert.GeneratedOption == EGeneratedOption.Identity);
             if (identity != null)
@@ -283,6 +329,5 @@ namespace Caredev.Mego.Resolve.Generators.Contents
                 return commitUnit;
             }
         }
-
     }
 }

@@ -8,15 +8,15 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using Caredev.Mego.Resolve.Metadatas;
     using Caredev.Mego.Resolve.Operates;
     /// <summary>
-    /// 更新继承数据内容对象。
+    /// 更新继承数据的内容对象。
     /// </summary>
-    public class InheritDeleteContent : InheritCommitBase
+    public class InheritDeleteContent : InheritContentBase
     {
         /// <summary>
         /// 创建内容对象。
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="operate"></param>
+        /// <param name="context">生成上下文。</param>
+        /// <param name="operate">操作对象。</param>
         internal InheritDeleteContent(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {

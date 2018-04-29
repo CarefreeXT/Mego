@@ -7,6 +7,7 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
     using Caredev.Mego.Resolve.Expressions;
     using Caredev.Mego.Resolve.Metadatas;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -261,6 +262,73 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         }
     }
     /// <summary>
+    /// 值列表语句片段。
+    /// </summary>
+    public class ValuesFragment : SourceFragment
+    {
+        /// <summary>
+        /// 创建语句片段
+        /// </summary>
+        /// <param name="context">生成上下文。></param>
+        /// <param name="source">值列表提交对象语句块。</param>
+        /// <param name="data">值列表数据集合。</param>
+        /// <param name="metadata">相关表元数据。></param>
+        public ValuesFragment(GenerateContext context, CommitObjectFragment source, IEnumerable data, TableMetadata metadata = null)
+            : base(context)
+        {
+            Data = data;
+            Source = source;
+            _Metadata = metadata;
+        }
+        /// <summary>
+        /// 用于插入的提交对象语句块。
+        /// </summary>
+        public CommitObjectFragment Source { get; }
+        /// <summary>
+        /// 列表数据集合。
+        /// </summary>
+        public IEnumerable Data { get; }
+        /// <summary>
+        /// 插入值语句集合。
+        /// </summary>
+        public IEnumerable<ISqlFragment> Values => _Values.Values;
+        /// <inheritdoc/>
+        public override IMemberFragment GetMember(MemberInfo member)
+        {
+            if (_Members.TryGetValue(member, out IMemberFragment value))
+                return value;
+            var column = _Metadata.Members[(PropertyInfo)member];
+            value = this.CreateMember(member, column);
+            _Values.Add(member, Source.GetMember(column));
+            _Members.Add(member, value);
+            return value;
+        }
+        private readonly TableMetadata _Metadata;
+        private readonly Dictionary<MemberInfo, IMemberFragment> _Members = new Dictionary<MemberInfo, IMemberFragment>();
+        private readonly Dictionary<MemberInfo, ISqlFragment> _Values = new Dictionary<MemberInfo, ISqlFragment>();
+        /// <summary>
+        /// 设置当前要插入的值。
+        /// </summary>
+        /// <param name="member">更新成员。</param>
+        /// <param name="fragment">更新语句。</param>
+        public void SetValue(ColumnMetadata member, ISqlFragment fragment = null)
+        {
+            if (fragment == null)
+            {
+                fragment = Source.GetMember(member);
+            }
+            if (!_Values.ContainsKey(member.Member))
+            {
+                _Members.Add(member.Member, this.CreateMember(null, member));
+                _Values.Add(member.Member, fragment);
+            }
+            else
+            {
+                _Values[member.Member] = fragment;
+            }
+        }
+    }
+    /// <summary>
     /// 临时表或表变量语句片段。
     /// </summary>
     public class TemporaryTableFragment : SourceFragment
@@ -340,11 +408,16 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         {
             if (_Members.TryGetValue(member, out IMemberFragment result))
                 return result;
-            result = new CommitMemberFragment(Context, Loader, this, member);
-            this.Members.Add(result);
-            _Members.Add(member, result);
-            return result;
+            var commitMember = new CommitMemberFragment(Context, Loader, this, member);
+            this.Members.Add(commitMember);
+            _Members.Add(member, commitMember);
+            CreatedMember?.Invoke(member, commitMember);
+            return commitMember;
         }
+        /// <summary>
+        /// 创建成员事件。
+        /// </summary>
+        public Action<MemberInfo, CommitMemberFragment> CreatedMember { get; set; }
         /// <summary>
         /// 属性加载器。
         /// </summary>

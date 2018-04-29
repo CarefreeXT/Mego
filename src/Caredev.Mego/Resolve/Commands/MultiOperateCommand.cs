@@ -1,7 +1,7 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Operates
+namespace Caredev.Mego.Resolve.Commands
 {
     using Caredev.Mego.Exceptions;
     using System;
@@ -12,10 +12,11 @@ namespace Caredev.Mego.Resolve.Operates
     using System.Diagnostics;
     using System.Text;
     using Res = Properties.Resources;
+    using Caredev.Mego.Resolve.Operates;
     /// <summary>
     /// 多个数据库操作命令对象。
     /// </summary>
-    internal class DbMultiOperateCommand : DbOperateCommandBase, IEnumerable<DbOperateBase>
+    internal class MultiOperateCommand : OperateCommandBase, IEnumerable<DbOperateBase>
     {
         private readonly IList<DbOperateBase> operates = new List<DbOperateBase>();
         private Dictionary<DbOperateBase, SplitIndexLength> splitesOperates;
@@ -24,7 +25,7 @@ namespace Caredev.Mego.Resolve.Operates
         /// 创建命令对象。
         /// </summary>
         /// <param name="context">操作执行上下文</param>
-        public DbMultiOperateCommand(DbOperateContext context)
+        public MultiOperateCommand(DbOperateContext context)
             : base(context) { }
         /// <inheritdoc/>
         public override bool IsEmpty => operates.Count == 0;
@@ -91,12 +92,7 @@ namespace Caredev.Mego.Resolve.Operates
             }
             if (!splitesOperates.ContainsKey(operateInstance))
             {
-                splitesOperates.Add(operateInstance, new SplitIndexLength()
-                {
-                    Operate = operate,
-                    Index = index,
-                    Length = length
-                });
+                splitesOperates.Add(operateInstance, new SplitIndexLength(operate, index, length));
             }
         }
         /// <summary>

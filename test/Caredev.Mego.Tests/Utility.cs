@@ -1,4 +1,5 @@
-﻿using Caredev.Mego.Resolve.Operates;
+﻿using Caredev.Mego.Resolve.Commands;
+using Caredev.Mego.Resolve.Operates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
@@ -19,7 +20,7 @@ namespace Caredev.Mego.Tests
             }
             var _Operate = new DbQueryCollectionOperate(db, exp, itemtype);
             var expression = db.Configuration.Translator.Translate(_Operate);
-            var comands = new DbOperateCommandCollection(_Operate.Executor);
+            var comands = new OperateCommandCollection(_Operate.Executor);
             comands.NextCommand();
 
             var generatesql = db.Database.Generator.Generate(_Operate, expression);
@@ -29,7 +30,7 @@ namespace Caredev.Mego.Tests
         public static void CompareSql(DbContext db, DbOperateBase ope, string sql)
         {
             DbOperateBase operate = (DbOperateBase)ope;
-            var comands = new DbOperateCommandCollection(operate.Executor);
+            var comands = new OperateCommandCollection(operate.Executor);
             comands.NextCommand();
 
             var generatesql = ope.GenerateSql();
@@ -70,7 +71,7 @@ namespace Caredev.Mego.Tests
                         {
                             action(context);
                         }
-                        catch (NotSupportedException)
+                        catch (NotSupportedException e)
                         {
                             if (sql != Constants.NotSuppored) throw;
                         }

@@ -10,20 +10,20 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using Caredev.Mego.Resolve.Operates;
     using Res = Properties.Resources;
     /// <summary>
-    /// 继承的提交数据内容对象。
+    /// 提交继承数据的内容对象。
     /// </summary>
-    public abstract class InheritCommitBase : CommitContentBase
+    public abstract class InheritContentBase : ContentBase
     {
         /// <summary>
-        /// 创建提交内容对象。
+        /// 创建内容对象。
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="operate"></param>
-        internal InheritCommitBase(GenerateContext context, DbObjectsOperateBase operate)
+        /// <param name="context">生成上下文。</param>
+        /// <param name="operate">操作对象。</param>
+        internal InheritContentBase(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         { }
         /// <summary>
-        /// 提交相关的表元数据。
+        /// 数据表元数据集合。
         /// </summary>
         public TableMetadata[] Tables
         {

@@ -187,6 +187,15 @@ namespace Caredev.Mego.Properties {
         }
         
         /// <summary>
+        ///   查找类似 无效的转换器类型。 的本地化字符串。
+        /// </summary>
+        internal static string ExceptionInvalidConversion {
+            get {
+                return ResourceManager.GetString("ExceptionInvalidConversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无效索引对象。 的本地化字符串。
         /// </summary>
         internal static string ExceptionInvalidIndexObject {
@@ -372,6 +381,15 @@ namespace Caredev.Mego.Properties {
         internal static string ExceptionNotFoundProvider {
             get {
                 return ResourceManager.GetString("ExceptionNotFoundProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 当前数据库提供程序未实现自定义命令对象。 的本地化字符串。
+        /// </summary>
+        internal static string ExceptionNotImplementeCustomCommand {
+            get {
+                return ResourceManager.GetString("ExceptionNotImplementeCustomCommand", resourceCulture);
             }
         }
         

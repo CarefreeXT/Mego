@@ -1,21 +1,19 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
-namespace Caredev.Mego.Resolve.Operates
+namespace Caredev.Mego.Resolve.Commands
 {
     using Caredev.Mego.Exceptions;
+    using Caredev.Mego.Resolve.Operates;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Data.Common;
-    using System.Linq;
     using System.Diagnostics;
-    using System.Text;
     using Res = Properties.Resources;
     /// <summary>
     /// 数据库操作命令对象。
     /// </summary>
-    internal abstract class DbOperateCommandBase
+    internal abstract class OperateCommandBase
     {
         private int currentVariableNameIndex = 0;
         private int currentParameterNameIndex = 0;
@@ -30,7 +28,7 @@ namespace Caredev.Mego.Resolve.Operates
         /// 创建数据库操作命令对象。
         /// </summary>
         /// <param name="context">操作上下文。</param>
-        public DbOperateCommandBase(DbOperateContext context)
+        public OperateCommandBase(DbOperateContext context)
         {
             Executor = context;
             var database = context.Context.Database;
@@ -71,7 +69,7 @@ namespace Caredev.Mego.Resolve.Operates
         /// <param name="value">参数值。</param>
         /// <param name="prefix">参数名前缀。</param>
         /// <returns>返回参数名。</returns>
-        public string AddParameter(object value, string prefix)
+        public virtual string AddParameter(object value, string prefix)
         {
 #if !DEBUG
             if (value == null)
@@ -83,12 +81,37 @@ namespace Caredev.Mego.Resolve.Operates
                 throw new Exception("Parameter count");
             if (!Parameters.TryGetValue(value, out DbParameter parameter))
             {
-                parameter = factory.CreateParameter();
-                parameter.Value = value;
-                parameter.ParameterName = prefix + (currentParameterNameIndex++).ToString("X");
+                parameter = CreateParameter(value, prefix);
                 Parameters.Add(value, parameter);
             }
             return parameter.ParameterName;
+        }
+        /// <summary>
+        /// 获取自定义命令。
+        /// </summary>
+        /// <typeparam name="TCommand">命令类型。</typeparam>
+        /// <returns>创建的命令。</returns>
+        public TCommand GetCustomCommand<TCommand>() where TCommand : ICustomCommand
+        {
+            if (_CustomCommand == null)
+            {
+                _CustomCommand = this.Executor.Context.Database.Provider.CreateCustomCommand();
+            }
+            return (TCommand)_CustomCommand;
+        }
+        internal protected ICustomCommand _CustomCommand;
+        /// <summary>
+        /// 创建参数。
+        /// </summary>
+        /// <param name="value">参数值。</param>
+        /// <param name="prefix">参数名前缀。</param>
+        /// <returns>参数对象。</returns>
+        internal protected DbParameter CreateParameter(object value, string prefix = "p")
+        {
+            var parameter = factory.CreateParameter();
+            parameter.Value = value;
+            parameter.ParameterName = prefix + (currentParameterNameIndex++).ToString("X");
+            return parameter;
         }
         /// <summary>
         /// 获取唯一变量索引。
@@ -164,11 +187,18 @@ namespace Caredev.Mego.Resolve.Operates
 
         internal abstract int ExecuteImp(DatabaseExecutor executor);
 
-        protected class SplitIndexLength
+    }
+    internal class SplitIndexLength
+    {
+        public SplitIndexLength(IDbSplitObjectsOperate operate, int index, int length)
         {
-            public IDbSplitObjectsOperate Operate;
-            public int Index;
-            public int Length;
+            Operate = operate;
+            Index = index;
+            Length = length;
         }
+
+        public IDbSplitObjectsOperate Operate { get; }
+        public int Index { get; }
+        public int Length { get; }
     }
 }

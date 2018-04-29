@@ -372,4 +372,10 @@
   <data name="NotSupportedWriteTableVariable" xml:space="preserve">
     <value>不支持写入表变量语句片段 。</value>
   </data>
+  <data name="ExceptionInvalidConversion" xml:space="preserve">
+    <value>无效的转换器类型。</value>
+  </data>
+  <data name="ExceptionNotImplementeCustomCommand" xml:space="preserve">
+    <value>当前数据库提供程序未实现自定义命令对象。</value>
+  </data>
 </root>

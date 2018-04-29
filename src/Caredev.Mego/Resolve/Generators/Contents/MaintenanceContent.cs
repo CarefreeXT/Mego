@@ -5,7 +5,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
 {
     using Caredev.Mego.Resolve.Operates;
     /// <summary>
-    /// 结构维持操作内容。
+    /// 结构维护内容对象。
     /// </summary>
     public class MaintenanceContent : OperateContentBase
     {

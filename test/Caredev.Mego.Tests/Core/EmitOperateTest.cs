@@ -109,6 +109,21 @@ namespace Caredev.Mego.Tests.Core
         }
 
         [TestMethod]
+        public void EmitModifyPrimaryProperty2()
+        {
+            using (var db = CreateContext())
+            {
+                var metadata = db.Configuration.Metadata;
+
+                var type = metadata.Type(typeof(Customer));
+                var customer = new Customer();
+                var pros = new object[] { 10, "Code", "Name", "Zip", "Address2", "Address1" };
+                type.ModifyProperty(pros, new int[] { 0, 5, 4, 1, 2, 3 }, customer);
+                Assert.IsTrue(customer.Id > 0);
+            }
+        }
+
+        [TestMethod]
         public void EmitSetComplexProperty()
         {
             using (var db = CreateContext())

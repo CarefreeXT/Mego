@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Caredev.Mego.Resolve.ValueConversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace Caredev.Mego.Tests
             if (!isinitial)
             {
                 db.Configuration.DatabaseFeature.DefaultSchema = "SIMPLE";
+                db.Configuration.Metadata.Register(typeof(BooleanToInt32Converter));
+                db.Configuration.Metadata.Register(typeof(GuidToByteArrayConverter));
             }
             return db;
         }

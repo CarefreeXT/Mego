@@ -9,7 +9,7 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     /// <summary>
     /// 提交内容单元接口
     /// </summary>
-    public interface ICommitContentUnit
+    public interface IContentUnit
     {
         /// <summary>
         /// 生成上下文。

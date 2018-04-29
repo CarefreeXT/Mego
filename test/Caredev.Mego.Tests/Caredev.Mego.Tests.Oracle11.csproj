@@ -58,14 +58,32 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
     <Compile Include="Core\Commit\Simple\InsertTest.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
     <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Core\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Core\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\InsertPropertysTest.cs" />
     <Compile Include="Oracle\Commit\Simple\InsertTest.cs" />
     <Compile Include="Oracle\Constants.cs" />
     <Compile Include="Oracle\DbFeatureTest.cs" />
     <Compile Include="Oracle\MaintenanceTest.cs" />
+    <Compile Include="Oracle\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Oracle\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Oracle\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Oracle\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Oracle\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Oracle\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Oracle\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Oracle\Query\Simple\SqlQueryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

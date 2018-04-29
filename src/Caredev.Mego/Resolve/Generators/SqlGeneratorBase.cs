@@ -57,6 +57,20 @@ namespace Caredev.Mego.Resolve.Generators
     public partial class SqlGeneratorBase : IDbSqlGenerator
     {
         /// <summary>
+        /// 针对选择查询表达式注册数据源。
+        /// </summary>
+        /// <param name="context">数据上下文。</param>
+        /// <param name="content">表达式内容。</param>
+        /// <param name="source">目前数据源语句对象。</param>
+        protected void RegisterExpressionForCommit(GenerateContext context, DbExpression content, ISourceFragment source)
+        {
+            if (content != null && content is DbSelectExpression select)
+            {
+                context.RegisterSource(select.Source, source, true);
+                context.RegisterSource(select.Source.Item, source, true);
+            }
+        }
+        /// <summary>
         /// 创建操作内容数据对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>

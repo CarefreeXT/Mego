@@ -14,14 +14,14 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     /// <summary>
     /// 提交数据内容对象。
     /// </summary>
-    public abstract class CommitContentBase : OperateContentBase
+    public abstract class ContentBase : OperateContentBase
     {
         /// <summary>
         /// 创建提交内容对象。
         /// </summary>
         /// <param name="context"></param>
         /// <param name="operate"></param>
-        internal CommitContentBase(GenerateContext context, DbObjectsOperateBase operate)
+        internal ContentBase(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {
             if (operate is IConcurrencyCheckOperate concur)

@@ -49,6 +49,16 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="name">名称。</param>
         public abstract void WriteDbName(SqlWriter writer, string name);
         /// <summary>
+        /// 写入别名。
+        /// </summary>
+        /// <param name="writer">语句写入器。</param>
+        /// <param name="name">名称。</param>
+        public virtual void WriteAliasName(SqlWriter writer, string name)
+        {
+            writer.Write(" AS ");
+            writer.Write(name);
+        }
+        /// <summary>
         /// 写入参数名称。
         /// </summary>
         /// <param name="writer">语句写入器。</param>

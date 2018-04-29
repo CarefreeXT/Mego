@@ -261,6 +261,21 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         public IEnumerable<ISqlFragment> Values => _KeyValues.Values;
         private readonly Dictionary<ColumnMetadata, ISqlFragment> _KeyValues;
         /// <summary>
+        /// 插入返回成员。
+        /// </summary>
+        public List<IMemberFragment> ReturnMembers
+        {
+            get
+            {
+                if (_ReturnMembers == null)
+                {
+                    _ReturnMembers = new List<IMemberFragment>();
+                }
+                return _ReturnMembers;
+            }
+        }
+        private List<IMemberFragment> _ReturnMembers;
+        /// <summary>
         /// 设置当前要更新的值。
         /// </summary>
         /// <param name="member">更新成员。</param>

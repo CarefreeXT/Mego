@@ -3,10 +3,13 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Metadatas
 {
+    using Caredev.Mego.Common;
     using Caredev.Mego.DataAnnotations;
     using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.ValueConversion;
     using System;
     using System.Collections.Generic;
+    using Res = Properties.Resources;
     /// <summary>
     /// 元数据引擎对象，用于获取各种系统使用的元数据入口。
     /// </summary>
@@ -14,10 +17,16 @@ namespace Caredev.Mego.Resolve.Metadatas
     {
         private readonly static Type AttributeType = typeof(TableAttribute);
         //内部构造。
-        internal MetadataEngine() { }
+        internal MetadataEngine()
+        {
+            tableMetadataCache = new Dictionary<Type, TableMetadata>();
+            typeMetadataCache = new Dictionary<System.Type, TypeMetadata>();
+            typeConversion = new Dictionary<System.Type, ConversionInfo>();
+        }
         //数据缓存对象。
-        private readonly Dictionary<Type, TableMetadata> tableMetadataCache = new Dictionary<Type, TableMetadata>();
-        private readonly Dictionary<Type, TypeMetadata> typeMetadataCache = new Dictionary<System.Type, TypeMetadata>();
+        private readonly Dictionary<Type, TableMetadata> tableMetadataCache;
+        private readonly Dictionary<Type, TypeMetadata> typeMetadataCache;
+        private readonly Dictionary<Type, ConversionInfo> typeConversion;
         /// <summary>
         /// 通过CLR类型获取相应的数据表元数据。
         /// </summary>
@@ -75,6 +84,25 @@ namespace Caredev.Mego.Resolve.Metadatas
                 typeMetadataCache.Add(clrType, data);
             }
             return data;
+        }
+        /// <summary>
+        /// 注册全局类型转换器。
+        /// </summary>
+        /// <param name="conversion">转换器类型。</param>
+        public void Register(Type conversion)
+        {
+            var info = new ConversionInfo(conversion);
+            typeConversion.AddOrUpdate(info.ObjectType, info);
+        }
+        /// <summary>
+        /// 尝试获取指定对象类型的转换器。
+        /// </summary>
+        /// <param name="type">对象属性类型类型。</param>
+        /// <param name="conversion">转换器。</param>
+        /// <returns>是否成功获取。</returns>
+        internal bool TryGetConversion(Type type, out ConversionInfo conversion)
+        {
+            return typeConversion.TryGetValue(type, out conversion);
         }
     }
 }

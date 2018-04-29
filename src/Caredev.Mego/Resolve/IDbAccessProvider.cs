@@ -3,6 +3,7 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve
 {
+    using Caredev.Mego.Resolve.Commands;
     using System;
     using System.Data.Common;
     /// <summary>
@@ -39,5 +40,9 @@ namespace Caredev.Mego.Resolve
         /// 当前数据访问提供程序所支持的执行模式。该模式将会影响与数据提交有关操作的实现逻辑。
         /// </summary>
         EExecutionMode ExecutionMode { get; }
+        /// <summary>
+        /// 创建自定义命令对象。
+        /// </summary>
+        ICustomCommand CreateCustomCommand();
     }
 }

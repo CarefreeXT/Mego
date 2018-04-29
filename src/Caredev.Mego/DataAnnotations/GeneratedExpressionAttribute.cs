@@ -21,7 +21,7 @@ namespace Caredev.Mego.DataAnnotations
         /// <summary>
         /// 生成值使用的表达式。
         /// </summary>
-        public Expression Expression { get; protected set; }
+        public virtual Expression Expression { get; protected set; }
         /// <summary>
         /// 生成选项。
         /// </summary>

@@ -12,41 +12,43 @@ namespace Caredev.Mego.Resolve.Generators.Contents
     using System.Collections.Generic;
     using System.Linq;
     /// <summary>
-    /// 继承的提交单元基类。
+    /// 用于提交数据的内容对象基类。
     /// </summary>
-    public abstract class InheritCommitUnitBase : InheritCommitBase, ICommitContentUnit
+    public abstract class ContentUnitBase : ContentBase, IContentUnit
     {
         /// <summary>
-        /// 创建提交单元。
+        /// 创建内容对象。
         /// </summary>
         /// <param name="context">生成上下文。</param>
         /// <param name="operate">操作对象。</param>
-        internal InheritCommitUnitBase(GenerateContext context, DbObjectsOperateBase operate)
+        internal ContentUnitBase(GenerateContext context, DbObjectsOperateBase operate)
             : base(context, operate)
         {
         }
         /// <summary>
-        /// 提交的数据单元集合。
+        /// 提交的数据单元。
         /// </summary>
-        public CommitUnitBase[] Units { get; internal protected set; }
-
-        public IEnumerable<ColumnMetadata> Columns
-        {
-            get
-            {
-                if (_Columns == null)
-                {
-                    _Columns = Tables.SelectMany(a => a.Members).ToArray();
-                }
-                return _Columns;
-            }
-        }
-        private IEnumerable<ColumnMetadata> _Columns;
-
+        public CommitUnitBase Unit { get; protected set; }
+        /// <summary>
+        /// 提交数据的列元数据集合。
+        /// </summary>
+        public IEnumerable<ColumnMetadata> Columns => Table.Members;
+        /// <summary>
+        /// 根据列元数据获取相应的值生成对象。
+        /// </summary>
+        /// <param name="column">列元数据。</param>
+        /// <returns>值生成对象。</returns>
         public abstract ValueGenerateBase GetValueGenerator(ColumnMetadata column);
+        /// <summary>
+        /// 需要返回结果的成员集合。
+        /// </summary>
         public IEnumerable<CommitMember> ReturnMembers => _ReturnMembers;
         private List<CommitMember> _ReturnMembers = new List<CommitMember>();
-
+        /// <summary>
+        /// 向当前内容对象注册需要返回的成员。
+        /// </summary>
+        /// <param name="member">注册的成员对象。</param>
+        /// <returns>注册对象。</returns>
         public CommitMember ReisterReturnMember(CommitMember member)
         {
             if (Items.HasResult)

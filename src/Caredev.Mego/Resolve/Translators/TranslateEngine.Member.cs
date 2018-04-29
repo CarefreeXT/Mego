@@ -305,6 +305,8 @@ namespace Caredev.Mego.Resolve.Translators
                 { SupportMembers.DateTime.AddYears        , ScalarFunctionInlineTranslate },
 
                 { SupportMembers.DbFunctions.GetIdentity  , ScalarFunctionInlineTranslate },
+                { SupportMembers.DbFunctions.SequenceNext , ScalarFunctionInlineTranslate },
+                { SupportMembers.DbFunctions.SequenceValue, ScalarFunctionInlineTranslate },
 
                 { SupportMembers.Guid.NewGuid        , ScalarFunctionInlineTranslate },
             };
