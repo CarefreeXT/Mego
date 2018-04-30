@@ -1,11 +1,15 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Caredev.Mego.Exceptions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Delete")]
-    public partial class DeleteTest : ISimpleTest
+    public partial class DeleteTest
     {
         [TestMethod]
         public void DeleteSingleTest()

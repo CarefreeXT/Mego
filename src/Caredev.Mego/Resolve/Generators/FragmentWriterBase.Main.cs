@@ -274,8 +274,7 @@ namespace Caredev.Mego.Resolve.Generators
             else
             {
                 update.Target.WriteSql(writer);
-                writer.Write(" AS ");
-                writer.Write(update.Target.AliasName);
+                WriteAliasName(writer, update.Target.AliasName);
                 if (update.Sources.Any())
                 {
                     writer.Write(" CROSS JOIN ");

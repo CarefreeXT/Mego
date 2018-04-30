@@ -74,7 +74,6 @@ namespace Caredev.Mego.Resolve.Providers
             if (ArrayBindCountProperty == null)
             {
                 var type = command.GetType();
-                InitialOracleCompnent(type);
                 ArrayBindCountProperty = type.GetProperty("ArrayBindCount");
             }
             ArrayBindCountProperty.SetValue(command, value);
@@ -96,21 +95,29 @@ namespace Caredev.Mego.Resolve.Providers
             public OracleCustomCommand(OracleAccessProvider provider)
             {
                 _Factory = provider.Factory;
+                InitialOracleCompnent(_Factory.GetType());
             }
-            
+
             private DbProviderFactory _Factory;
             private int currentParameterNameIndex = 0;
             private DbParameter AffectCountParameter = null;
             private IPropertyValueLoader Loader = null;
-            private List<DbParameter> SpecialParameters;
-            private Dictionary<MemberInfo, ParameterBody> MemberParameters;
-            private Dictionary<MemberInfo, ParameterBody> ReturnParameters;
-            private Dictionary<object, DbParameter> SimpleParameters = new Dictionary<object, DbParameter>();
+            private List<DbParameter> Parameters = new List<DbParameter>();
+            private List<ParameterBody> MemberParameters = new List<ParameterBody>();
+            private List<ParameterBody> ReturnParameters = new List<ParameterBody>();
+            private List<DbParameter> SimpleParameters = new List<DbParameter>();
+            private struct ParameterBody
+            {
+                public DbParameter Parameter;
+                public ColumnMetadata Metadata;
+                public int Index;
+            }
 
             /// <summary>
             /// 创建参数。
             /// </summary>
             /// <param name="value">参数值。</param>
+            /// <param name="prefix">参数名前缀。</param>
             /// <returns>参数对象。</returns>
             private DbParameter CreateParameter(object value, string prefix = "p")
             {
@@ -120,104 +127,66 @@ namespace Caredev.Mego.Resolve.Providers
                 return parameter;
             }
             /// <summary>
-            /// 注册提交数据的成员参数。
+            /// 添加数据成员参数。
             /// </summary>
             /// <param name="member">注册成员。</param>
             /// <param name="loader">加载器。</param>
             /// <param name="index">取值索引。</param>
             /// <returns>参数名。</returns>
-            public string RegisterParameter(ColumnMetadata member, IPropertyValueLoader loader = null, int index = -1)
+            public string AddParameter(ColumnMetadata member, IPropertyValueLoader loader = null, int index = -1)
             {
-                if (SpecialParameters == null)
+                var para = CreateParameter(null);
+                var value = new ParameterBody()
                 {
-                    SpecialParameters = new List<DbParameter>();
-                    MemberParameters = new Dictionary<MemberInfo, ParameterBody>();
-                    ReturnParameters = new Dictionary<MemberInfo, ParameterBody>();
-                }
-
+                    Parameter = para,
+                    Metadata = member
+                };
                 if (loader == null)
                 {
-                    if (!ReturnParameters.TryGetValue(member.Member, out ParameterBody value))
-                    {
-                        var para = CreateParameter(null);
-                        para.Direction = ParameterDirection.Output;
-                        value.Parameter = para;
-                        value.Metadata = member;
-                        ReturnParameters.Add(member.Member, value);
-                    }
-                    return value.Parameter.ParameterName;
+                    para.Direction = ParameterDirection.Output;
+                    ReturnParameters.Add(value);
                 }
                 else
                 {
                     Loader = loader;
-                    if (!MemberParameters.TryGetValue(member.Member, out ParameterBody value))
-                    {
-                        var para = CreateParameter(null);
-                        para.Direction = ParameterDirection.Input;
-                        value.Parameter = para;
-                        value.Metadata = member;
-                        value.Index = index;
-                        MemberParameters.Add(member.Member, value);
-                    }
-                    return value.Parameter.ParameterName;
+                    value.Index = index;
+                    MemberParameters.Add(value);
                 }
-            }
-
-            public string AddParameter(object value, string prefix)
-            {
-                if (!SimpleParameters.TryGetValue(value, out DbParameter dbParameter))
-                {
-                    var para = CreateParameter(value, prefix);
-                    SpecialParameters.Add(para);
-                    dbParameter = para;
-                    para.Direction = ParameterDirection.Input;
-                    SimpleParameters.Add(value, para);
-                }
-                return dbParameter.ParameterName;
-            }
-            /// <summary>
-            /// 获取参数名。
-            /// </summary>
-            /// <param name="member">成员信息对象。</param>
-            /// <param name="isreturn">是否为返回参数。</param>
-            /// <returns>参数名。</returns>
-            public string GetParameter(MemberInfo member, bool isreturn)
-            {
-                DbParameter para;
-                if (isreturn)
-                {
-
-                    para = ReturnParameters[member].Parameter;
-                }
-                else
-                {
-                    para = MemberParameters[member].Parameter;
-                }
-                if (!SpecialParameters.Contains(para))
-                {
-                    SpecialParameters.Add(para);
-                }
+                Parameters.Add(para);
                 return para.ParameterName;
             }
-            private struct ParameterBody
+            /// <summary>
+            /// 添加普通值参数。
+            /// </summary>
+            /// <param name="value">参数值。</param>
+            /// <param name="prefix">参数前缀。</param>
+            /// <returns></returns>
+            public string AddParameter(object value, string prefix)
             {
-                public DbParameter Parameter;
-                public ColumnMetadata Metadata;
-                public int Index;
+                var para = CreateParameter(value, prefix);
+                Parameters.Add(para);
+                SimpleParameters.Add(para);
+                return para.ParameterName;
             }
+            /// <summary>
+            /// 执行命令。
+            /// </summary>
+            /// <param name="command">命令对象。</param>
+            /// <param name="operate">操作对象。</param>
+            /// <returns>影响行数。</returns>
             public int Execute(DbCommand command, DbOperateBase operate)
             {
-                if (SpecialParameters.Count > 0)
+                if (Parameters.Count > 0)
                 {
-                    command.Parameters.AddRange(SpecialParameters.ToArray());
+                    command.Parameters.AddRange(Parameters.ToArray());
                 }
                 LoadParameter(command, operate);
                 var isoutput = operate.HasResult && operate.Output != null;
                 if (isoutput)
                 {
-                    var parameters = ReturnParameters.Values.Select(a => a.Parameter).ToArray();
-                    if (parameters.Length > 0)
+                    if (ReturnParameters.Count > 0)
                     {
+                        var parameters = ReturnParameters.Select(a => a.Parameter).ToArray();
                         var result = command.ExecuteNonQuery();
                         var objectOperates = (DbObjectsOperateBase)operate;
                         objectOperates.Read(parameters);
@@ -242,7 +211,7 @@ namespace Caredev.Mego.Resolve.Providers
             {
                 var loader = Loader;
                 loader.Load(item);
-                foreach (var p in MemberParameters.Values)
+                foreach (var p in MemberParameters)
                 {
                     p.Parameter.Value = loader[p.Index];
                 }
@@ -250,7 +219,7 @@ namespace Caredev.Mego.Resolve.Providers
             //向参数以数组的形式加载所有数据对象
             private void LoadParameter(DbCommand command, DbOperateBase operate)
             {
-                if (MemberParameters != null)
+                if (MemberParameters.Count > 0)
                 {
                     var items = (IDbSplitObjectsOperate)operate;
                     if (items.Count == 1)
@@ -259,16 +228,20 @@ namespace Caredev.Mego.Resolve.Providers
                         {
                             LoadParameter(item);
                         }
-                        foreach (var parameter in ReturnParameters.Values)
+                        foreach (var parameter in ReturnParameters)
                         {
                             parameter.Parameter.Value = GetDefaultValue(parameter.Metadata.StorageType);
+                            var storageType = parameter.Metadata.StorageType;
+                            if (!storageType.IsValueType)
+                            {
+                                parameter.Parameter.Size = 4000;
+                            }
                         }
                     }
                     else
                     {
-                        var memberPrameters = MemberParameters.Values.ToArray();
                         var index = 0;
-                        var arrayList = memberPrameters.ToDictionary(a => a.Parameter,
+                        var arrayList = MemberParameters.ToDictionary(a => a.Parameter,
                             a =>
                             {
                                 var values = Array.CreateInstance(a.Metadata.StorageType, items.Count);
@@ -279,7 +252,7 @@ namespace Caredev.Mego.Resolve.Providers
                         foreach (var item in items)
                         {
                             loader.Load(item);
-                            foreach (var p in memberPrameters)
+                            foreach (var p in MemberParameters)
                             {
                                 arrayList[p.Parameter].SetValue(Loader[p.Index], index);
                             }
@@ -288,7 +261,7 @@ namespace Caredev.Mego.Resolve.Providers
 
                         OracleAccessProvider.SetArrayBindCount(command, items.Count);
                         int[] shortArray = null, longArray = null;
-                        foreach (var member in ReturnParameters.Values)
+                        foreach (var member in ReturnParameters)
                         {
                             var storageType = member.Metadata.StorageType;
                             member.Parameter.Value = Array.CreateInstance(storageType, items.Count);
@@ -303,7 +276,7 @@ namespace Caredev.Mego.Resolve.Providers
                                 OracleAccessProvider.SetArrayBindSize(member.Parameter, longArray);
                             }
                         }
-                        foreach (var para in SimpleParameters.Values)
+                        foreach (var para in SimpleParameters)
                         {
                             var value = para.Value;
                             var values = Array.CreateInstance(value.GetType(), items.Count);
@@ -339,8 +312,6 @@ namespace Caredev.Mego.Resolve.Providers
     internal interface IOracleCustomCommand : ICustomCommand
     {
 
-        string RegisterParameter(ColumnMetadata member, IPropertyValueLoader loader = null, int index = -1);
-
-        string GetParameter(MemberInfo member, bool isreturn);
+        string AddParameter(ColumnMetadata member, IPropertyValueLoader loader = null, int index = -1);
     }
 }

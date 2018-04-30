@@ -1,14 +1,17 @@
-﻿using System.Linq;
-using Caredev.Mego.Tests.Models.Simple;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
-using System.Transactions;
-using System;
-
-namespace Caredev.Mego.Tests.Core.Commit.Simple
+﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
+    using System.Linq;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Diagnostics;
+    using System.Transactions;
+    using System;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Combine")]
-    public class CombineTest : ISimpleTest
+    public class CombineTest
     {
         [TestMethod]
         public void TestMethod1()

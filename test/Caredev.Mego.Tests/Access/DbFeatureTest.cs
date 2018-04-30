@@ -15,6 +15,8 @@ namespace Caredev.Mego.Tests.Core
         public const bool HasMaxParameterCount = false;
 
         public const string MaxParameterCountTestSql = "SELECT 1";
+        public const string ParameterPrefix = "@p";
+
         public string MaxInsertRowCountTestSql(string name, int count)
         {
             var builder = new StringBuilder();
@@ -40,7 +42,17 @@ namespace Caredev.Mego.Tests.Core
             var fullname = Path.Combine(file.Directory.FullName, database);
             if (!File.Exists(fullname))
             {
-                throw new InvalidOperationException($"Please must manually create the file [{fullname}]");
+                var ext = Path.GetExtension(fullname);
+                byte[] filecontent = null;
+                if (ext == ".accdb")
+                {
+                    filecontent = Properties.Resources.EmptyAccess2010;
+                }
+                else
+                {
+                    filecontent = Properties.Resources.EmptyAccess2003;
+                }
+                File.WriteAllBytes(fullname, filecontent);
             }
         }
     }

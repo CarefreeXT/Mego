@@ -58,8 +58,13 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Commit\Simple\CombineTest.cs" />
+    <Compile Include="Core\Commit\Simple\DeleteTest.cs" />
     <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
     <Compile Include="Core\Commit\Simple\InsertTest.cs" />
+    <Compile Include="Core\Commit\Simple\RelationTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
     <Compile Include="Core\MaintenanceTest.cs" />
@@ -71,8 +76,12 @@
     <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
     <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
     <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\DeleteTest.cs" />
     <Compile Include="Oracle\Commit\Simple\InsertPropertysTest.cs" />
     <Compile Include="Oracle\Commit\Simple\InsertTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\RelationTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="Oracle\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Oracle\Constants.cs" />
     <Compile Include="Oracle\DbFeatureTest.cs" />
     <Compile Include="Oracle\MaintenanceTest.cs" />

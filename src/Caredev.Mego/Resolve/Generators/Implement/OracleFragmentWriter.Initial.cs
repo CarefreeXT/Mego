@@ -260,21 +260,83 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Write('(');
             insert.Values.ForEach(() => writer.Write(","), val => val.WriteSql(writer));
             writer.Write(')');
-            if (insert.ReturnMembers.Any())
+            var returnMmebers = insert.ReturnMembers;
+            var target = insert.Target;
+            WriteFragmentForCommitReturning(writer, insert.ReturnMembers, insert.Target);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForUpdate(SqlWriter writer, ISqlFragment fragment)
+        {
+            var update = (UpdateFragment)fragment;
+            writer.Write("UPDATE ");
+            WriteFragmentForSource(writer, update.Target);
+            writer.WriteLine();
+            writer.Write("SET ");
+            var values = update.Values.ToArray();
+            if (update.Sources.Any(a => a != update.Target))
             {
-                var command = fragment.Context.Data.OperateCommand.GetCustomCommand<IOracleCustomCommand>();
-
-                writer.Write(" RETURNING ");
-                insert.ReturnMembers.OfType<CommitMemberFragment>().ForEach(
-                    () => writer.Write(','),
-                    m =>
-                    {
-                        var member = insert.Target.GetMember(m.Property);
-                        WriteDbName(writer, member.OutputName);
-                    });
-                writer.Write(" INTO ");
-                insert.ReturnMembers.ForEach(() => writer.Write(','),
-                    m => WriteParameterName(writer, command.GetParameter(m.Property, true)));
+                writer.Write('(');
+                for (int i = 0; i < update.Members.Count; i++)
+                {
+                    if (i > 0)
+                        writer.Write(", ");
+                    WriteDbName(writer, update.Members[i].OutputName);
+                }
+                writer.Write(") = (");
+                writer.Write("SELECT ");
+                for (int i = 0; i < update.Members.Count; i++)
+                {
+                    if (i > 0)
+                        writer.Write(", ");
+                    values[i].WriteSql(writer);
+                }
+                writer.WriteLine();
+                writer.Write("FROM ");
+                update.Sources.ForEach(() => writer.WriteLine(),
+                   source => WriteFragmentForSource(writer, source));
+                WriteFragmentForWhere(writer, update.Where);
+                writer.Write(')');
+            }
+            else
+            {
+                for (int i = 0; i < update.Members.Count; i++)
+                {
+                    var member = update.Members[i];
+                    var value = values[i];
+                    if (i > 0)
+                        writer.Write(", ");
+                    WriteDbName(writer, member.OutputName);
+                    writer.Write(" = ");
+                    value.WriteSql(writer);
+                }
+                WriteFragmentForWhere(writer, update.Where);
+            }
+            WriteFragmentForCommitReturning(writer, update.ReturnMembers, update.Target);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForDelete(SqlWriter writer, ISqlFragment fragment)
+        {
+            var current = (DeleteFragment)fragment;
+            var sources = current.Sources.Where(a => a != current.Target).ToArray();
+            if (sources.Length > 0)
+            {
+                writer.Write("DELETE FROM ");
+                WriteFragmentForSourceContent(writer, current.Target);
+                writer.Write(" ");
+                writer.Write("WHERE ROWID IN");
+                writer.Write("(");
+                writer.Write("SELECT ");
+                writer.Write(current.Target.AliasName);
+                writer.Write(".ROWID ");
+                WriteFragmentForFrom(writer, current.Sources);
+                WriteFragmentForWhere(writer, current.Where);
+                writer.Write(")");
+            }
+            else
+            {
+                writer.Write("DELETE FROM ");
+                WriteFragmentForSourceContent(writer, current.Target);
+                WriteFragmentForWhere(writer, current.Where);
             }
         }
         /// <inheritdoc/>
@@ -282,7 +344,27 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         {
             var content = (CommitMemberFragment)fragment;
             var command = fragment.Context.Data.OperateCommand.GetCustomCommand<IOracleCustomCommand>();
-            WriteParameterName(writer, command.GetParameter(content.Property, false));
+            var name = command.AddParameter(content.Metadata, content.Loader, content.Index);
+            WriteParameterName(writer, name);
+        }
+        private void WriteFragmentForCommitReturning(SqlWriter writer, List<IMemberFragment> returnMmebers, ISourceFragment target)
+        {
+            if (returnMmebers.Any())
+            {
+                var command = target.Context.Data.OperateCommand.GetCustomCommand<IOracleCustomCommand>();
+
+                writer.Write(" RETURNING ");
+                returnMmebers.OfType<CommitMemberFragment>().ForEach(
+                    () => writer.Write(','),
+                    m =>
+                    {
+                        var member = target.GetMember(m.Property);
+                        WriteDbName(writer, member.OutputName);
+                    });
+                writer.Write(" INTO ");
+                returnMmebers.OfType<CommitMemberFragment>().ForEach(() => writer.Write(','),
+                    m => WriteParameterName(writer, command.AddParameter(m.Metadata)));
+            }
         }
     }
     partial class OracleFragmentWriter

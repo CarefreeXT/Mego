@@ -221,5 +221,9 @@ namespace Caredev.Mego.Resolve.Generators.Fragments
         /// 当前成员在<see cref="Loader"/>中的索引值。
         /// </summary>
         public int Index { get; }
+        /// <summary>
+        /// 当前成员关联的列元数据。
+        /// </summary>
+        public ColumnMetadata Metadata { get; set; }
     }
 }

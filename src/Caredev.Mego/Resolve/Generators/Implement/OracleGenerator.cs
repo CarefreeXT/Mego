@@ -45,29 +45,62 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         protected override SqlFragment GenerateForInsertContent(GenerateContext context, DbExpression content)
         {
             var data = (InsertContent)context.Data;
-            var commitObject = data.CommitObject;
-            RegisterExpressionForCommit(context, content, commitObject);
-            var command = data.OperateCommand.GetCustomCommand<IOracleCustomCommand>();
-            commitObject.CreatedMember = (info, member) =>
-            {
-                var metadata = data.Columns.Single(a => a.Member == info);
-                command.RegisterParameter(metadata, commitObject.Loader, member.Index);
-            };
+            RegisterExpressionForCommit(context, content, data.CommitObject);
             var insert = data.InsertKeyUnit((CommitKeyUnit)data.Unit, data.TargetName);
-            commitObject.CreatedMember = null;
             foreach (var member in data.ReturnMembers)
             {
                 var metadata = member.Metadata;
-                command.RegisterParameter(metadata);
                 insert.ReturnMembers.Add(data.CommitObject.GetMember(metadata));
             }
             data.GenerateOutput();
+            InitialCommitObject(data);
             return insert;
         }
         /// <inheritdoc/>
-        protected override SqlFragment GenerateForInheritInsert(GenerateContext context, DbExpression content)
+        protected override SqlFragment GenerateForUpdateContent(GenerateContext context, DbExpression content)
         {
-            return base.GenerateForInheritInsert(context, content);
+            var data = (UpdateContent)context.Data;
+            data.SetConcurrencyExpectCount(1);
+            RegisterExpressionForCommit(context, content, data.CommitObject);
+            var update = data.UpdateByKeys(data.Unit, data.TargetName);
+            foreach (var member in data.ReturnMembers)
+            {
+                var metadata = member.Metadata;
+                update.ReturnMembers.Add(data.CommitObject.GetMember(metadata));
+            }
+            data.GenerateOutput();
+            InitialCommitObject(data);
+            return update;
+        }
+        /// <inheritdoc/>
+        protected override SqlFragment GenerateForDeleteContent(GenerateContext context, DbExpression content)
+        {
+            var data = (DeleteContent)context.Data;
+            data.SetConcurrencyExpectCount(1);
+            var delete = data.DeleteByKeys(data.Table, data.TargetName);
+            InitialCommitObject(data);
+            return delete;
+        }
+        /// <inheritdoc/>
+        protected override SqlFragment GenerateForRelation(GenerateContext context, DbExpression content)
+        {
+            var data = (RelationContent)context.Data;
+            var metadata = data.Items.Navigate;
+            if (!metadata.IsComposite)
+            {
+                return GenerateForRelationUpdate(context);
+            }
+            else
+            {
+                if (data.IsAddRelation)
+                {
+                    return GenerateForRelationInsert(context);
+                }
+                else
+                {
+                    return GenerateForRelationDelete(context);
+                }
+            }
         }
         /// <inheritdoc/>
         protected override IExpressionFragment CreateExpressionForBinary(GenerateContext context, DbExpression expression, ISourceFragment source)
@@ -80,6 +113,15 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                     source.CreateExpression(binary.Right));
             }
             return base.CreateExpressionForBinary(context, expression, source);
+        }
+        private void InitialCommitObject(ContentBase data)
+        {
+            var commitObject = data.CommitObject;
+            var table = data.Table;
+            foreach (var member in commitObject.Members.OfType<CommitMemberFragment>())
+            {
+                member.Metadata = table.Members[member.Property.Name];
+            }
         }
     }
     /// <summary>

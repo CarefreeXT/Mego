@@ -1,10 +1,14 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+#if ORACLE || FIREBIRD
+    using Caredev.Mego.Tests.Models.Simple2;
+#else
+    using Caredev.Mego.Tests.Models.Simple; 
+#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.UpdatePropertys")]
-    public partial class UpdatePropertysTest : ISimpleTest
+    public partial class UpdatePropertysTest
     {
         [TestMethod]
         public void UpdateSingleObjectTest()
