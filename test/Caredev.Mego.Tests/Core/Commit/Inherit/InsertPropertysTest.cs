@@ -5,7 +5,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".ICommit.InsertPropertys")]
-    public partial class InsertPropertysTest : IInheritTest
+    public partial class InsertPropertysTest 
     {
         [TestMethod]
         public void InsertSingleObjectTest()
@@ -176,6 +176,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

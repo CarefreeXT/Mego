@@ -2,11 +2,7 @@
 {
     using System;
     using System.Linq;
-#if ORACLE || FIREBIRD
-    using Caredev.Mego.Tests.Models.Simple2; 
-#else
     using Caredev.Mego.Tests.Models.Simple; 
-#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Maintenance")]
     public partial class MaintenanceTest
@@ -201,6 +197,6 @@
         }
 #endif
 
-        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

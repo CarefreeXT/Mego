@@ -55,12 +55,43 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Commit\Simple\CombineTest.cs" />
+    <Compile Include="Core\Commit\Simple\DeleteTest.cs" />
+    <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\InsertTest.cs" />
+    <Compile Include="Core\Commit\Simple\RelationTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="Core\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
     <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Core\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Core\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Excel\Commit\Simple\DeleteTest.cs" />
+    <Compile Include="Excel\Commit\Simple\InsertPropertysTest.cs" />
+    <Compile Include="Excel\Commit\Simple\InsertTest.cs" />
+    <Compile Include="Excel\Commit\Simple\RelationTest.cs" />
+    <Compile Include="Excel\Commit\Simple\UpdatePropertysTest.cs" />
+    <Compile Include="Excel\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Excel\Constants.cs" />
     <Compile Include="Excel\DbFeatureTest.cs" />
     <Compile Include="Excel\MaintenanceTest.cs" />
+    <Compile Include="Excel\Query\Simple\CollectionMemberTest.cs" />
+    <Compile Include="Excel\Query\Simple\CompositeCollectionMemberTest.cs" />
+    <Compile Include="Excel\Query\Simple\EntityLinqTest.cs" />
+    <Compile Include="Excel\Query\Simple\ExpandMemberTest.cs" />
+    <Compile Include="Excel\Query\Simple\GroupByTest.cs" />
+    <Compile Include="Excel\Query\Simple\GroupJoinTest.cs" />
+    <Compile Include="Excel\Query\Simple\SingleEntityTest.cs" />
+    <Compile Include="Excel\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.Collection")]
-    public partial class CollectionMemberTest : IInheritTest
+    public partial class CollectionMemberTest 
     {
         [TestMethod]
         public void SimpleJoinTest()
@@ -98,6 +98,6 @@
                 Assert.IsTrue(data.Any(a => a.List.Count > 0));
             }
         }
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

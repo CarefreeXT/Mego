@@ -1,6 +1,6 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Inherit
 {
-    public partial class UpdatePropertysTest : IInheritTest
+    public partial class UpdatePropertysTest 
     {
         private const string UpdateSingleObjectTestSql =
 @"UPDATE `CustomerBases` AS a

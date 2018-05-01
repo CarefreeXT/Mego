@@ -48,7 +48,7 @@ namespace Caredev.Mego.Resolve.Outputs
         public object GetResult(DbDataReader reader)
         {
             Initialize();
-            if (!reader.HasRows)
+            if (!reader.Read())
             {
                 if (Option == EObjectOutputOption.One ||
                     Option == EObjectOutputOption.OnlyOne)
@@ -57,7 +57,6 @@ namespace Caredev.Mego.Resolve.Outputs
                 }
                 return null;
             }
-            reader.Read();
             var result = CreateItem(reader);
             if (Option == EObjectOutputOption.OnlyOne ||
                 Option == EObjectOutputOption.ZeroOrOnlyOne)

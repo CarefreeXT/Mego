@@ -9,7 +9,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// <summary>
     /// Access 语句片段写入器。
     /// </summary>
-    public partial class AccessFragmentWriter : FragmentWriterBase
+    public partial class AccessFragmentWriter : MSLocalDbFragmentWriter
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
@@ -20,7 +20,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             { typeof(float) , "SINGLE" },
             { typeof(double) , "DOUBLE" },
             { typeof(bool) , "BIT" },
-            { typeof(Guid) , "GUID" },
+            { typeof(Guid) , "UNIQUEIDENTIFIER" },
             { typeof(DateTime), "DATETIME" },
             { typeof(DateTimeOffset), "DATETIME" },
             { typeof(string) , "LONGTEXT" },
@@ -37,13 +37,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public AccessFragmentWriter(SqlGeneratorBase generator)
             : base(generator)
         {
-        }
-        /// <inheritdoc/>
-        public override void WriteDbName(SqlWriter writer, string name)
-        {
-            writer.Write('[');
-            writer.Write(name);
-            writer.Write(']');
         }
         /// <inheritdoc/>
         protected override IDictionary<Type, string> InitialClrTypeDefaultMapping()

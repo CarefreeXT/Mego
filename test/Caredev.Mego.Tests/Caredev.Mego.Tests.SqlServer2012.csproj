@@ -59,6 +59,8 @@
     <Compile Include="Core\MaintenanceTest.cs" />
     <Compile Include="Core\FunctionTest.cs" />
     <Compile Include="Core\AnonymousSetTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="SqlServer\Commit\Inherit\DeleteTest.cs" />
     <Compile Include="SqlServer\Commit\Inherit\InsertPropertysTest.cs" />
     <Compile Include="SqlServer\Commit\Inherit\InsertTest.cs" />

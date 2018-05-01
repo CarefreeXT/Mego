@@ -6,7 +6,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// <summary>
     /// 针对 Excel 数据库的代码生成器。
     /// </summary>
-    public abstract class ExcelBaseGenerator : SqlGeneratorBase
+    public abstract class ExcelBaseGenerator : MSLocalDbGenerator
     {
         /// <inheritdoc/>
         public override FragmentWriterBase FragmentWriter

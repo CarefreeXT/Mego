@@ -69,7 +69,7 @@
                 com.ExecuteNonQuery();
                 com.AddParameter("p" + MaxParameterCount.ToString(), MaxParameterCount);
 
-                builder.Insert(builder.Length - 2, "," + ParameterPrefix + MaxParameterCount.ToString());
+                builder.Insert(builder.Length - 1, "," + ParameterPrefix + MaxParameterCount.ToString());
                 com.CommandText = builder.ToString();
                 try
                 {
@@ -116,14 +116,8 @@
         } 
 #endif
 
-#if ORACLE || FIREBIRD
-        public Models.Simple2.OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
+        internal Models.Simple.OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
 
-        public Models.Inherit2.OrderManageEntities CreateInheritContext() => Constants.CreateInheritContext();
-#else
-        public Models.Simple.OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
-
-        public Models.Inherit.OrderManageEntities CreateInheritContext() => Constants.CreateInheritContext();
-#endif
+        internal Models.Inherit.OrderManageEntities CreateInheritContext() => Constants.CreateInheritContext();
     }
 }

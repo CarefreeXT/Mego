@@ -1,6 +1,6 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Inherit
 {
-    public partial class InsertTest : IInheritTest
+    public partial class InsertTest 
     {
         private const string InsertSingleObjectTestSql =
 @"INSERT  INTO `CustomerBases`

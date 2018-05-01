@@ -7,7 +7,7 @@ namespace Caredev.Mego.Tests.Core
 {
     [TestCategory(Constants.TestCategoryFoundation)]
     [TestClass]
-    public class EmitOperateTest : ISimpleTest
+    public class EmitOperateTest
     {
         [TestMethod]
         public void EmitCreateSimpleObject()
@@ -207,7 +207,7 @@ namespace Caredev.Mego.Tests.Core
             }
         }
 
-        public OrderManageEntities CreateContext()
+        internal OrderManageEntities CreateContext()
         {
             return new OrderManageEntities(Constants.ConnectionNameSimple);
         }

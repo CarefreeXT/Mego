@@ -64,6 +64,8 @@
     <Compile Include="Firebird\Constants.cs" />
     <Compile Include="Firebird\DbFeatureTest.cs" />
     <Compile Include="Firebird\MaintenanceTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

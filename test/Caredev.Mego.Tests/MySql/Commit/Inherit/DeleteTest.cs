@@ -1,6 +1,6 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Inherit
 {
-    public partial class DeleteTest : IInheritTest
+    public partial class DeleteTest 
     {
         private const string DeleteSingleTestSql =
 @"DELETE a

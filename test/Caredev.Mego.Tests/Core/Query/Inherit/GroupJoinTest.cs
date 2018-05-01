@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.GroupJoin")]
-    public partial class GroupJoinTest : IInheritTest
+    public partial class GroupJoinTest 
     {
         [TestMethod]
         public void SimpleGroupJoinTest()
@@ -98,6 +98,6 @@
                 Assert.IsTrue(data.Any());
             }
         }
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

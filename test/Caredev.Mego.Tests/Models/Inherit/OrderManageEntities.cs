@@ -13,9 +13,9 @@ namespace Caredev.Mego.Tests.Models.Inherit
     /// <summary>
     /// 自增列继承实体上下文。
     /// </summary>
-    public class OrderManageEntities : DbContext
+    internal class OrderManageEntities : DbContext
     {
-        public OrderManageEntities(string name)
+        internal OrderManageEntities(string name)
            : base(name)
         { }
 
@@ -115,7 +115,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
         public void InitialTable()
         {
             var manager = this.Database.Manager;
-            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GenerateSql()).First())
+            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GetSql()).First())
             {
                 var list = new List<Resolve.Operates.DbOperateBase>()
                 {
@@ -147,7 +147,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("OrderBases")]
-    public class OrderBase
+    internal class OrderBase
     {
         [Key]
         public int Id { get; set; }
@@ -160,7 +160,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("Orders", true)]
-    public class Order : OrderBase
+    internal class Order : OrderBase
     {
         public int CustomerId { get; set; }
 
@@ -177,7 +177,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("OrderDetailBases")]
-    public class OrderDetailBase
+    internal class OrderDetailBase
     {
         [Key, Identity]
         public int Id { get; set; }
@@ -191,7 +191,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("OrderDetails", true)]
-    public class OrderDetail : OrderDetailBase
+    internal class OrderDetail : OrderDetailBase
     {
         public int OrderId { get; set; }
 
@@ -207,7 +207,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("CustomerBases")]
-    public class CustomerBase
+    internal class CustomerBase
     {
         [Key]
         public int Id { get; set; }
@@ -218,7 +218,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("Customers", true)]
-    public class Customer : CustomerBase
+    internal class Customer : CustomerBase
     {
         [ConcurrencyCheck]
         public string Zip { get; set; }
@@ -232,7 +232,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("ProductBases")]
-    public class ProductBase
+    internal class ProductBase
     {
         [Key, Identity]
         public int Id { get; set; }
@@ -243,7 +243,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("Products", true)]
-    public class Product : ProductBase
+    internal class Product : ProductBase
     {
         public int Category { get; set; }
 
@@ -257,7 +257,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("WarehouseBases")]
-    public class WarehouseBase
+    internal class WarehouseBase
     {
         [Key, Column(nameof(Id), Order = 1)]
         public int Id { get; set; }
@@ -269,7 +269,7 @@ namespace Caredev.Mego.Tests.Models.Inherit
     }
 
     [Table("Warehouses", true)]
-    public class Warehouse : WarehouseBase
+    internal class Warehouse : WarehouseBase
     {
         [ConcurrencyCheck]
         public string Address { get; set; }

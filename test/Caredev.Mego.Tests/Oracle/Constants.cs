@@ -11,9 +11,9 @@ namespace Caredev.Mego.Tests
     {
         public const string TestCategoryRootName = "Oracle11";
 
-        public static Models.Simple2.OrderManageEntities CreateSimpleContext(bool isinitial = false)
+        public static Models.Simple.OrderManageEntities CreateSimpleContext(bool isinitial = false)
         {
-            var db = new Models.Simple2.OrderManageEntities(Constants.ConnectionNameSimple);
+            var db = new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
             if (!isinitial)
             {
                 db.Configuration.DatabaseFeature.DefaultSchema = "SIMPLE";
@@ -23,9 +23,9 @@ namespace Caredev.Mego.Tests
             return db;
         }
 
-        public static Models.Inherit2.OrderManageEntities CreateInheritContext(bool isinitial = false)
+        public static Models.Inherit.OrderManageEntities CreateInheritContext(bool isinitial = false)
         {
-            var db = new Models.Inherit2.OrderManageEntities(Constants.ConnectionNameInherit);
+            var db = new Models.Inherit.OrderManageEntities(Constants.ConnectionNameInherit);
             if (!isinitial)
             {
                 db.Configuration.DatabaseFeature.DefaultSchema = "INHERIT";

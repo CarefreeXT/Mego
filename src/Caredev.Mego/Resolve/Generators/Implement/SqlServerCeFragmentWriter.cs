@@ -3,12 +3,13 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Generators.Implement
 {
+    using Caredev.Mego.Resolve.Generators.Fragments;
     using System;
     using System.Collections.Generic;
     /// <summary>
     /// SQL Server Compact 语句片段写入器。
     /// </summary>
-    public partial class SqlServerCeFragmentWriter : FragmentWriterBase
+    public partial class SqlServerCeFragmentWriter : MSLocalDbFragmentWriter
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
@@ -25,7 +26,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         };
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeDefaultMapping = new Dictionary<Type, string>(_ClrTypeDbTypeSimpleMapping)
         {
-            { typeof(string) , "NTEXT" },
+            { typeof(string) , "NVARCHAR(4000)" },
             { typeof(byte[]) , "IMAGE" },
             { typeof(decimal), "MONEY" }
         };
@@ -36,13 +37,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public SqlServerCeFragmentWriter(SqlGeneratorBase generator)
             : base(generator)
         {
-        }
-        /// <inheritdoc/>
-        public override void WriteDbName(SqlWriter writer, string name)
-        {
-            writer.Write('[');
-            writer.Write(name);
-            writer.Write(']');
         }
         /// <inheritdoc/>
         protected override IDictionary<Type, string> InitialClrTypeDefaultMapping()

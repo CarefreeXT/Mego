@@ -10,25 +10,14 @@ namespace Caredev.Mego.Tests.Core
         public const int MaxParameterCount = 2098;
 
         public const bool HasMaxInsertRowCount = false;
-        public const bool HasMaxParameterCount = true;
+        public const bool HasMaxParameterCount = false;
 
-        public const string MaxParameterCountTestSql = "SELECT 1";
+        public const string MaxParameterCountTestSql = @"SELECT * FROM [Customers] WHERE [Id] IN ";
         public const string ParameterPrefix = "@p";
 
         public string MaxInsertRowCountTestSql(string name, int count)
         {
-            var builder = new StringBuilder();
-            builder.AppendLine(@"DECLARE @" + name + " AS TABLE(Id INT NULL);");
-            builder.AppendLine(@"INSERT  INTO @" + name + "( [Id] )");
-            
-            builder.Append("SELECT 0");
-            for (int i = 1; i < count; i++)
-            {
-                builder.AppendFormat(" UNION ALL SELECT {0}", i);
-            }
-
-            builder.Append(";");
-            return builder.ToString();
+            return "SELECT 1";
         }
 
         public void CreateDatabaseIfNoExsits(DbContext context)

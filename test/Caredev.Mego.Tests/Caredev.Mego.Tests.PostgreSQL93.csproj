@@ -58,6 +58,7 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AnonymousSetTest.cs" />
     <Compile Include="Core\Commit\Simple\CombineTest.cs" />
     <Compile Include="Core\Commit\Simple\DeleteTest.cs" />
     <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
     <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
     <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="PostgreSQL\Commit\Simple\DeleteTest.cs" />
     <Compile Include="PostgreSQL\Commit\Simple\InsertPropertysTest.cs" />
     <Compile Include="PostgreSQL\Commit\Simple\InsertTest.cs" />

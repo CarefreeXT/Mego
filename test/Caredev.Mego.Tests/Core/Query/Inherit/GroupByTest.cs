@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.GroupBy")]
-    public partial class GroupByTest : IInheritTest
+    public partial class GroupByTest 
     {
         [TestMethod]
         public void QuerySimpleKeyTest()
@@ -115,6 +115,6 @@
             }
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

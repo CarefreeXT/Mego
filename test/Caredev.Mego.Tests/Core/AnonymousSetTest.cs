@@ -1,19 +1,29 @@
 ﻿namespace Caredev.Mego.Tests.Core
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple;
+    using Caredev.Mego.Tests.Models.Simple; 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Anonymous")]
-    public class AnonymousSetTest : ISimpleTest
+    public class AnonymousSetTest
     {
+#if ORACLE
+        private const string Customers = "\"SIMPLE\".\"" + nameof(Customers) + "\"";
+        private const string OrderDetails = "\"SIMPLE\".\"" + nameof(OrderDetails) + "\"";
+#elif POSTGRESQL
+        private const string Customers = "\"" + nameof(Customers) + "\"";
+        private const string OrderDetails = "\"" + nameof(OrderDetails) + "\"";
+#else
+        private const string Customers = nameof(Customers);
+        private const string OrderDetails = nameof(OrderDetails); 
+#endif
         [TestMethod]
         public void AnonymousQueryTest()
         {
             using (var db = CreateContext())
             {
                 var item = new { Id = 0, Name = "", Code = "" };
-                var ds = db.Set(item, "Customers");
+                var ds = db.Set(item, Customers);
                 var data = (from a in ds.Take(10)
                             where a.Id > 20 && a.Id < 30
                             select a).ToArray();
@@ -26,7 +36,7 @@
         {
             Utility.CommitTest(CreateContext(), db =>
             {
-                var ds = db.Set(new { Id = 0 }, "OrderDetails");
+                var ds = db.Set(new { Id = 0 }, OrderDetails);
                 var data = db.OrderDetails.First();
 
                 var operate = ds.Remove(new { data.Id });
@@ -50,7 +60,7 @@
                     Address2 = "B",
                     Zip = "Z"
                 };
-                var ds = db.Set(data, "Customers");
+                var ds = db.Set(data, Customers);
 
                 var operate = ds.Add(data);
                 db.Executor.Execute(operate);
@@ -60,14 +70,14 @@
         }
 
         [TestMethod]
-        public void UpdateSingleObjectTest()
+        public void AnonymousUpdateSingleTest()
         {
             Utility.CommitTest(CreateContext(), db =>
             {
                 var data = db.Customers.First();
 
                 var newitem = new { data.Id, Name = "Customer 100" };
-                var ds = db.Set(newitem, "Customers");
+                var ds = db.Set(newitem, Customers);
                 var operate = ds.Update(newitem);
 
                 db.Executor.Execute(operate);
@@ -78,6 +88,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
-    public partial class UpdatePropertysTest : ISimpleTest
+    public partial class UpdatePropertysTest 
     {
         private const string UpdateSingleObjectTestSql =
 @"UPDATE `Customers` AS a

@@ -60,6 +60,8 @@
     <Compile Include="Core\Commit\Inherit\DeleteTest.cs" />
     <Compile Include="Core\FunctionTest.cs" />
     <Compile Include="Core\MaintenanceTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="SqlServer\FunctionTest.cs" />
     <Compile Include="SqlServer\MaintenanceTest.cs" />
     <Compile Include="SqlServer\Commit\Inherit\DeleteTest.cs" />

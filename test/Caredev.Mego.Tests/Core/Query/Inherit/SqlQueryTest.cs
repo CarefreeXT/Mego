@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.Simple")]
-    public partial class SqlQueryTest : IInheritTest
+    public partial class SqlQueryTest 
     {
         [TestMethod]
         public void SqlQueryValueTest()
@@ -25,6 +25,6 @@
                 Assert.IsTrue(data.Any(a => a.Id > 0));
             }
         }
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

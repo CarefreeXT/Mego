@@ -1,4 +1,5 @@
 ﻿using Caredev.Mego.Exceptions;
+using Caredev.Mego.Resolve.Operates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -80,6 +81,11 @@ namespace Caredev.Mego.Tests
 
                 }
             }
+        }
+
+        public static string GetSql(this DbMaintenanceOperateBase operate)
+        {
+            return operate.GenerateSql();
         }
     }
 }

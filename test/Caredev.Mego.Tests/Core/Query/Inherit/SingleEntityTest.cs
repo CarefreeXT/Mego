@@ -5,7 +5,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.Simple")]
-    public partial class SingleEntityTest : IInheritTest
+    public partial class SingleEntityTest 
     {
         [TestMethod]
         public void QueryAllDataTest()
@@ -66,7 +66,7 @@
             }
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 
     public partial class SingleEntityTest

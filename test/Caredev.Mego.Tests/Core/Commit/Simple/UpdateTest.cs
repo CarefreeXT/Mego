@@ -1,11 +1,7 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
     using System.Linq;
-#if ORACLE || FIREBIRD
-    using Caredev.Mego.Tests.Models.Simple2;
-#else
     using Caredev.Mego.Tests.Models.Simple; 
-#endif
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Update")]
     public partial class UpdateTest
@@ -134,6 +130,6 @@
         }
 
 
-        public OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateSimpleContext();
     }
 }

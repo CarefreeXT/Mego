@@ -6,7 +6,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// <summary>
     /// 针对 Access 数据库的代码生成器。
     /// </summary>
-    public abstract class AccessBaseGenerator : SqlGeneratorBase
+    public abstract class AccessBaseGenerator : MSLocalDbGenerator
     {
         /// <inheritdoc/>
         public override FragmentWriterBase FragmentWriter

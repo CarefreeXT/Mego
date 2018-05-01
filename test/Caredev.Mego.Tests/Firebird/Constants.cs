@@ -10,14 +10,14 @@ namespace Caredev.Mego.Tests
     {
         public const string TestCategoryRootName = "Firebird25";
 
-        public static Models.Simple2.OrderManageEntities CreateSimpleContext(bool isinitial = false)
+        public static Models.Simple.OrderManageEntities CreateSimpleContext(bool isinitial = false)
         {
-            return new Models.Simple2.OrderManageEntities(Constants.ConnectionNameSimple);
+            return new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
         }
 
-        public static Models.Inherit2.OrderManageEntities CreateInheritContext(bool isinitial = false)
+        public static Models.Inherit.OrderManageEntities CreateInheritContext(bool isinitial = false)
         {
-            return new Models.Inherit2.OrderManageEntities(Constants.ConnectionNameInherit);
+            return new Models.Inherit.OrderManageEntities(Constants.ConnectionNameInherit);
         }
     }
 }

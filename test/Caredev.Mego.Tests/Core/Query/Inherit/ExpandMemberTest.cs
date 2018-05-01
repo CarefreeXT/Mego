@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.ExpandMember")]
-    public partial class ExpandMemberTest : IInheritTest
+    public partial class ExpandMemberTest 
     {
         [TestMethod]
         public void ExpandOneLevelObjectMemberStrTest()
@@ -149,6 +149,6 @@
                 Assert.IsTrue(data.Any());
             }
         }
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

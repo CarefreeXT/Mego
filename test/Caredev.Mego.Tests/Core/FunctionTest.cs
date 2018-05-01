@@ -32,7 +32,7 @@
             throw new NotImplementedException();
         }
 
-        public OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
+        internal OrderManageEntities CreateSimpleContext() => Constants.CreateSimpleContext();
 
     }
 }

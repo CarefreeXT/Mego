@@ -9,7 +9,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// <summary>
     /// Excel 语句片段写入器。
     /// </summary>
-    public partial class ExcelFragmentWriter : FragmentWriterBase
+    public partial class ExcelFragmentWriter : MSLocalDbFragmentWriter
     {
         private readonly static IDictionary<Type, string> _ClrTypeDbTypeSimpleMapping = new Dictionary<Type, string>()
         {
@@ -37,13 +37,6 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public ExcelFragmentWriter(SqlGeneratorBase generator)
             : base(generator)
         {
-        }
-        /// <inheritdoc/>
-        public override void WriteDbName(SqlWriter writer, string name)
-        {
-            writer.Write('[');
-            writer.Write(name);
-            writer.Write(']');
         }
         /// <inheritdoc/>
         protected override IDictionary<Type, string> InitialClrTypeDefaultMapping()

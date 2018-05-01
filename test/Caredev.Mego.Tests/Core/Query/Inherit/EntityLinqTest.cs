@@ -6,7 +6,7 @@
     using System;
 
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".IQuery.Simple")]
-    public partial class EntityLinqTest : IInheritTest
+    public partial class EntityLinqTest 
     {
         [TestMethod]
         public void QueryListTest()
@@ -199,6 +199,6 @@
             }
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

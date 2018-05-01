@@ -75,6 +75,8 @@
     <Compile Include="Core\Commit\Simple\UpdatePropertysTest.cs" />
     <Compile Include="Core\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Core\DbFeatureTest.cs" />
+    <Compile Include="Models\Inherit\OrderManageEntities.cs" />
+    <Compile Include="Models\Simple\OrderManageEntities.cs" />
     <Compile Include="MySql\FunctionTest.cs" />
     <Compile Include="MySql\MaintenanceTest.cs" />
     <Compile Include="MySql\DbFeatureTest.cs" />

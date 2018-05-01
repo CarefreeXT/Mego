@@ -3,10 +3,14 @@
 // See License.txt in the project root for license information.
 namespace Caredev.Mego.Resolve.Generators.Implement
 {
+    using System.Linq;
+    using Caredev.Mego.Resolve.Expressions;
+    using Caredev.Mego.Resolve.Generators.Contents;
+    using Caredev.Mego.Resolve.Generators.Fragments;
     /// <summary>
     /// 针对 SQL Server Compact 数据库的代码生成器。
     /// </summary>
-    public abstract class SqlServerCeBaseGenerator : SqlGeneratorBase
+    public abstract class SqlServerCeBaseGenerator : MSLocalDbGenerator
     {
         /// <inheritdoc/>
         public override FragmentWriterBase FragmentWriter
@@ -38,6 +42,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     /// </summary>
     public class SqlServerCe40Generator : SqlServerCeBaseGenerator
     {
+        /// <inheritdoc/>
         public override short Version => 0x0400;
     }
 }

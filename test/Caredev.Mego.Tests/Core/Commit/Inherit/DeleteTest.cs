@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".ICommit.Delete")]
-    public partial class DeleteTest : IInheritTest
+    public partial class DeleteTest 
     {
         [TestMethod]
         public void DeleteSingleTest()
@@ -101,6 +101,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }

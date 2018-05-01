@@ -10,9 +10,9 @@ namespace Caredev.Mego.Tests.Models.Simple
     /// <summary>
     /// 自增列普通实体上下文。
     /// </summary>
-    public class OrderManageEntities : DbContext
+    internal class OrderManageEntities : DbContext
     {
-        public OrderManageEntities(string name)
+        internal OrderManageEntities(string name)
             : base(name)
         { }
 
@@ -112,7 +112,7 @@ namespace Caredev.Mego.Tests.Models.Simple
         public void InitialTable()
         {
             var manager = this.Database.Manager;
-            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GenerateSql()).First())
+            if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GetSql()).First())
             {
                 var list = new List<Resolve.Operates.DbOperateBase>()
                 {
@@ -135,7 +135,7 @@ namespace Caredev.Mego.Tests.Models.Simple
     }
 
     [Table("Orders")]
-    public class Order
+    internal class Order
     {
         [Key]
         public int Id { get; set; }
@@ -161,10 +161,14 @@ namespace Caredev.Mego.Tests.Models.Simple
     }
 
     [Table("OrderDetails")]
-    public class OrderDetail
+    internal class OrderDetail
     {
 
-        [Key, Identity]
+#if ORACLE
+        [Key, Sequence("OrderDetailSequence")]
+#else
+        [Key, Identity] 
+#endif
         public int Id { get; set; }
 
         public int OrderId { get; set; }
@@ -187,7 +191,7 @@ namespace Caredev.Mego.Tests.Models.Simple
     }
 
     [Table("Customers")]
-    public class Customer
+    internal class Customer
     {
         [Key]
         public int Id { get; set; }
@@ -207,9 +211,13 @@ namespace Caredev.Mego.Tests.Models.Simple
     }
 
     [Table("Products")]
-    public class Product
+    internal class Product
     {
-        [Key, Identity]
+#if ORACLE
+        [Key, Sequence("ProductSequence")]
+#else
+        [Key, Identity] 
+#endif
         public int Id { get; set; }
 
         public string Code { get; set; }
@@ -228,7 +236,7 @@ namespace Caredev.Mego.Tests.Models.Simple
     }
 
     [Table("Warehouses")]
-    public class Warehouse
+    internal class Warehouse
     {
         [Key, Column(nameof(Id), Order = 1)]
         public int Id { get; set; }

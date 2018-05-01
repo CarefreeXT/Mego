@@ -4,7 +4,7 @@
     using Caredev.Mego.Tests.Models.Inherit;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".ICommit.Update")]
-    public partial class UpdateTest : IInheritTest
+    public partial class UpdateTest 
     {
         [TestMethod]
         public void UpdateSingleObjectTest()
@@ -125,6 +125,6 @@
             });
         }
 
-        public OrderManageEntities CreateContext() => Constants.CreateInheritContext();
+        internal OrderManageEntities CreateContext() => Constants.CreateInheritContext();
     }
 }
