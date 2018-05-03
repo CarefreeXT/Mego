@@ -22,7 +22,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         }
         private FragmentWriterBase _FragmentWriter;
         /// <inheritdoc/>
-        public override string ProviderName => "System.Data.Excel";
+        public override string ProviderName => "System.Data.OleDb.Excel";
         /// <inheritdoc/>
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()

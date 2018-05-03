@@ -94,14 +94,32 @@ namespace Caredev.Mego.Resolve.Metadatas
                 il.Emit(OpCodes.Ldloc, item);
                 il.Emit(OpCodes.Ldarg_2);
 
-                if (type.IsValueType)
+
+                //处理值转换，Object -> Storage
+                if (Metadata.Engine.TryGetConversion(type, out ConversionInfo info))
                 {
-                    il.Emit(OpCodes.Unbox_Any, type);
+                    if (info.StorageType.IsValueType)
+                    {
+                        il.Emit(OpCodes.Unbox_Any, info.StorageType);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Castclass, info.StorageType);
+                    }
+                    il.Emit(OpCodes.Call, info.ConvertToObject);
                 }
                 else
                 {
-                    il.Emit(OpCodes.Castclass, property.PropertyType);
+                    if (type.IsValueType)
+                    {
+                        il.Emit(OpCodes.Unbox_Any, type);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Castclass, type);
+                    }
                 }
+
                 il.Emit(OpCodes.Callvirt, property.GetSetMethod(true));
                 il.Emit(OpCodes.Ret);
             }

@@ -156,7 +156,7 @@ namespace Caredev.Mego.Resolve.Commands
             return recordsAffectCount;
         }
 
-        [Conditional("DEUBG")]
+        [Conditional("DEBUG")]
         internal static void OutputCommand(DbCommand command)
         {
             Debug.Write("Command Content : ");
@@ -168,14 +168,14 @@ namespace Caredev.Mego.Resolve.Commands
             }
         }
 
-        [Conditional("DEUBG")]
+        [Conditional("DEBUG")]
         private static void BeginExecute(DateTime start)
         {
             Debug.WriteLine($"---------- 开始执行 ：{start.ToString("HH:mm:ss.fff")} ----------");
             Debug.WriteLine("");
         }
 
-        [Conditional("DEUBG")]
+        [Conditional("DEBUG")]
         private static void EndExecute(DateTime start)
         {
             var end = DateTime.Now;

@@ -9,6 +9,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using Res = Properties.Resources;
     partial class AccessFragmentWriter
     {
@@ -73,6 +75,52 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Write(" AND Name='");
             writer.Write(exist.Name.Name);
             writer.Write('\'');
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForDelete(SqlWriter writer, ISqlFragment fragment)
+        {
+            var current = (DeleteFragment)fragment;
+            writer.Write("DELETE ");
+            if (current.Sources.Count() > 1)
+            {
+                writer.Write(current.Target.AliasName);
+                writer.Write(".* ");
+            }
+            WriteFragmentForFrom(writer, current.Sources);
+            WriteFragmentForWhere(writer, current.Where);
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForFrom(SqlWriter writer, IEnumerable<ISourceFragment> sources)
+        {
+            if (sources.Any())
+            {
+                var list = sources.ToArray();
+                writer.WriteLine();
+                writer.Write("FROM ");
+                WriteFragmentForSourceSpecial(writer, list, list.Length - 1);
+            }
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForSourceJoin(SqlWriter writer, ISourceFragment source)
+        {
+            if (source.Join.Value != EJoinType.CrossJoin)
+            {
+                base.WriteFragmentForSourceJoin(writer, source);
+            }
+        }
+    }
+    partial class AccessFragmentWriter
+    {
+        /// <inheritdoc/>
+        protected override IDictionary<MemberInfo, WriteFragmentDelegate> InitialMethodsForWriteScalar()
+        {
+            var result = base.InitialMethodsForWriteScalar();
+
+            result.AddOrUpdate(SupportMembers.DateTime.Now, (w, e) => w.Write("NOW()"));
+
+            result.AddOrUpdate(SupportMembers.DbFunctions.GetIdentity, (w, e) => w.Write("@@IDENTITY"));
+
+            return result;
         }
     }
 }

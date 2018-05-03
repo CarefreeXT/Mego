@@ -220,6 +220,10 @@ namespace Caredev.Mego
         /// </summary>
         internal DatabaseExecutor Executor => _DatabaseExecutor;
         /// <summary>
+        /// 当前本地事务对象。
+        /// </summary>
+        public DbTransaction Transaction => _DatabaseExecutor.LocalTransaction;
+        /// <summary>
         /// 使用指定当前的事务。
         /// </summary>
         /// <param name="transaction"></param>

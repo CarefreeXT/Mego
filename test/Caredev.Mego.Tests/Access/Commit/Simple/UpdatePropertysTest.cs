@@ -25,7 +25,7 @@ WHERE   a.[Id] = @p4;";
 SET     [Category] = @p0 ,
         [Code] = @p1 + @p2 ,
         [Name] = @p1 ,
-        [UpdateDate] = GETDATE()
+        [UpdateDate] = NOW()
 WHERE   [Id] = @p3;
 SELECT  a.[Code] ,
         a.[UpdateDate]
@@ -37,7 +37,7 @@ WHERE   a.[Id] = @p3;";
 SET     [Category] = @p0 ,
         [Code] = @p1 + @p2 ,
         [Name] = @p1 ,
-        [UpdateDate] = GETDATE()
+        [UpdateDate] = NOW()
 WHERE   [Id] = @p3;
 SELECT  a.[Code] ,
         a.[UpdateDate]

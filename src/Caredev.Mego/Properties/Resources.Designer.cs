@@ -763,6 +763,15 @@ namespace Caredev.Mego.Properties {
         }
         
         /// <summary>
+        ///   查找类似 不支持查询语句中包含Skip操作。 的本地化字符串。
+        /// </summary>
+        internal static string NotSupportedSkipQuery {
+            get {
+                return ResourceManager.GetString("NotSupportedSkipQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持类型为 {0} 的单元表达式项为对象成员。 的本地化字符串。
         /// </summary>
         internal static string NotSupportedUnitExpressionToObjectMember {

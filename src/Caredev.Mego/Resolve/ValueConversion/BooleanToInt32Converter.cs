@@ -6,7 +6,7 @@ namespace Caredev.Mego.Resolve.ValueConversion
     using System;
     using System.Reflection;
     /// <summary>
-    /// <see cref="Boolean"/>向<see cref="Int32"/>转换器。
+    /// 从<see cref="Boolean"/>向<see cref="Int32"/>转换器。
     /// </summary>
     public class BooleanToInt32Converter
     {

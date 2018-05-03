@@ -378,4 +378,7 @@
   <data name="ExceptionNotImplementeCustomCommand" xml:space="preserve">
     <value>当前数据库提供程序未实现自定义命令对象。</value>
   </data>
+  <data name="NotSupportedSkipQuery" xml:space="preserve">
+    <value>不支持查询语句中包含Skip操作。</value>
+  </data>
 </root>

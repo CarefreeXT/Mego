@@ -9,14 +9,15 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net35;net40;net45</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/CarefreeXT/Mego</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/CarefreeXT/Mego/blob/master/LICENSE</PackageLicenseUrl>
     <Authors>CarefreeXT</Authors>
     <Company>Caredev Studios</Company>
-    <Description>A high performance and powerful ORM framework supporting SQL Server, MySQL, Sqlite, SqlCE, Firebird etc..</Description>
+    <Description>A high performance and powerful ORM framework supporting SQL Server, MySQL, Oracle, PostgreSQL, Sqlite, SqlCE etc..</Description>
     <Copyright>Copyright © 2018, CarefreeXT. All rights reserved.</Copyright>
-    <PackageTags>Data;ADO.NET;O/RM;NET;C#;Database;Relation;SqlServer;MySQL;SQLite;Mego</PackageTags>
+    <PackageTags>Data;ADO.NET;O/RM;NET;C#;Database;Relation;SqlServer;MySQL;Oracle;PostgreSQL;Excel;Access;SQLite;Mego</PackageTags>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

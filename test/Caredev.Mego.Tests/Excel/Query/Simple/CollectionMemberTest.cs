@@ -15,15 +15,18 @@
         b.[Price] ,
         b.[ProductId] ,
         b.[Quantity]
-FROM    ( SELECT    c.[Id] ,
+FROM    ( SELECT TOP 5
+                    c.[Id] ,
                     c.[CreateDate] ,
                     c.[CustomerId] ,
                     c.[ModifyDate] ,
                     c.[State]
           FROM      [Orders] AS c
+          WHERE     c.[Id] NOT IN ( SELECT TOP 5
+                                            c.[Id]
+                                    FROM    [Orders] AS c
+                                    ORDER BY c.[Id] ASC )
           ORDER BY  c.[Id] ASC
-                    OFFSET 5 ROWS
-FETCH NEXT 5 ROWS ONLY
         ) AS a
         LEFT JOIN ( SELECT  d.[OrderId] ,
                             d.[Id] ,
@@ -34,6 +37,8 @@ FETCH NEXT 5 ROWS ONLY
                             d.[Quantity]
                     FROM    [OrderDetails] AS d
                   ) AS b ON b.[OrderId] = a.[Id]";
+
+
         private const string QueryBodyAndAggregateCountMaxTestSql =
 @"SELECT  a.[Id] ,
         a.[CreateDate] ,

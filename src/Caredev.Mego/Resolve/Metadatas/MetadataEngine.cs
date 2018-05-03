@@ -104,5 +104,9 @@ namespace Caredev.Mego.Resolve.Metadatas
         {
             return typeConversion.TryGetValue(type, out conversion);
         }
+        /// <summary>
+        /// 自动类型转换。
+        /// </summary>
+        internal bool AutoTypeConversion { get; set; } = false;
     }
 }

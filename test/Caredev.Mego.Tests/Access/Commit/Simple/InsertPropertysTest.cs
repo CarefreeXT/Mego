@@ -33,7 +33,7 @@ VALUES  ( @p0 ,
           @p1 ,
           @p2 ,
           @p3 + @p4 ,
-          GETDATE()
+          NOW()
         );
 SELECT  a.[Id] ,
         a.[Name] ,
@@ -53,7 +53,7 @@ VALUES  ( @p0 ,
           @p1 ,
           @p2 ,
           @p3 + @p4 ,
-          GETDATE()
+          NOW()
         );
 SELECT  a.[Id] ,
         a.[Name] ,
@@ -70,9 +70,9 @@ WHERE   a.[Id] = @@IDENTITY;";
           [State]
         )
 VALUES  ( @p0 ,
-          GETDATE() ,
+          NOW() ,
           @p1 ,
-          GETDATE() ,
+          NOW() ,
           @p2
         );
 SELECT  a.[CreateDate] ,
@@ -90,9 +90,9 @@ WHERE   a.[Id] = @p0;";
           [State]
         )
 VALUES  ( @p0 ,
-          GETDATE() ,
+          NOW() ,
           @p1 ,
-          GETDATE() ,
+          NOW() ,
           @p2
         );
 SELECT  a.[CreateDate] ,

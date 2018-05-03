@@ -10,6 +10,8 @@ namespace Caredev.Mego.Resolve
     using System;
     using System.Linq.Expressions;
     using System.Collections.Generic;
+    using System.Data.Common;
+
     /// <summary>
     /// 数据上下文配置对象。
     /// </summary>
@@ -54,7 +56,7 @@ namespace Caredev.Mego.Resolve
         /// </summary>
         public DbFeature DatabaseFeature => Context.Database.Generator.Feature;
         /// <summary>
-        /// 启用乐观并发检查，默认为启，如果<see cref="IDbAccessProvider"/>为独占数据库则会强制不可用。
+        /// 启用乐观并发检查，默认为启用，如果<see cref="IDbAccessProvider"/>为独占数据库则会强制不可用。
         /// </summary>
         public bool EnableConcurrencyCheck
         {
@@ -62,5 +64,14 @@ namespace Caredev.Mego.Resolve
             set { _EnableConcurrencyCheck = value; }
         }
         private bool _EnableConcurrencyCheck = true;
+        /// <summary>
+        /// 启用自动转换存储类型，默认为不可用。启用该选项后会导致从数据库使用
+        /// <see cref="DbDataReader"/>读取数据时强制转换为目标类型。
+        /// </summary>
+        public bool EnableAutoConversionStorageTypes
+        {
+            get { return this.Metadata.AutoTypeConversion; }
+            set { this.Metadata.AutoTypeConversion = value; }
+        }
     }
 }

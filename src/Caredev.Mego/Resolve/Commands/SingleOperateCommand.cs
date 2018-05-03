@@ -107,6 +107,7 @@ namespace Caredev.Mego.Resolve.Commands
                 {
                     command.Parameters.AddRange(Parameters.Values.ToArray());
                 }
+                OutputCommand(command);
                 if (operate.HasResult && operate.Output != null)
                 {
                     using (var reader = command.ExecuteReader())

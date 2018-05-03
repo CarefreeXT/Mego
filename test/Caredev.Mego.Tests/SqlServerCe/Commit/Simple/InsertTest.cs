@@ -47,6 +47,11 @@ FROM    [Orders] AS a
 WHERE   a.[Id] = @p0;"; 
 
         private const string InsertQueryTestSql =
-@"INp0";
+@"INSERT INTO [Customers]
+([Id],[Name],[Code],[Address1])
+SELECT
+a.[Id] + @p0 AS [Id], a.[Name], a.[Name], a.[Code]
+FROM [Products] AS a
+WHERE a.[Id] > @p1";
     }
 }

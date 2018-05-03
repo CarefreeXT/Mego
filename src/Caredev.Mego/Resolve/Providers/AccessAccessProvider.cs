@@ -16,7 +16,7 @@ namespace Caredev.Mego.Resolve.Providers
         /// <inheritdoc/>
         public override bool SupportDistributedTransaction => false;
         /// <inheritdoc/>
-        public override string ProviderName => "System.Data.Access";
+        public override string ProviderName => "System.Data.OleDb.Access";
         /// <inheritdoc/>
         public override DbProviderFactory Factory => DbAccessProvider.GetFactory("System.Data.OleDb");
         /// <inheritdoc/>
@@ -24,7 +24,55 @@ namespace Caredev.Mego.Resolve.Providers
         /// <inheritdoc/>
         public override ICustomCommand CreateCustomCommand()
         {
-            return new MicrosoftCustomCommand(Factory);
+            return new AccessCustomCommand(Factory);
+        }
+        private class AccessCustomCommand : MicrosoftCustomCommand
+        {
+            public AccessCustomCommand(DbProviderFactory factory)
+                : base(factory)
+            {
+                _Factory = factory;
+            }
+            private readonly DbProviderFactory _Factory;
+            private DbCommand _SelectCommand;
+            private DbParameter _IdentityParameter;
+            private const string _IdentityParameterName = "@pIdentity";
+
+            private DbParameter[] _SelectParameters;
+            protected override DbCommand RunSpliteCommand(DbCommand command, string[] strs, out int affectedCount)
+            {
+                var returnCommand = base.RunSpliteCommand(command, strs, out affectedCount);
+                if (strs.Length > 1)
+                {
+                    var content = returnCommand.CommandText;
+                    if (content.Contains("@@IDENTITY"))
+                    {
+                        if (_SelectCommand == null)
+                        {
+                            _IdentityParameter = _Factory.CreateParameter();
+                            _IdentityParameter.ParameterName = _IdentityParameterName;
+
+                            _SelectCommand = Clone(returnCommand, content.Replace("@@IDENTITY", _IdentityParameterName), _IdentityParameter);
+                        }
+                        returnCommand.CommandText = "SELECT @@IDENTITY";
+                        _IdentityParameter.Value = returnCommand.ExecuteScalar();
+                        return _SelectCommand;
+                    }
+                    else if (content.StartsWith("SELECT"))
+                    {
+                        if (_SelectCommand == null)
+                        {
+                            _SelectParameters = CreateSelect(returnCommand, out _SelectCommand);
+                        }
+                        else
+                        {
+                            CopyValue(_SelectCommand, _SelectParameters);
+                        }
+                        return _SelectCommand;
+                    }
+                }
+                return returnCommand;
+            }
         }
     }
 }

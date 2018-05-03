@@ -14,17 +14,21 @@
         b.[Code] ,
         b.[Name] ,
         b.[Zip]
-FROM    ( SELECT    c.[Id] ,
+FROM    ( SELECT TOP 5
+                    c.[Id] ,
                     c.[CreateDate] ,
                     c.[CustomerId] ,
                     c.[ModifyDate] ,
                     c.[State]
           FROM      [Orders] AS c
+          WHERE     c.[Id] NOT IN ( SELECT TOP 5
+                                            c.[Id]
+                                    FROM    [Orders] AS c
+                                    ORDER BY c.[Id] ASC )
           ORDER BY  c.[Id] ASC
-                    OFFSET 5 ROWS
-FETCH NEXT 5 ROWS ONLY
         ) AS a
         INNER JOIN [Customers] AS b ON a.[CustomerId] = b.[Id]";
+
         private const string ExpandTwoLevelCollectionMemberPageTestSql =
 @"SELECT  a.[Id] ,
         a.[CreateDate] ,
@@ -44,15 +48,18 @@ FETCH NEXT 5 ROWS ONLY
         b.[IsValid] ,
         b.[Name] ,
         b.[UpdateDate]
-FROM    ( SELECT    c.[Id] ,
+FROM    ( SELECT TOP 5
+                    c.[Id] ,
                     c.[CreateDate] ,
                     c.[CustomerId] ,
                     c.[ModifyDate] ,
                     c.[State]
           FROM      [Orders] AS c
+          WHERE     c.[Id] NOT IN ( SELECT TOP 5
+                                            c.[Id]
+                                    FROM    [Orders] AS c
+                                    ORDER BY c.[Id] ASC )
           ORDER BY  c.[Id] ASC
-                    OFFSET 5 ROWS
-FETCH NEXT 5 ROWS ONLY
         ) AS a
         LEFT JOIN ( SELECT  d.[OrderId] ,
                             d.[Id] ,
@@ -127,8 +134,8 @@ FROM    [Orders] AS a
         c.[CustomerId] AS [CustomerId1] ,
         c.[ModifyDate] AS [ModifyDate1] ,
         c.[State] AS [State1]
-FROM    [Orders] AS a
-        INNER JOIN [Customers] AS b ON a.[CustomerId] = b.[Id]
+FROM    ([Orders] AS a
+        INNER JOIN [Customers] AS b ON a.[CustomerId] = b.[Id])
         LEFT JOIN ( SELECT  d.[CustomerId] ,
                             d.[Id] ,
                             d.[CreateDate] ,
@@ -170,8 +177,8 @@ FROM    [Orders] AS a
         c.[CustomerId] AS [CustomerId1] ,
         c.[ModifyDate] AS [ModifyDate1] ,
         c.[State] AS [State1]
-FROM    [Orders] AS a
-        INNER JOIN [Customers] AS b ON a.[CustomerId] = b.[Id]
+FROM    ([Orders] AS a
+        INNER JOIN [Customers] AS b ON a.[CustomerId] = b.[Id])
         LEFT JOIN ( SELECT  d.[CustomerId] ,
                             d.[Id] ,
                             d.[CreateDate] ,

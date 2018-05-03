@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Caredev.Mego.Resolve.ValueConversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,12 @@ namespace Caredev.Mego.Tests
 
         public static Models.Simple.OrderManageEntities CreateSimpleContext(bool isinitial = false)
         {
-            return new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
+            var db = new Models.Simple.OrderManageEntities(Constants.ConnectionNameSimple);
+            if (!isinitial)
+            {
+                db.Configuration.EnableAutoConversionStorageTypes = true;
+            }
+            return db;
         }
 
         public static Models.Inherit.OrderManageEntities CreateInheritContext(bool isinitial = false)

@@ -10,20 +10,27 @@
         a.[Name] ,
         a.[UpdateDate]
 FROM    [Products] AS a
-ORDER BY a.[Id] ASC
-        OFFSET 10 ROWS";
+WHERE   a.[Id] NOT IN ( SELECT TOP 10
+                                a.[Id]
+                        FROM    [Products] AS a
+                        ORDER BY a.[Id] ASC )
+ORDER BY a.[Id] ASC";
 
         private const string QueryListForTakeSkipTestSql =
-@"SELECT  a.[Id] ,
+@"SELECT TOP 10
+        a.[Id] ,
         a.[Category] ,
         a.[Code] ,
         a.[IsValid] ,
         a.[Name] ,
         a.[UpdateDate]
 FROM    [Products] AS a
-ORDER BY a.[Id] ASC
-        OFFSET 10 ROWS
-FETCH NEXT 10 ROWS ONLY";
+WHERE   a.[Id] NOT IN ( SELECT TOP 10
+                                a.[Id]
+                        FROM    [Products] AS a
+                        ORDER BY a.[Id] ASC )
+ORDER BY a.[Id] ASC";
+
         private const string QueryListTestSql =
 @"SELECT  a.[Id] ,
         a.[Category] ,
@@ -45,7 +52,7 @@ FROM    [Products] AS a";
         private const string QueryPropertyAndExpressionTestSql =
 @"SELECT  a.[Id] ,
         a.[Name] ,
-        GETDATE() AS [Date]
+        NOW() AS [Date]
 FROM    [Products] AS a";
 
         private const string QueryFilterListForConstantTestSql =
@@ -84,7 +91,7 @@ ORDER BY a.[Category] DESC";
         b.[Id] AS [Id1] ,
         b.[Name] AS [Name1]
 FROM    [Products] AS a
-        CROSS JOIN [Customers] AS b";
+        , [Customers] AS b";
 
         private const string QueryListForTakeTestSql =
 @"SELECT TOP 10

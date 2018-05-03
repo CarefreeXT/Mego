@@ -1,6 +1,11 @@
 ﻿// Copyright (c) CarefreeXT and Caredev Studios. All rights reserved.
 // Licensed under the GNU Lesser General Public License v3.0.
 // See License.txt in the project root for license information.
+using Caredev.Mego.Resolve.Expressions;
+using Caredev.Mego.Resolve.Generators.Contents;
+using Caredev.Mego.Resolve.Generators.Fragments;
+using System.Linq;
+
 namespace Caredev.Mego.Resolve.Generators.Implement
 {
     /// <summary>
@@ -22,7 +27,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         }
         private FragmentWriterBase _FragmentWriter;
         /// <inheritdoc/>
-        public override string ProviderName => "System.Data.Access";
+        public override string ProviderName => "System.Data.OleDb.Access";
         /// <inheritdoc/>
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()

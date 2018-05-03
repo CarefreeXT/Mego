@@ -9,6 +9,8 @@ namespace Caredev.Mego.Resolve.Generators.Implement
     using Caredev.Mego.Resolve.Operates;
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
+    using System.Linq;
     using Res = Properties.Resources;
     partial class ExcelFragmentWriter
     {
@@ -49,6 +51,25 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 m => m.WriteSql(writer));
             writer.WriteLine(")");
         }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForFrom(SqlWriter writer, IEnumerable<ISourceFragment> sources)
+        {
+            if (sources.Any())
+            {
+                var list = sources.ToArray();
+                writer.WriteLine();
+                writer.Write("FROM ");
+                WriteFragmentForSourceSpecial(writer, list, list.Length - 1);
+            }
+        }
+        /// <inheritdoc/>
+        protected override void WriteFragmentForSourceJoin(SqlWriter writer, ISourceFragment source)
+        {
+            if (source.Join.Value != EJoinType.CrossJoin)
+            {
+                base.WriteFragmentForSourceJoin(writer, source);
+            }
+        }
         private void WriteFragmentForCreateColumn(SqlWriter writer, ISqlFragment fragment)
         {
             var create = (CreateColumnFragment)fragment;
@@ -56,6 +77,20 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             writer.Write(' ');
             var column = create.Metadata;
             WriteDbDataType(writer, column);
+        }
+    }
+    partial class ExcelFragmentWriter
+    {
+        /// <inheritdoc/>
+        protected override IDictionary<MemberInfo, WriteFragmentDelegate> InitialMethodsForWriteScalar()
+        {
+            var result = base.InitialMethodsForWriteScalar();
+
+            result.AddOrUpdate(SupportMembers.DateTime.Now, (w, e) => w.Write("NOW()"));
+
+            result.AddOrUpdate(SupportMembers.DbFunctions.GetIdentity, (w, e) => w.Write("@@IDENTITY"));
+
+            return result;
         }
     }
 }

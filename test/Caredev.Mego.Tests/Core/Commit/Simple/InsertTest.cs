@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple; 
+    using Caredev.Mego.Tests.Models.Simple;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Commit.Insert")]
     public partial class InsertTest
@@ -120,7 +120,11 @@
                     Id = 10000,
                     CustomerId = 6,
                     State = 2,
+#if ACCESS
+                    ModifyDate = DateTime.Now.Date
+#else
                     ModifyDate = DateTime.Now
+#endif
                 });
                 Utility.CompareSql(db, operate, InsertExpressionSingleObjectTestSql);
 
@@ -135,6 +139,9 @@
             Utility.CommitTest(CreateContext(), db =>
             {
                 var date = DateTime.Now;
+#if ACCESS
+                date = date.Date.AddSeconds((int)date.TimeOfDay.TotalSeconds);
+#endif
                 var operate = db.Orders.Add(new Order()
                 {
                     Id = 10000,

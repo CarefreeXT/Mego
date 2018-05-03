@@ -26,7 +26,7 @@ SET     [Category] = @p0 ,
         [Code] = @p1 ,
         [IsValid] = @p2 ,
         [Name] = @p3 ,
-        [UpdateDate] = GETDATE()
+        [UpdateDate] = NOW()
 WHERE   [Id] = @p4;
 SELECT  a.[UpdateDate]
 FROM    [Products] AS a
@@ -38,7 +38,7 @@ SET     [Category] = @p0 ,
         [Code] = @p1 ,
         [IsValid] = @p2 ,
         [Name] = @p3 ,
-        [UpdateDate] = GETDATE()
+        [UpdateDate] = NOW()
 WHERE   [Id] = @p4;
 SELECT  a.[UpdateDate]
 FROM    [Products] AS a

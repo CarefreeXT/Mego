@@ -49,18 +49,16 @@ WHERE   [Id] = @p0";
 VALUES  ( @p0, @p1 )";
 
         private const string RemoveCompositeSingleTestSql =
-@"DELETE  [OrderDetails]
-WHERE   [OrderId] = @p0
-        AND [ProductId] = @p1";
-        
+@"DELETE FROM [OrderDetails] AS a
+WHERE a.[OrderId] = @p0 AND a.[ProductId] = @p1";
+
         private const string AddCompositeMultiTestSql =
 @"INSERT  INTO [OrderDetails]
         ( [OrderId], [ProductId] )
 VALUES  ( @p0, @p1 )";
 
         private const string RemoveCompositeMultiTestSql =
-@"DELETE  [OrderDetails]
-WHERE   [OrderId] = @p0
-        AND [ProductId] = @p1";
+@"DELETE FROM [OrderDetails] AS a
+WHERE a.[OrderId] = @p0 AND a.[ProductId] = @p1";
     }
 }

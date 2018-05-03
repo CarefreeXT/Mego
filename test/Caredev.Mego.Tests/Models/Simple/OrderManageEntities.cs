@@ -32,6 +32,9 @@ namespace Caredev.Mego.Tests.Models.Simple
                 {
                     products[i] = new Product()
                     {
+#if EXCEL
+                        Id = i + 1,
+#endif
                         Code = "Pro" + i.ToString(),
                         Name = "Product " + i.ToString().PadLeft(4, '0'),
                         Category = r.Next(1, 5),
@@ -40,6 +43,9 @@ namespace Caredev.Mego.Tests.Models.Simple
                 }
                 this.Products.AddRange(a => new Product()
                 {
+#if EXCEL
+                    Id = a.Id,
+#endif
                     Code = a.Code,
                     Name = a.Name,
                     Category = a.Category,
@@ -80,12 +86,19 @@ namespace Caredev.Mego.Tests.Models.Simple
                 this.Warehouses.AddRange(warehouses);
 
                 Order[] orders = new Order[40];
+#if EXCEL
+                var detailid = 1;
+#endif
                 for (int i = 0; i < orders.Length; i++)
                 {
                     orders[i] = new Order()
                     {
                         Id = i + 1,
+#if ACCESS || EXCEL
+                        ModifyDate = DateTime.Now.Date,
+#else
                         ModifyDate = DateTime.Now.AddDays(r.Next(-365, 365)),
+#endif
                         State = r.Next(1, 10)
                     };
                     this.Orders.Add(orders[i]);
@@ -96,6 +109,9 @@ namespace Caredev.Mego.Tests.Models.Simple
                     {
                         var detail = new OrderDetail()
                         {
+#if EXCEL
+                            Id = detailid++,
+#endif
                             Quantity = r.Next(100, 500),
                             Discount = r.Next(1, 100),
                             Price = Convert.ToDecimal(r.NextDouble() * 100)
@@ -112,7 +128,17 @@ namespace Caredev.Mego.Tests.Models.Simple
         public void InitialTable()
         {
             var manager = this.Database.Manager;
+#if EXCEL
+            if (this.Database.Connection.State != System.Data.ConnectionState.Open)
+            {
+                this.Database.Connection.Open();
+            }
+            var tables = this.Database.Connection.GetSchema("Tables");
+            var rows = tables.Select("TABLE_NAME='Products'");
+            if (rows.Count() == 0)
+#else
             if (!Database.SqlQuery<bool>(manager.TableIsExsit<Product>().GetSql()).First())
+#endif
             {
                 var list = new List<Resolve.Operates.DbOperateBase>()
                 {
@@ -163,11 +189,12 @@ namespace Caredev.Mego.Tests.Models.Simple
     [Table("OrderDetails")]
     internal class OrderDetail
     {
-
-#if ORACLE
+#if EXCEL
+        [Key]
+#elif ORACLE
         [Key, Sequence("OrderDetailSequence")]
 #else
-        [Key, Identity] 
+        [Key, Identity]
 #endif
         public int Id { get; set; }
 
@@ -175,8 +202,12 @@ namespace Caredev.Mego.Tests.Models.Simple
 
         public int? ProductId { get; set; }
 
+#if EXCEL || ACCESS
+        public string Key { get; set; } = Guid.NewGuid().ToString();
+#else
         [GeneratedGuid]
-        public Guid Key { get; set; }
+        public Guid Key { get; set; } 
+#endif
 
         public int Quantity { get; set; }
 
@@ -213,10 +244,12 @@ namespace Caredev.Mego.Tests.Models.Simple
     [Table("Products")]
     internal class Product
     {
-#if ORACLE
+#if EXCEL
+        [Key]
+#elif ORACLE
         [Key, Sequence("ProductSequence")]
 #else
-        [Key, Identity] 
+        [Key, Identity]
 #endif
         public int Id { get; set; }
 

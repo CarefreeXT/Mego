@@ -1,7 +1,7 @@
 ﻿namespace Caredev.Mego.Tests.Core.Commit.Simple
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple; 
+    using Caredev.Mego.Tests.Models.Simple;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Diagnostics;
     using System.Transactions;
@@ -65,7 +65,11 @@
                     Address2 = "B",
                     Zip = "Z"
                 };
-                var order = new Order() { Id = 10000, ModifyDate = DateTime.Now };
+#if ACCESS
+                var order = new Order() { Id = 10000, ModifyDate = DateTime.Now.Date };
+#else
+                var order = new Order() { Id = 10000, ModifyDate = DateTime.Now }; 
+#endif
                 var produts = db.Products.Take(5).ToArray();
                 db.Customers.Add(customer);
                 db.Orders.Add(order);

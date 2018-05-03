@@ -48,6 +48,7 @@
                     con.Open();
                 }
                 var com = con.CreateCommand();
+                com.Transaction = db.Database.Transaction;
                 StringBuilder builder = new StringBuilder();
                 builder.Append(MaxParameterCountTestSql);
                 builder.Append("(");

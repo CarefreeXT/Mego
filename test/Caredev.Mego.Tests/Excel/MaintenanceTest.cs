@@ -10,7 +10,7 @@
     [IsValid] BIT, 
     [Name] LONGTEXT, 
     [UpdateDate] DATETIME
-);";
+)";
 
         private const string DropRelationTestSql = Constants.NotSuppored;
         private const string DropCompositeRelationTestSql = Constants.NotSuppored;
@@ -22,7 +22,7 @@
         private const string RenameTableTestSql = Constants.NotSuppored;
 
         private const string DropTableTestSql =
-@"DROP TABLE [TestProduct];";
+@"DROP TABLE [TestProduct]";
 
         private const string CreateViewTestSql = Constants.NotSuppored;
         private const string CreateViewTest2Sql = Constants.NotSuppored;

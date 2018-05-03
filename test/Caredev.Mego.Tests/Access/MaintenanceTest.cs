@@ -11,23 +11,23 @@
     [Name] LONGTEXT NULL, 
     [UpdateDate] DATETIME NOT NULL,
     PRIMARY KEY ( [Id])
-);";
+)";
 
         private const string DropRelationTestSql =
-@"ALTER TABLE [Orders] DROP CONSTRAINT [FK_Orders_Customers_CustomerId_Id];";
+@"ALTER TABLE [Orders] DROP CONSTRAINT [FK_Orders_Customers_CustomerId_Id]";
 
         private const string DropCompositeRelationTestSql =
-@"ALTER TABLE [OrderDetails] DROP CONSTRAINT [FK_OrderDetails_Orders_OrderId_Id];";
+@"ALTER TABLE [OrderDetails] DROP CONSTRAINT [FK_OrderDetails_Orders_OrderId_Id]";
 
         private const string DropCompositeRelationTestSql1 =
-@"ALTER TABLE [OrderDetails] DROP CONSTRAINT [FK_OrderDetails_Products_ProductId_Id];";
+@"ALTER TABLE [OrderDetails] DROP CONSTRAINT [FK_OrderDetails_Products_ProductId_Id]";
 
         private const string CreateTempTableTestSql = Constants.NotSuppored;
 
         private const string CreateTableVariableTestSql = Constants.NotSuppored;
 
         private const string DropTableTestSql = 
-@"DROP TABLE [TestProduct];";
+@"DROP TABLE [TestProduct]";
 
         private const string CreateViewTestSql =
 @"CREATE VIEW [TestProduct]
@@ -38,36 +38,36 @@ AS
             a.[IsValid] ,
             a.[Name] ,
             a.[UpdateDate]
-    FROM    [Products] AS a;";
+    FROM    [Products] AS a";
 
         private const string CreateViewTest2Sql =
 @"CREATE VIEW [TestProduct]
 AS
     SELECT  *
     FROM    Products
-    WHERE   Id > 0;";
+    WHERE   Id > 0";
 
         private const string DropViewTestSql =
-@"DROP VIEW [TestProduct];";
+@"DROP VIEW [TestProduct]";
 
         private const string ViewIsExsitTestSql =
-@"SELECT COUNT(1) FROM MSysObjects Where Type=5 AND Name='Products';";
+@"SELECT COUNT(1) FROM MSysObjects Where Type=5 AND Name='Products'";
 
         private const string RenameTableTestSql = Constants.NotSuppored;
 
         private const string RenameViewTestSql = Constants.NotSuppored;
 
         private const string TableIsExsitTestSql =
-@"SELECT COUNT(1) FROM MSysObjects Where Type=1 AND Name='Products';";
+@"SELECT COUNT(1) FROM MSysObjects Where Type=1 AND Name='Products'";
 
         private const string CreateRelationTestSql =
 @"ALTER TABLE [Orders] ADD CONSTRAINT [FK_Orders_Customers_CustomerId_Id] FOREIGN KEY([CustomerId]) 
-REFERENCES [Customers] ([Id]);";
+REFERENCES [Customers] ([Id])";
 
         private const string CreateCompositeRelationTestSql =
-@"ALTER TABLE [OrderDetails] ADD CONSTRAINT [FK_OrderDetails_Orders_OrderId_Id] FOREIGN KEY([OrderId]) REFERENCES [Orders] ([Id]);";
+@"ALTER TABLE [OrderDetails] ADD CONSTRAINT [FK_OrderDetails_Orders_OrderId_Id] FOREIGN KEY([OrderId]) REFERENCES [Orders] ([Id])";
 
         private const string CreateCompositeRelationTestSql1 =
-@"ALTER TABLE [OrderDetails] ADD CONSTRAINT [FK_OrderDetails_Products_ProductId_Id] FOREIGN KEY([ProductId]) REFERENCES [Products] ([Id]);";
+@"ALTER TABLE [OrderDetails] ADD CONSTRAINT [FK_OrderDetails_Products_ProductId_Id] FOREIGN KEY([ProductId]) REFERENCES [Products] ([Id])";
     }
 }

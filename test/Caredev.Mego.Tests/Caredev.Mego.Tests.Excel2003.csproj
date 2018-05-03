@@ -55,11 +55,6 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Commit\Simple\CombineTest.cs" />
-    <Compile Include="Core\Commit\Simple\DeleteTest.cs" />
-    <Compile Include="Core\Commit\Simple\InsertPropertysTest.cs" />
-    <Compile Include="Core\Commit\Simple\InsertTest.cs" />
-    <Compile Include="Core\Commit\Simple\RelationTest.cs" />
     <Compile Include="Core\Commit\Simple\UpdatePropertysTest.cs" />
     <Compile Include="Core\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Core\Constants.cs" />
@@ -73,10 +68,6 @@
     <Compile Include="Core\Query\Simple\GroupJoinTest.cs" />
     <Compile Include="Core\Query\Simple\SingleEntityTest.cs" />
     <Compile Include="Core\Query\Simple\SqlQueryTest.cs" />
-    <Compile Include="Excel\Commit\Simple\DeleteTest.cs" />
-    <Compile Include="Excel\Commit\Simple\InsertPropertysTest.cs" />
-    <Compile Include="Excel\Commit\Simple\InsertTest.cs" />
-    <Compile Include="Excel\Commit\Simple\RelationTest.cs" />
     <Compile Include="Excel\Commit\Simple\UpdatePropertysTest.cs" />
     <Compile Include="Excel\Commit\Simple\UpdateTest.cs" />
     <Compile Include="Excel\Constants.cs" />

@@ -83,6 +83,14 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             }
         }
         /// <inheritdoc/>
+        protected override void WriteFragmentForCommitMember(SqlWriter writer, ISqlFragment fragment)
+        {
+            var content = (CommitMemberFragment)fragment;
+            var command = fragment.Context.Data.OperateCommand.GetCustomCommand<IMicrosoftCustomCommand>();
+            var name = command.AddParameter(content.Metadata, content.Loader, content.Index);
+            WriteParameterName(writer, name);
+        }
+        /// <inheritdoc/>
         protected override void WriteFragmentForSelect(SqlWriter writer, ISqlFragment fragment)
         {
             var select = (SelectFragment)fragment;
@@ -90,7 +98,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             {
                 writer.Write("SELECT");
                 if (select.Distinct) writer.Write(" DISTINCT");
-                if (select.Take > 0 && select.Skip <= 0)
+                if (select.Take > 0)
                 {
                     writer.Write(" TOP ");
                     writer.Write(select.Take);
@@ -98,18 +106,90 @@ namespace Caredev.Mego.Resolve.Generators.Implement
                 writer.WriteLine();
                 WriteFragmentForSelectMembers(writer, select.Members);
                 WriteFragmentForFrom(writer, select.Sources);
-                WriteFragmentForWhere(writer, select.Where);
+                if (select.Skip > 0)
+                {
+                    writer.Write(" WHERE ");
+                    if (select.Where != null)
+                    {
+                        select.Where.WriteSql(writer);
+                        writer.Write(" AND ");
+                    }
+                    var firstSource = select.Sources.First();
+                    if (firstSource is TableFragment tableFragment)
+                    {
+                        if (tableFragment.Metadata.Keys.Length == 1)
+                        {
+                            var keyMember = tableFragment.GetMember(tableFragment.Metadata.Keys[0]);
+                            keyMember.WriteSql(writer);
+                            writer.Write(" NOT IN ( ");
+
+                            writer.Write("SELECT");
+                            if (select.Distinct) writer.Write(" DISTINCT");
+                            writer.Write(" TOP ");
+                            writer.Write(select.Skip);
+                            writer.Write(' ');
+                            keyMember.WriteSql(writer);
+                            WriteFragmentForFrom(writer, select.Sources);
+                            WriteFragmentForWhere(writer, select.Where);
+                            WriteFragmentForGroupBy(writer, select.GroupBys);
+                            WriteFragmentForOrderBy(writer, select.Sorts);
+                            writer.Write(")");
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(Res.NotSupportedSkipQuery);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(Res.NotSupportedSkipQuery);
+                    }
+                }
+                else
+                {
+                    WriteFragmentForWhere(writer, select.Where);
+                }
                 WriteFragmentForGroupBy(writer, select.GroupBys);
                 WriteFragmentForOrderBy(writer, select.Sorts);
             }, select);
         }
-        /// <inheritdoc/>
-        protected override void WriteFragmentForCommitMember(SqlWriter writer, ISqlFragment fragment)
+        /// <summary>
+        /// 使用括号分割多个数据源连接。。
+        /// </summary>
+        /// <param name="writer">写入器。</param>
+        /// <param name="sources">数据源集合。</param>
+        /// <param name="index">最后写入的数据源索引</param>
+        protected void WriteFragmentForSourceSpecial(SqlWriter writer, ISourceFragment[] sources, int index)
         {
-            var content = (CommitMemberFragment)fragment;
-            var command = fragment.Context.Data.OperateCommand.GetCustomCommand<IMicrosoftCustomCommand>();
-            var name = command.AddParameter(content.Metadata, content.Loader, content.Index);
-            WriteParameterName(writer, name);
+            var current = sources[index];
+            if (index > 0)
+            {
+                var isCrossJoin = !current.Join.HasValue || current.Join == EJoinType.CrossJoin;
+                if (index > 1)
+                {
+                    var previous = sources[index - 1];
+                    if (isCrossJoin || !previous.Join.HasValue || previous.Join == EJoinType.CrossJoin)
+                    {
+                        WriteFragmentForSourceSpecial(writer, sources, index - 1);
+                    }
+                    else
+                    {
+                        writer.Write('(');
+                        WriteFragmentForSourceSpecial(writer, sources, index - 1);
+                        writer.Write(')');
+                    }
+                }
+                else
+                {
+                    WriteFragmentForSource(writer, sources[0]);
+                }
+                writer.WriteLine();
+                if (isCrossJoin)
+                {
+                    writer.Write(", ");
+                }
+            }
+            WriteFragmentForSource(writer, current);
         }
     }
 }

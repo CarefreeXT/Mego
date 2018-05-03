@@ -40,6 +40,10 @@ namespace Caredev.Mego.Resolve
         /// </summary>
         internal DbConnection Connection { get; }
         /// <summary>
+        /// 当前执行的本地事务对象。
+        /// </summary>
+        internal DbTransaction LocalTransaction => _LocalTransaction;
+        /// <summary>
         /// 使用指定的事务。
         /// </summary>
         /// <param name="transaction"></param>
