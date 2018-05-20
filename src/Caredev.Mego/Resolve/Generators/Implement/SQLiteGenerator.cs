@@ -36,7 +36,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
             DefaultSchema = string.Empty,
             MaxInsertRowCount = 500,
             MaxParameterCount = 999,
-            Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
+            Capability = EDbCapable.DataDefinition |
                 EDbCapable.TemporaryTable |
                 EDbCapable.BatchInsert | EDbCapable.SubQuery |
                 EDbCapable.Identity

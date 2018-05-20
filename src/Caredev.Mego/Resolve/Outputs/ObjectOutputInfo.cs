@@ -57,7 +57,20 @@ namespace Caredev.Mego.Resolve.Outputs
                 }
                 return null;
             }
-            var result = CreateItem(reader);
+            object result = null;
+            if (!HasCollectionProperty)
+            {
+                result = CreateObjectItem(reader);
+            }
+            else
+            {
+                var root = CreateContentItem(reader);
+                do
+                {
+                    LoadDataToContent(reader, root);
+                } while (reader.Read());
+                result = root.Content;
+            }
             if (Option == EObjectOutputOption.OnlyOne ||
                 Option == EObjectOutputOption.ZeroOrOnlyOne)
             {

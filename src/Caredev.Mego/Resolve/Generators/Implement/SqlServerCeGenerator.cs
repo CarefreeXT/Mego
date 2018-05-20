@@ -31,8 +31,7 @@ namespace Caredev.Mego.Resolve.Generators.Implement
         public override DbFeature Feature => _Feature;
         private readonly DbFeature _Feature = new DbFeature()
         {
-            Capability = EDbCapable.Schema | EDbCapable.DataDefinition |
-                EDbCapable.WindowFunction | EDbCapable.TableValuedFunction |
+            Capability = EDbCapable.DataDefinition |
                 EDbCapable.SubQuery | EDbCapable.BatchInsert |
                 EDbCapable.Relation | EDbCapable.Identity
         };

@@ -63,7 +63,8 @@ namespace Caredev.Mego.Resolve.Generators
     /// <param name="current">当前数据源语句。</param>
     /// <param name="expression">表达式。</param>
     /// <param name="parent">父级数据源语句。</param>
-    public delegate void InitialMembersDelegate(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent);
+    /// <returns>当前数据源语句。</returns>
+    public delegate ISourceFragment InitialMembersDelegate(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent);
     /// <summary>
     /// 根据表达式初始化聚合检索函数。
     /// </summary>

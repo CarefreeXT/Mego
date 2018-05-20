@@ -264,7 +264,7 @@ namespace Caredev.Mego.Tests.Models.Simple
         [GeneratedDateTime(EGeneratedPurpose.InsertUpdate)]
         public DateTime UpdateDate { get; set; }
 
-        [InverseProperty("OrderId", "Id")]
+        [Relationship(typeof(OrderDetail), "OrderId", "Id", "ProductId", "Id")]
         public virtual ICollection<Order> Orders { get; set; }
     }
 

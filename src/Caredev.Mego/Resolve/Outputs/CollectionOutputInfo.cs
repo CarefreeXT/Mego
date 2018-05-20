@@ -41,43 +41,50 @@ namespace Caredev.Mego.Resolve.Outputs
         /// <returns>执行结果。</returns>
         public IEnumerable<object> GetResult(DbDataReader reader)
         {
-            if (Initialize())
+            Initialize();
+            if (!HasCollectionProperty)
+            {
+                return CreateSimpleCollection(reader);
+            }
+            else
             {
                 var type = typeof(HashSet<>).MakeGenericType(Metadata.ClrType);
-                var items = new OutputContentCollection(this, Activator.CreateInstance(type));
+                var items = new OutputContentCollection((CollectionOutputInfo)this, Activator.CreateInstance(type));
                 while (reader.Read())
                 {
-                    RegisterItem(reader, items);
+                    LoadDataToContent(reader, items);
                 }
-                return items;
-            }
-            return GetResultObjectItem(reader);
-        }
-        //注册使用内容项，用于生成集合属性用。
-        private void RegisterItem(DbDataReader reader, OutputContentCollection collection)
-        {
-            string key = string.Join("_", ItemKeyFields.Select(a => reader.GetValue(a).ToString()).ToArray());
-            if (!collection.TryGetValue(key, out OutputContentItem item))
-            {
-                item = new OutputContentItem();
-                var content = CreateItem(reader, item);
-                if (content != null)
-                {
-                    item.Content = content;
-                    collection.Add(key, item);
-                }
-            }
-            foreach (var kv in item.Collections)
-            {
-                kv.Key.RegisterItem(reader, kv.Value);
+                return items.Content as IEnumerable<object>;
             }
         }
-        //获取结果对象集合。
-        private IEnumerable<object> GetResultObjectItem(DbDataReader reader)
+
+        private IEnumerable<object> CreateSimpleCollection(DbDataReader reader)
         {
             while (reader.Read())
             {
-                yield return CreateItem(reader);
+                yield return CreateObjectItem(reader);
+            }
+        }
+        /// <inheritdoc/>
+        protected override void LoadDataToContent(DbDataReader reader, IOutputContent content)
+        {
+            if (!IsEmpty(reader))
+            {
+                var collection = (OutputContentCollection)content;
+                if (HasCollectionProperty)
+                {
+                    string key = string.Join("_", ItemKeyFields.Select(a => reader.GetValue(a).ToString()).ToArray());
+                    if (!collection.TryGetValue(key, out OutputContentObject item))
+                    {
+                        item = CreateContentItem(reader);
+                        collection.Add(key, item);
+                    }
+                    base.LoadDataToContent(reader, item);
+                }
+                else
+                {
+                    collection.Add(CreateObjectItem(reader));
+                }
             }
         }
     }

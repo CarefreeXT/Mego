@@ -13,11 +13,10 @@ namespace Caredev.Mego.Resolve.Outputs
     /// <summary>
     /// 输出集合内容，该对象用于生成集合导航数据的中间对象。
     /// </summary>
-    public class OutputContentCollection : IEnumerable, IEnumerable<object>
+    public class OutputContentCollection : IOutputContent
     {
-        private readonly IEnumerable<object> Target;
         private readonly CollectionOutputInfo Output;
-        private Dictionary<string, OutputContentItem> KeyCollection;
+        private Dictionary<string, OutputContentObject> _KeyCollection;
         /// <summary>
         /// 创建输出集合内容。
         /// </summary>
@@ -26,16 +25,19 @@ namespace Caredev.Mego.Resolve.Outputs
         public OutputContentCollection(CollectionOutputInfo output, object target)
         {
             Output = output;
-            Target = target as IEnumerable<object>;
-            KeyCollection = new Dictionary<string, OutputContentItem>();
+            Content = target;
         }
+        /// <summary>
+        /// 当前输出内容。
+        /// </summary>
+        public object Content { get; }
         /// <summary>
         /// 使用指定的键值获取输出内容项。
         /// </summary>
         /// <param name="key">当前键值。</param>
         /// <param name="value">获取的内容项。</param>
         /// <returns>是否执行成功。</returns>
-        public bool TryGetValue(string key, out OutputContentItem value)
+        public bool TryGetValue(string key, out OutputContentObject value)
         {
             return KeyCollection.TryGetValue(key, out value);
         }
@@ -44,26 +46,23 @@ namespace Caredev.Mego.Resolve.Outputs
         /// </summary>
         /// <param name="key">键值。</param>
         /// <param name="value">关联输出内容项。</param>
-        public void Add(string key, OutputContentItem value)
+        public void Add(string key, OutputContentObject value)
         {
             KeyCollection.Add(key, value);
-            Output.Metadata.CollectionAdd(Target, value.Content);
+            Output.Metadata.CollectionAdd(Content, value.Content);
         }
         /// <summary>
-        /// 实现<see cref="IEnumerable{T}"/>接口
+        /// 直接向目标集合中添加对象。
         /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator()
+        /// <param name="obj"></param>
+        public void Add(object obj)
         {
-            return GetEnumerator();
+            Output.Metadata.CollectionAdd(Content, obj);
         }
         /// <summary>
-        /// 实现<see cref="IEnumerable{T}"/>接口
+        /// 当前键值成员。
         /// </summary>
-        /// <returns></returns>
-        IEnumerator<object> IEnumerable<object>.GetEnumerator()
-        {
-            return Target.GetEnumerator();
-        }
+        private Dictionary<string, OutputContentObject> KeyCollection =>
+            _KeyCollection ?? (_KeyCollection = new Dictionary<string, OutputContentObject>());
     }
 }

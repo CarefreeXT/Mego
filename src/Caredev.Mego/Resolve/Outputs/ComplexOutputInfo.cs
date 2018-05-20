@@ -18,8 +18,11 @@ namespace Caredev.Mego.Resolve.Outputs
     public abstract class ComplexOutputInfo : OutputInfoBase
     {
         private readonly object[] EmptyComplexObjects;
-        private bool HasCollectionProperty = false;
         private bool IsInitialized = false;
+        /// <summary>
+        /// 表示当前输出信息层级中是否存在集合属性。
+        /// </summary>
+        protected bool HasCollectionProperty = false;
         /// <summary>
         /// 根据<see cref="DbDataReader"/>的字段名创建复杂对象输出信息体。
         /// </summary>
@@ -84,57 +87,6 @@ namespace Caredev.Mego.Resolve.Outputs
         /// </summary>
         public ComplexOutputInfo Parent { get; private set; }
         /// <summary>
-        /// 创建数据项。
-        /// </summary>
-        /// <param name="reader">数据读取器。</param>
-        /// <param name="parent">如果是导航属性则为父级对象</param>
-        /// <returns>创建结果。</returns>
-        protected object CreateItem(DbDataReader reader, OutputContentItem parent = null)
-        {
-            if (_Children.Count == 0 && !HasCollectionProperty)
-                return Metadata.CreateInstance(reader, ItemFields, EmptyComplexObjects);
-            else
-            {
-                var complexs = new object[Metadata.ComplexMembers.Count];
-                foreach (var item in Children.OfType<ComplexOutputInfo>())
-                {
-                    if (item.Type == EOutputType.Object)
-                    {
-                        complexs[item.Index] = item.CreateItem(reader, parent);
-                    }
-                    else
-                    {
-                        var propertyMember = item.Parent.Metadata.ComplexMembers[item.Index];
-                        var propertyType = ((PropertyInfo)propertyMember.Member).PropertyType;
-                        if (propertyType.IsInterface)
-                        {
-                            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(IGrouping<,>))
-                            {
-                                var collectionType = typeof(GroupCollectionImpl<,>).MakeGenericType(propertyType.GetGenericArguments());
-                                complexs[item.Index] = Activator.CreateInstance(collectionType);
-                            }
-                            else
-                            {
-                                var collectionType = typeof(HashSet<>).MakeGenericType(item.Metadata.ClrType);
-                                complexs[item.Index] = Activator.CreateInstance(collectionType);
-                            }
-                        }
-                        else if (propertyType.IsClass)
-                        {
-                            complexs[item.Index] = Activator.CreateInstance(propertyType);
-                        }
-                        else
-                        {
-
-                            throw new OutputException(this, string.Format(Res.NotSupportedInstanceType, propertyType));
-                        }
-                        parent.Collections.Add((CollectionOutputInfo)item, new OutputContentCollection((CollectionOutputInfo)item, complexs[item.Index]));
-                    }
-                }
-                return Metadata.CreateInstance(reader, ItemFields, complexs);
-            }
-        }
-        /// <summary>
         /// 初始化当前输出信息对象。
         /// </summary>
         /// <returns>是否初始化成功。</returns>
@@ -143,19 +95,7 @@ namespace Caredev.Mego.Resolve.Outputs
             if (!IsInitialized)
             {
                 IsInitialized = true;
-
-                foreach (var children in Children)
-                {
-                    switch (children.Type)
-                    {
-                        case EOutputType.Collection:
-                            HasCollectionProperty = true;
-                            break;
-                        case EOutputType.Object:
-                            Initialize((ObjectOutputInfo)children);
-                            break;
-                    }
-                }
+                Initialize(this);
             }
             return HasCollectionProperty;
         }
@@ -171,6 +111,39 @@ namespace Caredev.Mego.Resolve.Outputs
                 complex.Parent = this;
             }
             _Children.Add(output);
+        }
+        /// <summary>
+        /// 判断当前读取器中是否存在需要输出的数据
+        /// </summary>
+        /// <param name="reader">数据读取器对象。</param>
+        /// <returns>如果为空返回True，否则返回False。</returns>
+        protected bool IsEmpty(DbDataReader reader) => reader.IsDBNull(ItemKeyFields[0]);
+        //根据成员元数据创建集合实例对象
+        private object CreateCollectionInstance(CollectionOutputInfo item)
+        {
+            var propertyMember = item.Parent.Metadata.ComplexMembers[item.Index];
+            var propertyType = propertyMember.Member.PropertyType;
+            if (propertyType.IsInterface)
+            {
+                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(IGrouping<,>))
+                {
+                    var collectionType = typeof(GroupCollectionImpl<,>).MakeGenericType(propertyType.GetGenericArguments());
+                    return Activator.CreateInstance(collectionType);
+                }
+                else
+                {
+                    var collectionType = typeof(HashSet<>).MakeGenericType(item.Metadata.ClrType);
+                    return Activator.CreateInstance(collectionType);
+                }
+            }
+            else if (propertyType.IsClass)
+            {
+                return Activator.CreateInstance(propertyType);
+            }
+            else
+            {
+                throw new OutputException(this, string.Format(Res.NotSupportedInstanceType, propertyType));
+            }
         }
         //生成输出属性索引列表
         private static int[] GenerateFields(DbDataReader reader, TypeMetadata metadata)
@@ -199,12 +172,96 @@ namespace Caredev.Mego.Resolve.Outputs
                 {
                     case EOutputType.Collection:
                         HasCollectionProperty = true;
-                        //SubItemCollection.Add((CollectionOutputInfo)children);
                         break;
                     case EOutputType.Object:
-                        Initialize((ObjectOutputInfo)children);
+                        if (((ComplexOutputInfo)children).Initialize())
+                        {
+                            HasCollectionProperty = true;
+                        }
                         break;
                 }
+            }
+        }
+        /// <summary>
+        /// 从数据读取器中加载数据到输出的内容对象中。
+        /// </summary>
+        /// <param name="reader">数据读取器。</param>
+        /// <param name="content">目标内容。</param>
+        protected virtual void LoadDataToContent(DbDataReader reader, IOutputContent content)
+        {
+            var item = (OutputContentObject)content;
+            if (item.Content != null)
+            {
+                foreach (var kv in item.Members)
+                {
+                    kv.Key.LoadDataToContent(reader, kv.Value);
+                }
+            }
+        }
+        /// <summary>
+        /// 创建带有层级结构的内容项。
+        /// </summary>
+        /// <param name="reader">数据读取器。</param>
+        /// <returns>创建结果。</returns>
+        protected OutputContentObject CreateContentItem(DbDataReader reader)
+        {
+            var content = new OutputContentObject();
+            if (!IsEmpty(reader))
+            {
+                var complexs = new object[Metadata.ComplexMembers.Count];
+                foreach (var item in Children.OfType<ComplexOutputInfo>())
+                {
+                    if (item.Type == EOutputType.Object)
+                    {
+                        var objectInfo = (ObjectOutputInfo)item;
+                        if (item.HasCollectionProperty)
+                        {
+                            if (!item.IsEmpty(reader))
+                            {//如果数据为空，则不创建成员对象
+                                var subcontent = item.CreateContentItem(reader);
+                                content.Members.Add(objectInfo, subcontent);
+                                complexs[item.Index] = subcontent.Content;
+                            }
+                        }
+                        else
+                        {
+                            complexs[item.Index] = objectInfo.CreateObjectItem(reader);
+                        }
+                    }
+                    else
+                    {
+                        var collectionItem = (CollectionOutputInfo)item;
+                        var collectionInstance = CreateCollectionInstance(collectionItem);
+                        complexs[item.Index] = collectionInstance;
+                        content.Members.Add(collectionItem, new OutputContentCollection(collectionItem, collectionInstance));
+                    }
+                }
+                content.Content = Metadata.CreateInstance(reader, ItemFields, complexs);
+            }
+            return content;
+        }
+        /// <summary>
+        /// 直接创建对象，对于没有集合属性的对象可以直接创建出结果。
+        /// </summary>
+        /// <param name="reader">数据读取器。</param>
+        /// <returns>创建结果。</returns>
+        protected object CreateObjectItem(DbDataReader reader)
+        {
+            if (_Children.Count == 0)
+            {
+                return Metadata.CreateInstance(reader, ItemFields, EmptyComplexObjects);
+            }
+            else
+            {
+                var complexs = new object[Metadata.ComplexMembers.Count];
+                foreach (var item in Children.OfType<ComplexOutputInfo>())
+                {
+                    if (item.Type == EOutputType.Object)
+                    {
+                        complexs[item.Index] = item.CreateObjectItem(reader);
+                    }
+                }
+                return Metadata.CreateInstance(reader, ItemFields, complexs);
             }
         }
     }

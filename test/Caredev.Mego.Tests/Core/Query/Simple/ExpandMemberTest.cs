@@ -1,10 +1,10 @@
 ﻿namespace Caredev.Mego.Tests.Core.Query.Simple
 {
     using System.Linq;
-    using Caredev.Mego.Tests.Models.Simple; 
+    using Caredev.Mego.Tests.Models.Simple;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestClass, TestCategory(Constants.TestCategoryRootName + ".Query.Expand")]
-    public partial class ExpandMemberTest 
+    public partial class ExpandMemberTest
     {
         [TestMethod]
         public void ExpandOneLevelObjectMemberStrTest()
@@ -151,6 +151,40 @@
                 var data = query.ToArray();
                 Assert.IsTrue(data.Any(a => a.Details.Count > 0 && a.Details.Any(b => b.Product != null)));
             }
+        }
+
+        //当在SingleOrDefault函数使用Include时，如果Include的集合属性为空时会报错
+        [TestMethod]
+        public void ExpandEmptyCollectionTest()
+        {
+            Utility.CommitTest(CreateContext(), db =>
+            {
+                var operate = db.Customers.Add(new Customer()
+                {
+                    Id = 10000,
+                    Name = "Customer 100",
+                    Code = "C100",
+                    Address1 = "A",
+                    Address2 = "B",
+                    Zip = "Z"
+                });
+                db.Executor.Execute(operate);
+                var test = db.Customers.Include(a => a.Orders).SingleOrDefault(a => a.Id == 10000);
+                Assert.IsNotNull(test);
+            });
+        }
+
+        //当在SingleOrDefault函数使用Include时，集合属性的数量是错误的。
+        [TestMethod]
+        public void ExpandSingleCollectionTest()
+        {
+            Utility.CommitTest(CreateContext(), db =>
+            {
+                var orderid = 10;
+                var count = db.OrderDetails.Where(a => a.OrderId == orderid).Count();
+                var bbb = db.Orders.Include(a => a.Details).SingleOrDefault(a => a.Id == orderid);
+                Assert.AreEqual(count, bbb.Details.Count);
+            });
         }
 
         internal OrderManageEntities CreateContext() => Constants.CreateSimpleContext();

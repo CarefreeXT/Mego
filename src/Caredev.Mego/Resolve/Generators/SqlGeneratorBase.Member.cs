@@ -150,13 +150,13 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        public void InitialMembers(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        public ISourceFragment InitialMembers(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             if (!_InitialMembersMethods.TryGetValue(expression.ExpressionType, out InitialMembersDelegate method))
             {
                 throw new NotSupportedException(string.Format(Res.NotSupportedInitialMember, expression.ExpressionType));
             }
-            method(context, current, expression, parent);
+            return method(context, current, expression, parent);
         }
         /// <summary>
         /// 根据类型<see cref="DbAggregateFunctionExpression"/>表达式初始化查询成员集合。
@@ -165,11 +165,12 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForAggregateFunction(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForAggregateFunction(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var aggregate = (DbAggregateFunctionExpression)expression;
             context.RegisterSource((DbExpression)aggregate.Source, current);
             RetrievalMember(context, current, aggregate, null, false);
+            return current;
         }
         /// <summary>
         /// 根据类型<see cref="DbRetrievalFunctionExpression"/>表达式初始化查询成员集合。
@@ -178,10 +179,15 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForRetrievalFunction(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForRetrievalFunction(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var aggregate = (DbRetrievalFunctionExpression)expression;
             var unittype = aggregate.Source as DbUnitTypeExpression;
+            InitialRetrieval(context, current, aggregate, parent);
+            if (current is SelectFragment select && select.IsRecommandLock)
+            {
+                current = new SelectFragment(context, select);
+            }
             if (parent != null)
             {
                 InitialMembers(context, current, unittype.Item, parent);
@@ -190,7 +196,7 @@ namespace Caredev.Mego.Resolve.Generators
             {
                 RetrievalMember(context, current, unittype.Item, null, false);
             }
-            InitialRetrieval(context, current, aggregate, parent);
+            return current;
         }
         /// <summary>
         /// 根据类型<see cref="DbUnitValueContentExpression"/>表达式初始化查询成员集合。
@@ -199,10 +205,11 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForUnitValueContent(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForUnitValueContent(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var value = (DbUnitValueContentExpression)expression;
             current.RetrievalMembers(value.Content, false).ToArray();
+            return current;
         }
         /// <summary>
         /// 根据类型<see cref="DbUnitObjectContentExpression"/>表达式初始化查询成员集合。
@@ -211,10 +218,11 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForUnitObjectContent(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForUnitObjectContent(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var value = (DbUnitObjectContentExpression)expression;
             InitialMembersForObjectMember(context, current, value.Content, parent);
+            return current;
         }
         /// <summary>
         /// 根据类型<see cref="DbObjectMemberExpression"/>表达式初始化查询成员集合。
@@ -223,7 +231,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForObjectMember(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForObjectMember(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var value = (DbObjectMemberExpression)expression;
             var primarys = parent.Metadata.PrimaryMembers;
@@ -234,6 +242,7 @@ namespace Caredev.Mego.Resolve.Generators
             }
             if (parent.ItemKeyFields == null)
                 parent.ItemKeyFields = parent.ItemFields;
+            return current;
         }
         /// <summary>
         /// 根据类型表达式初始化查询成员集合（通用方法）。
@@ -242,7 +251,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForCommon(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForCommon(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             var members = current.RetrievalMembers(expression, false).ToArray();
             if (parent != null)
@@ -260,6 +269,7 @@ namespace Caredev.Mego.Resolve.Generators
                     }
                 }
             }
+            return current;
         }
         /// <summary>
         /// 根据类型<see cref="DbNewExpression"/>表达式初始化查询成员集合。
@@ -268,7 +278,7 @@ namespace Caredev.Mego.Resolve.Generators
         /// <param name="current">初始化数据源。</param>
         /// <param name="expression">初始化表达式。</param>
         /// <param name="parent">父级数据源。</param>
-        protected virtual void InitialMembersForNew(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
+        protected virtual ISourceFragment InitialMembersForNew(GenerateContext context, ISourceFragment current, DbExpression expression, ComplexOutputInfo parent)
         {
             if (parent != null)
             {
@@ -306,6 +316,7 @@ namespace Caredev.Mego.Resolve.Generators
                     }
                 }
                 parent.ItemKeyFields = keyFields.Distinct().ToArray();
+                return current;
             }
             else
             {

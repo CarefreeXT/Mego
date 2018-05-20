@@ -15,8 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("f7cd97dc-8e1e-4dbc-b7b7-c2ff42dc6a8a")]
 
 #if RELEASE
-[assembly: AssemblyKeyFile(@"..\..\MegoPublicKey.snk")]
-[assembly: AssemblyDelaySign(true)]
+[assembly: AssemblyKeyName("VS_KEY_MEGO20150825")]
 #else
 [assembly: InternalsVisibleTo("Caredev.Mego.Tests")]
 #endif

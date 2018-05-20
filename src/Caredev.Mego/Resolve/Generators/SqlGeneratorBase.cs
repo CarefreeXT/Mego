@@ -212,7 +212,7 @@ namespace Caredev.Mego.Resolve.Generators
             {
                 var oldSelect = select;
                 select = new SelectFragment(context, source);
-                InitialMembers(context, select, initialExpression, root);
+                select = (SelectFragment)InitialMembers(context, select, initialExpression, root);
                 if (oldSelect != null && !select.IsRecommandLock && select.Sources.Count() == 1)
                 {
                     select = oldSelect;
@@ -220,7 +220,7 @@ namespace Caredev.Mego.Resolve.Generators
             }
             else
             {
-                InitialMembers(context, select, initialExpression, root);
+                select = (SelectFragment)InitialMembers(context, select, initialExpression, root);
             }
             return select;
         }
